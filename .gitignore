@@ -92,8 +92,10 @@ dist/
 .env.*
 !.env.example
 
-.yarn/
 gh-tasks
 
 tmp/*
 poetry.lock
+.yarn.lock
+.yarn/*
+*.makim

@@ -195,13 +195,11 @@ groups:
     tasks:
       lint:
         help: lint all Python API packages
-        hooks: *js_deps_hook
-        run: yarn api:lint
+        run: poetry run ruff check packages/api-core packages/restapi
 
       test:
         help: test all Python API packages
-        hooks: *js_deps_hook
-        run: yarn api:test
+        run: poetry run pytest packages/api-core/tests packages/restapi/tests
 
       typecheck:
         help: typecheck all Python API packages
