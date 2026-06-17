@@ -94,3 +94,6 @@ dist/
 
 .yarn/
 gh-tasks
+
+tmp/*
+poetry.lock

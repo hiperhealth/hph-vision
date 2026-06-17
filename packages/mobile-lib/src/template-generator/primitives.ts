@@ -1,4 +1,10 @@
-import type {LinePath, Point, RectPath, TemplateElementRole, TextElement} from './types';
+import type {
+  LinePath,
+  Point,
+  RectPath,
+  TemplateElementRole,
+  TextElement,
+} from './types';
 
 export const point = (xMm: number, yMm: number): Point => ({xMm, yMm});
 

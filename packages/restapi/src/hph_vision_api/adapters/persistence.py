@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from hph_vision_core import ScreeningReport, SessionEvaluation, SessionSubmission
@@ -9,7 +9,7 @@ from hph_vision_core.clinician_review import ReviewStatus
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 @dataclass(frozen=True)

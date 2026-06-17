@@ -52,7 +52,11 @@ export const Screen = ({
         </ScrollView>
         <View style={styles.footer}>
           {canGoBack ? (
-            <PrimaryButton label="Back" variant="secondary" onPress={actions.back} />
+            <PrimaryButton
+              label="Back"
+              variant="secondary"
+              onPress={actions.back}
+            />
           ) : null}
           {footer}
         </View>

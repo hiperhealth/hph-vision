@@ -8,7 +8,11 @@ import {
 
 describe('refraction protocol', () => {
   it('records comparison responses and returns an estimate', () => {
-    let session = createRefractionSession({id: 'test-refraction', eye: 'left', maxTrials: 2});
+    let session = createRefractionSession({
+      id: 'test-refraction',
+      eye: 'left',
+      maxTrials: 2,
+    });
 
     for (const trial of session.trials) {
       session = recordRefractionResponse(session, {

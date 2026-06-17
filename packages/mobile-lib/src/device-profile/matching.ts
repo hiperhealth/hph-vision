@@ -1,5 +1,10 @@
 import {DEVICE_PROFILES} from './database';
-import type {DeviceDetectionInput, DeviceProfile, DeviceProfileMatch, PhoneGeometry} from './types';
+import type {
+  DeviceDetectionInput,
+  DeviceProfile,
+  DeviceProfileMatch,
+  PhoneGeometry,
+} from './types';
 
 export const normalizeDeviceModelName = (value: string): string =>
   value
@@ -9,13 +14,18 @@ export const normalizeDeviceModelName = (value: string): string =>
     .replace(/\s+/g, ' ')
     .trim();
 
-const scoreProfile = (input: DeviceDetectionInput, profile: DeviceProfile): number => {
+const scoreProfile = (
+  input: DeviceDetectionInput,
+  profile: DeviceProfile,
+): number => {
   const manufacturer = normalizeDeviceModelName(input.manufacturer ?? '');
   const model = normalizeDeviceModelName(input.modelName ?? '');
   const modelNumber = normalizeDeviceModelName(input.modelNumber ?? '');
   const profileManufacturer = normalizeDeviceModelName(profile.manufacturer);
   const profileModel = normalizeDeviceModelName(profile.modelName);
-  const profileModelNumber = normalizeDeviceModelName(profile.modelNumber ?? '');
+  const profileModelNumber = normalizeDeviceModelName(
+    profile.modelNumber ?? '',
+  );
 
   let score = 0;
   if (manufacturer && profileManufacturer.includes(manufacturer)) {
@@ -51,7 +61,8 @@ export const matchDeviceProfile = (
   if (!best || best.score < 0.35) {
     return {
       confidence: 0,
-      reason: 'No confident profile match was found. Manual dimensions are required.',
+      reason:
+        'No confident profile match was found. Manual dimensions are required.',
       alternatives: ranked.slice(0, 3).map(item => item.profile),
       requiresManualConfirmation: true,
     };

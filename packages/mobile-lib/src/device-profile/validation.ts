@@ -24,21 +24,35 @@ export const validateDeviceProfile = (
   const errors = combined.ok ? [] : [...combined.errors];
 
   if (!profile.id.trim()) {
-    errors.push(validationIssue('missing_id', 'Device profile id is required.', 'id'));
+    errors.push(
+      validationIssue('missing_id', 'Device profile id is required.', 'id'),
+    );
   }
   if (!profile.manufacturer.trim()) {
     errors.push(
-      validationIssue('missing_manufacturer', 'Manufacturer is required.', 'manufacturer'),
+      validationIssue(
+        'missing_manufacturer',
+        'Manufacturer is required.',
+        'manufacturer',
+      ),
     );
   }
   if (!profile.modelName.trim()) {
-    errors.push(validationIssue('missing_model', 'Model name is required.', 'modelName'));
+    errors.push(
+      validationIssue('missing_model', 'Model name is required.', 'modelName'),
+    );
   }
   if (!profile.templateFamily.trim()) {
     errors.push(
-      validationIssue('missing_template_family', 'Template family is required.', 'templateFamily'),
+      validationIssue(
+        'missing_template_family',
+        'Template family is required.',
+        'templateFamily',
+      ),
     );
   }
 
-  return errors.length > 0 ? invalid(errors, combined.warnings) : valid(profile, combined.warnings);
+  return errors.length > 0
+    ? invalid(errors, combined.warnings)
+    : valid(profile, combined.warnings);
 };

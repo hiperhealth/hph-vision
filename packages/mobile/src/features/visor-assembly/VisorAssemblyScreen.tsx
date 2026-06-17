@@ -47,9 +47,15 @@ export const VisorAssemblyScreen = () => {
           accessibilityState={{checked: Boolean(checked[item])}}
           key={item}
           onPress={() => toggle(item)}
-          style={[styles.checkItem, checked[item] ? styles.checkItemSelected : styles.checkItemPlain]}>
+          style={[
+            styles.checkItem,
+            checked[item] ? styles.checkItemSelected : styles.checkItemPlain,
+          ]}>
           <Text
-            style={[styles.checkText, checked[item] ? styles.checkTextSelected : styles.checkTextPlain]}>
+            style={[
+              styles.checkText,
+              checked[item] ? styles.checkTextSelected : styles.checkTextPlain,
+            ]}>
             {checked[item] ? '✓ ' : '○ '}
             {item}
           </Text>

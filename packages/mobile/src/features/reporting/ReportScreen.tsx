@@ -26,13 +26,18 @@ export const ReportScreen = () => {
 
   if (!report) {
     return (
-      <Screen route="reporting" subtitle="Build the report model from the result summary first.">
+      <Screen
+        route="reporting"
+        subtitle="Build the report model from the result summary first.">
         <InfoCard
           title="No report available"
           body="Return to results and build the report model before testing export behavior."
           tone="warning"
         />
-        <PrimaryButton label="Go to results" onPress={() => actions.navigate('results')} />
+        <PrimaryButton
+          label="Go to results"
+          onPress={() => actions.navigate('results')}
+        />
       </Screen>
     );
   }
@@ -41,27 +46,44 @@ export const ReportScreen = () => {
     <Screen
       route="reporting"
       subtitle="Show report content and stub native PDF/share handoff for the initial build.">
-      <InfoCard title="Clinical limitation" body={report.disclaimer} tone="warning" />
+      <InfoCard
+        title="Clinical limitation"
+        body={report.disclaimer}
+        tone="warning"
+      />
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>{report.id}</Text>
         <Text style={styles.reportLine}>Session: {report.sessionId}</Text>
         <Text style={styles.reportLine}>Created: {report.createdAt}</Text>
-        <Text style={styles.reportLine}>Recommendation: {report.recommendation}</Text>
         <Text style={styles.reportLine}>
-          Reliability: {report.reliability.level} ({formatPercent(report.reliability.score)})
+          Recommendation: {report.recommendation}
         </Text>
-        <Text style={styles.reportLine}>Warnings: {report.warnings.length}</Text>
+        <Text style={styles.reportLine}>
+          Reliability: {report.reliability.level} (
+          {formatPercent(report.reliability.score)})
+        </Text>
+        <Text style={styles.reportLine}>
+          Warnings: {report.warnings.length}
+        </Text>
         <Text style={styles.reportLine}>
           Device: {report.deviceProfile?.modelName ?? 'not recorded'}
         </Text>
         <Text style={styles.reportLine}>
-          Template: {report.templateMetadata?.templateVersion ?? 'not generated'}
+          Template:{' '}
+          {report.templateMetadata?.templateVersion ?? 'not generated'}
         </Text>
       </View>
       {report.warnings.map(warning => (
-        <InfoCard key={warning.code} title={warning.code} body={warning.message} tone="warning" />
+        <InfoCard
+          key={warning.code}
+          title={warning.code}
+          body={warning.message}
+          tone="warning"
+        />
       ))}
-      {shareMessage ? <InfoCard title="Share stub" body={shareMessage} tone="success" /> : null}
+      {shareMessage ? (
+        <InfoCard title="Share stub" body={shareMessage} tone="success" />
+      ) : null}
       <PrimaryButton label="Preview report share stub" onPress={previewShare} />
       <PrimaryButton
         label="Clinician-review handoff"

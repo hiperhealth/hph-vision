@@ -1,4 +1,9 @@
-import type {Eye, InputMethod, ISODateString, ResultRecommendation} from '../types';
+import type {
+  Eye,
+  InputMethod,
+  ISODateString,
+  ResultRecommendation,
+} from '../types';
 
 export type BetterWorseSame = 'better' | 'worse' | 'same' | 'unknown';
 export type OneTwoChoice = 'one' | 'two' | 'same' | 'unknown';

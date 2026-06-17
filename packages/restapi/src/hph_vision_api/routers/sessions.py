@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from hph_vision_api.adapters.auth import Actor
@@ -19,7 +21,7 @@ router = APIRouter(prefix="/api/v1/sessions", tags=["sessions"])
 
 
 def _session_service(
-    repository: InMemoryRepository = Depends(get_repository),
+    repository: Annotated[InMemoryRepository, Depends(get_repository)],
 ) -> SessionService:
     return SessionService(repository)
 
@@ -42,8 +44,8 @@ def session_record_to_response(record: SessionRecord) -> SessionRecordResponse:
 @router.post("", response_model=SessionAcceptedResponse, status_code=201)
 def submit_session(
     request: SessionSubmissionRequest,
-    service: SessionService = Depends(_session_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[SessionService, Depends(_session_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> SessionRecordResponse:
     record = service.submit_session(request)
     return session_record_to_response(record)
@@ -52,8 +54,8 @@ def submit_session(
 @router.get("/{session_id}", response_model=SessionRecordResponse)
 def get_session(
     session_id: str,
-    service: SessionService = Depends(_session_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[SessionService, Depends(_session_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> SessionRecordResponse:
     return session_record_to_response(service.get_session(session_id))
 
@@ -62,8 +64,8 @@ def get_session(
 def patch_session(
     session_id: str,
     request: SessionPatchRequest,
-    service: SessionService = Depends(_session_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[SessionService, Depends(_session_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> SessionRecordResponse:
     record = service.get_session(session_id)
     if request.status:

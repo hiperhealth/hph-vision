@@ -13,7 +13,10 @@ export const determineRecommendation = (
   if ((input.reliabilityScore ?? 0) < 0.35) {
     return 'invalid_result';
   }
-  if ((input.reliabilityScore ?? 0) < 0.6 || (input.refractionConfidence ?? 0) < 0.6) {
+  if (
+    (input.reliabilityScore ?? 0) < 0.6 ||
+    (input.refractionConfidence ?? 0) < 0.6
+  ) {
     return 'clinician_review_recommended';
   }
   return 'clinician_review_recommended';

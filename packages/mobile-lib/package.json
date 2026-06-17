@@ -1,7 +1,6 @@
 {
   "name": "@hiperhealth/hphvision-lib",
   "version": "0.0.1",
-  "private": false,
   "publishConfig": {
     "access": "public"
   },

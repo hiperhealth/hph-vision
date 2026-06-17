@@ -200,7 +200,10 @@ screens/features
 The app may import from `@hiperhealth/hphvision-lib`:
 
 ```ts
-import {createAcuitySession, scoreAcuityResponse} from '@hiperhealth/hphvision-lib';
+import {
+  createAcuitySession,
+  scoreAcuityResponse,
+} from '@hiperhealth/hphvision-lib';
 ```
 
 The app should not import from:
@@ -1223,16 +1226,16 @@ Acceptance criteria:
 
 ## 14. Risks and Mitigations
 
-| Risk | Mitigation |
-| --- | --- |
+| Risk                                             | Mitigation                                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------------ |
 | Users misunderstand result as final prescription | Mandatory disclaimer, cautious language, clinician-review recommendation |
-| Poor template print scale | Calibration square, print instructions, fit-check workflow |
-| Bad lighting or unstable phone position | Environment warnings, reliability scoring, retest recommendation |
-| Voice recognition errors | Constrained vocabulary, confidence thresholds, touch fallback |
-| Android Studio fails in monorepo | Open `packages/mobile/android`, keep Gradle paths documented and tested |
-| Duplicate React Native dependency | Keep library peer dependencies, use root Yarn workspaces |
-| Interrupted test loses data | Local session persistence after each important step |
-| Backend unavailable | Offline-first local testing and report generation |
+| Poor template print scale                        | Calibration square, print instructions, fit-check workflow               |
+| Bad lighting or unstable phone position          | Environment warnings, reliability scoring, retest recommendation         |
+| Voice recognition errors                         | Constrained vocabulary, confidence thresholds, touch fallback            |
+| Android Studio fails in monorepo                 | Open `packages/mobile/android`, keep Gradle paths documented and tested  |
+| Duplicate React Native dependency                | Keep library peer dependencies, use root Yarn workspaces                 |
+| Interrupted test loses data                      | Local session persistence after each important step                      |
+| Backend unavailable                              | Offline-first local testing and report generation                        |
 
 ---
 

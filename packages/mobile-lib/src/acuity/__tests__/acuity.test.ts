@@ -1,6 +1,11 @@
 import {describe, expect, it} from '@jest/globals';
 
-import {createAcuitySession, nextAcuityTrial, recordAcuityResponse, scoreAcuitySession} from '..';
+import {
+  createAcuitySession,
+  nextAcuityTrial,
+  recordAcuityResponse,
+  scoreAcuitySession,
+} from '..';
 
 describe('acuity protocol', () => {
   it('records responses and scores a completed session', () => {

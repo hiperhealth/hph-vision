@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from hph_vision_api.adapters.auth import Actor
@@ -21,8 +23,8 @@ router = APIRouter(prefix="/api/v1/reports", tags=["reports"])
 
 
 def _report_service(
-    repository: InMemoryRepository = Depends(get_repository),
-    object_storage: FakeObjectStorageAdapter = Depends(get_object_storage),
+    repository: Annotated[InMemoryRepository, Depends(get_repository)],
+    object_storage: Annotated[FakeObjectStorageAdapter, Depends(get_object_storage)],
 ) -> ReportService:
     return ReportService(repository, object_storage)
 
@@ -30,8 +32,8 @@ def _report_service(
 @router.post("", response_model=ReportResponse, status_code=201)
 def create_report(
     request: ReportCreateRequest,
-    service: ReportService = Depends(_report_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[ReportService, Depends(_report_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> ReportResponse:
     record = service.create_report(
         session_id=request.session_id,
@@ -43,8 +45,8 @@ def create_report(
 @router.get("/{report_id}", response_model=ReportResponse)
 def get_report(
     report_id: str,
-    service: ReportService = Depends(_report_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[ReportService, Depends(_report_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> ReportResponse:
     record = service.get_report(report_id)
     return ReportResponse.from_core(record.report, session_id=record.session_id)
@@ -53,8 +55,8 @@ def get_report(
 @router.post("/{report_id}/upload-url", response_model=ReportUrlResponse)
 def create_report_upload_url(
     report_id: str,
-    service: ReportService = Depends(_report_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[ReportService, Depends(_report_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> ReportUrlResponse:
     url = service.create_upload_url(report_id)
     return ReportUrlResponse(
@@ -68,8 +70,8 @@ def create_report_upload_url(
 @router.get("/{report_id}/download-url", response_model=ReportUrlResponse)
 def create_report_download_url(
     report_id: str,
-    service: ReportService = Depends(_report_service),
-    _actor: Actor = Depends(get_current_actor),
+    service: Annotated[ReportService, Depends(_report_service)],
+    _actor: Annotated[Actor, Depends(get_current_actor)],
 ) -> ReportUrlResponse:
     url = service.create_download_url(report_id)
     return ReportUrlResponse(

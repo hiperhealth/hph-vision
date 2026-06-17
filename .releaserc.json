@@ -1,7 +1,5 @@
 {
-  "branches": [
-    "main"
-  ],
+  "branches": ["main"],
   "tagFormat": "v${version}",
   "plugins": [
     [
@@ -15,9 +13,7 @@
       {
         "replacements": [
           {
-            "files": [
-              "pyproject.toml"
-            ],
+            "files": ["pyproject.toml"],
             "from": "version = \".*\"  # semantic-release",
             "to": "version = \"${nextRelease.version}\"  # semantic-release",
             "results": [
@@ -31,9 +27,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/mobile/package.json"
-            ],
+            "files": ["packages/mobile/package.json"],
             "from": "\"version\": \".*\",",
             "to": "\"version\": \"${nextRelease.version}\",",
             "results": [
@@ -47,9 +41,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/mobile-lib/package.json"
-            ],
+            "files": ["packages/mobile-lib/package.json"],
             "from": "\"version\": \".*\",",
             "to": "\"version\": \"${nextRelease.version}\",",
             "results": [
@@ -63,9 +55,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/mobile/android/app/build.gradle"
-            ],
+            "files": ["packages/mobile/android/app/build.gradle"],
             "from": "versionName \".*\"",
             "to": "versionName \"${nextRelease.version}\"",
             "results": [
@@ -95,9 +85,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/api-core/pyproject.toml"
-            ],
+            "files": ["packages/api-core/pyproject.toml"],
             "from": "version = \".*\"  # semantic-release",
             "to": "version = \"${nextRelease.version}\"  # semantic-release",
             "results": [
@@ -111,9 +99,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/api-core/src/hph_vision_core/version.py"
-            ],
+            "files": ["packages/api-core/src/hph_vision_core/version.py"],
             "from": "__version__ = \".*\"  # semantic-release",
             "to": "__version__ = \"${nextRelease.version}\"  # semantic-release",
             "results": [
@@ -127,9 +113,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/restapi/pyproject.toml"
-            ],
+            "files": ["packages/restapi/pyproject.toml"],
             "from": "version = \".*\"  # semantic-release",
             "to": "version = \"${nextRelease.version}\"  # semantic-release",
             "results": [
@@ -143,9 +127,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/restapi/pyproject.toml"
-            ],
+            "files": ["packages/restapi/pyproject.toml"],
             "from": "hph-vision-core = \".*\"  # semantic-release",
             "to": "hph-vision-core = \"${nextRelease.version}\"  # semantic-release",
             "results": [
@@ -159,9 +141,7 @@
             "countMatches": true
           },
           {
-            "files": [
-              "packages/restapi/src/hph_vision_api/version.py"
-            ],
+            "files": ["packages/restapi/src/hph_vision_api/version.py"],
             "from": "API_VERSION = \".*\"  # semantic-release",
             "to": "API_VERSION = \"${nextRelease.version}\"  # semantic-release",
             "results": [

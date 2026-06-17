@@ -2,7 +2,9 @@ import {clamp} from '../validation';
 import {normalizeReliabilitySignals} from './signals';
 import type {ReliabilityResult, ReliabilitySignals} from './types';
 
-export const calculateReliability = (signals: ReliabilitySignals): ReliabilityResult => {
+export const calculateReliability = (
+  signals: ReliabilitySignals,
+): ReliabilityResult => {
   const normalized = normalizeReliabilitySignals(signals);
   const positiveScore =
     normalized.repeatedAnswerConsistency * 0.2 +
@@ -11,8 +13,19 @@ export const calculateReliability = (signals: ReliabilitySignals): ReliabilityRe
     normalized.tiltConfidence * 0.15 +
     normalized.ambientLightScore * 0.1 +
     normalized.completionRate * 0.25;
-  const score = clamp(positiveScore - normalized.contradictionScore * 0.25, 0, 1);
-  const level = score >= 0.8 ? 'high' : score >= 0.6 ? 'medium' : score >= 0.35 ? 'low' : 'invalid';
+  const score = clamp(
+    positiveScore - normalized.contradictionScore * 0.25,
+    0,
+    1,
+  );
+  const level =
+    score >= 0.8
+      ? 'high'
+      : score >= 0.6
+      ? 'medium'
+      : score >= 0.35
+      ? 'low'
+      : 'invalid';
 
   return {
     score,
@@ -42,7 +55,8 @@ export const calculateReliability = (signals: ReliabilitySignals): ReliabilityRe
         ? [
             {
               code: 'reliability.invalid_score',
-              message: 'The session reliability is too low to interpret confidently.',
+              message:
+                'The session reliability is too low to interpret confidently.',
               severity: 'critical' as const,
               source: 'reliability',
             },

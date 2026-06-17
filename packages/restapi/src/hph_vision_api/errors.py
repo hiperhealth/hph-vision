@@ -5,9 +5,9 @@ from typing import Any
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from hph_vision_core.validation import ValidationError, ValidationResult
 
 from hph_vision_api.schemas.common import ErrorDetail, ErrorEnvelope, ErrorResponse
+from hph_vision_core.validation import ValidationError, ValidationResult
 
 
 class ApiError(Exception):

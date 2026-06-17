@@ -1078,16 +1078,16 @@ Acceptance criteria:
 
 ## 20. Risks and Mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Route handlers accumulate domain logic | Delegate to `hph-vision-core` and API service layer |
-| Mobile/API contracts drift | Use JSON fixtures and contract tests |
-| Sensitive data logged accidentally | Structured logging policy and payload redaction |
-| Users upload data without consent | Require consent metadata and explicit mobile action |
+| Risk                                   | Mitigation                                           |
+| -------------------------------------- | ---------------------------------------------------- |
+| Route handlers accumulate domain logic | Delegate to `hph-vision-core` and API service layer  |
+| Mobile/API contracts drift             | Use JSON fixtures and contract tests                 |
+| Sensitive data logged accidentally     | Structured logging policy and payload redaction      |
+| Users upload data without consent      | Require consent metadata and explicit mobile action  |
 | API returns estimates as prescriptions | Preserve disclaimer and clinician-review requirement |
-| Auth design blocks local development | Support auth-disabled local/test settings |
-| Persistence choice changes | Use repository interfaces and adapters |
-| PDF uploads expose private data | Use private storage and short-lived signed URLs |
+| Auth design blocks local development   | Support auth-disabled local/test settings            |
+| Persistence choice changes             | Use repository interfaces and adapters               |
+| PDF uploads expose private data        | Use private storage and short-lived signed URLs      |
 
 ---
 
