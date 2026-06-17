@@ -1,7 +1,7 @@
 ---
 name: ✨ Feature Request
 description: Suggest an idea for HPH Vision
-labels: ["feat/enhancement", "needs-triage"]
+labels: ['feat/enhancement', 'needs-triage']
 
 body:
   - type: markdown

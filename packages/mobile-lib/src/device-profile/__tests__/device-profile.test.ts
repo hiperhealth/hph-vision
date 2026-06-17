@@ -15,7 +15,10 @@ describe('device profile helpers', () => {
   });
 
   it('returns manual fallback for unknown devices', () => {
-    const match = matchDeviceProfile({manufacturer: 'Unknown', modelName: 'Mystery'});
+    const match = matchDeviceProfile({
+      manufacturer: 'Unknown',
+      modelName: 'Mystery',
+    });
 
     expect(match.requiresManualConfirmation).toBe(true);
     expect(match.profile).toBeUndefined();

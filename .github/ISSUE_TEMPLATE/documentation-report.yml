@@ -1,7 +1,7 @@
 ---
 name: 📝 Documentation Report
 description: Report a problem with HPH Vision documentation
-labels: ["docs", "needs-triage"]
+labels: ['docs', 'needs-triage']
 
 body:
   - type: markdown

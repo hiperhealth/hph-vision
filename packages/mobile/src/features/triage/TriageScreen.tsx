@@ -15,22 +15,30 @@ const questions = getTriageQuestions();
 
 export const TriageScreen = () => {
   const {state, actions} = useHphVisionApp();
-  const [answers, setAnswers] = useState<Record<string, boolean | undefined>>(() => {
-    const initial: Record<string, boolean | undefined> = {};
-    state.triageAnswers.forEach(answer => {
-      initial[answer.questionId] = answer.value;
-    });
-    return initial;
-  });
+  const [answers, setAnswers] = useState<Record<string, boolean | undefined>>(
+    () => {
+      const initial: Record<string, boolean | undefined> = {};
+      state.triageAnswers.forEach(answer => {
+        initial[answer.questionId] = answer.value;
+      });
+      return initial;
+    },
+  );
 
   const normalizedAnswers = useMemo<TriageAnswer[]>(
     () =>
       questions
         .filter(question => typeof answers[question.id] === 'boolean')
-        .map(question => ({questionId: question.id, value: Boolean(answers[question.id])})),
+        .map(question => ({
+          questionId: question.id,
+          value: Boolean(answers[question.id]),
+        })),
     [answers],
   );
-  const result = useMemo(() => evaluateTriage(normalizedAnswers), [normalizedAnswers]);
+  const result = useMemo(
+    () => evaluateTriage(normalizedAnswers),
+    [normalizedAnswers],
+  );
   const allAnswered = normalizedAnswers.length === questions.length;
 
   const selectAnswer = (questionId: string, value: boolean) => {
@@ -47,7 +55,9 @@ export const TriageScreen = () => {
 
   const saveAndContinue = () => {
     actions.saveTriage(normalizedAnswers, result);
-    actions.navigate(result.canContinueSelfTest ? 'deviceCalibration' : 'results');
+    actions.navigate(
+      result.canContinueSelfTest ? 'deviceCalibration' : 'results',
+    );
   };
 
   return (
@@ -75,7 +85,9 @@ export const TriageScreen = () => {
                 <Text
                   style={[
                     styles.answerText,
-                    value === true ? styles.answerTextSelected : styles.answerTextUnselected,
+                    value === true
+                      ? styles.answerTextSelected
+                      : styles.answerTextUnselected,
                   ]}>
                   Yes
                 </Text>
@@ -90,7 +102,9 @@ export const TriageScreen = () => {
                 <Text
                   style={[
                     styles.answerText,
-                    value === false ? styles.answerTextSelected : styles.answerTextUnselected,
+                    value === false
+                      ? styles.answerTextSelected
+                      : styles.answerTextUnselected,
                   ]}>
                   No
                 </Text>
@@ -100,7 +114,11 @@ export const TriageScreen = () => {
         );
       })}
       <InfoCard
-        title={result.canContinueSelfTest ? 'Ready to continue' : 'Professional care recommended'}
+        title={
+          result.canContinueSelfTest
+            ? 'Ready to continue'
+            : 'Professional care recommended'
+        }
         body={
           result.canContinueSelfTest
             ? 'No blocking triage answers were recorded.'
@@ -108,9 +126,17 @@ export const TriageScreen = () => {
         }
         tone={result.canContinueSelfTest ? 'success' : 'danger'}
       />
-      <PrimaryButton label="Mark all as no red flags" variant="secondary" onPress={markAllNo} />
       <PrimaryButton
-        label={result.canContinueSelfTest ? 'Continue to device calibration' : 'Show result guidance'}
+        label="Mark all as no red flags"
+        variant="secondary"
+        onPress={markAllNo}
+      />
+      <PrimaryButton
+        label={
+          result.canContinueSelfTest
+            ? 'Continue to device calibration'
+            : 'Show result guidance'
+        }
         disabled={!allAnswered}
         onPress={saveAndContinue}
       />

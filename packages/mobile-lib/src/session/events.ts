@@ -11,7 +11,15 @@ export type SessionEvent =
   | {type: 'TRIAGE_COMPLETED'; at: ISODateString; result: TriageResult}
   | {type: 'DEVICE_PROFILE_SELECTED'; at: ISODateString; profile: DeviceProfile}
   | {type: 'TEMPLATE_GENERATED'; at: ISODateString; metadata: TemplateMetadata}
-  | {type: 'ACUITY_RESPONSE_RECORDED'; at: ISODateString; response: AcuityResponse}
-  | {type: 'REFRACTION_RESPONSE_RECORDED'; at: ISODateString; response: RefractionResponse}
+  | {
+      type: 'ACUITY_RESPONSE_RECORDED';
+      at: ISODateString;
+      response: AcuityResponse;
+    }
+  | {
+      type: 'REFRACTION_RESPONSE_RECORDED';
+      at: ISODateString;
+      response: RefractionResponse;
+    }
   | {type: 'REPORT_CREATED'; at: ISODateString; reportId: string}
   | {type: 'SESSION_CANCELLED'; at: ISODateString};

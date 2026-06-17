@@ -34,7 +34,9 @@ export const TemplateGenerationScreen = () => {
     () => (phone ? generateTemplateDocument(phone, options) : undefined),
     [options, phone],
   );
-  const templateDocument = templateResult?.ok ? templateResult.value : undefined;
+  const templateDocument = templateResult?.ok
+    ? templateResult.value
+    : undefined;
   const templateErrorBody =
     templateResult && !templateResult.ok
       ? templateResult.errors.map(error => error.message).join(' ')
@@ -61,7 +63,9 @@ export const TemplateGenerationScreen = () => {
 
   if (!phone) {
     return (
-      <Screen route="templateGeneration" subtitle="Device geometry is required first.">
+      <Screen
+        route="templateGeneration"
+        subtitle="Device geometry is required first.">
         <InfoCard
           title="Missing device calibration"
           body="Return to device calibration and save a valid phone geometry before generating the template."
@@ -89,11 +93,16 @@ export const TemplateGenerationScreen = () => {
             accessibilityRole="button"
             key={size}
             onPress={() => setPageSize(size)}
-            style={[styles.choice, pageSize === size ? styles.choiceSelected : styles.choicePlain]}>
+            style={[
+              styles.choice,
+              pageSize === size ? styles.choiceSelected : styles.choicePlain,
+            ]}>
             <Text
               style={[
                 styles.choiceText,
-                pageSize === size ? styles.choiceTextSelected : styles.choiceTextPlain,
+                pageSize === size
+                  ? styles.choiceTextSelected
+                  : styles.choiceTextPlain,
               ]}>
               {size}
             </Text>
@@ -103,10 +112,15 @@ export const TemplateGenerationScreen = () => {
       {templateDocument ? (
         <View style={styles.previewCard}>
           <Text style={styles.previewTitle}>Template preview</Text>
-          <Text style={styles.previewLine}>Model: {templateDocument.metadata.generatedForModel}</Text>
-          <Text style={styles.previewLine}>Pages: {templateDocument.pages.length}</Text>
           <Text style={styles.previewLine}>
-            Phone body: {formatMillimeters(templateDocument.metadata.phoneBodyWidthMm)} ×{' '}
+            Model: {templateDocument.metadata.generatedForModel}
+          </Text>
+          <Text style={styles.previewLine}>
+            Pages: {templateDocument.pages.length}
+          </Text>
+          <Text style={styles.previewLine}>
+            Phone body:{' '}
+            {formatMillimeters(templateDocument.metadata.phoneBodyWidthMm)} ×{' '}
             {formatMillimeters(templateDocument.metadata.phoneBodyHeightMm)}
           </Text>
           <Text style={styles.previewLine}>
@@ -137,7 +151,9 @@ export const TemplateGenerationScreen = () => {
           ))}
         </View>
       ) : null}
-      {shareMessage ? <InfoCard title="Share stub" body={shareMessage} tone="success" /> : null}
+      {shareMessage ? (
+        <InfoCard title="Share stub" body={shareMessage} tone="success" />
+      ) : null}
       <PrimaryButton
         label="Preview native share stub"
         disabled={!templateDocument}

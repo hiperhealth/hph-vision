@@ -4,7 +4,10 @@ import {
   scoreRefractionSession,
 } from '../refraction';
 
-const baseSession = createRefractionSession({id: 'fixture-refraction-right', eye: 'right'});
+const baseSession = createRefractionSession({
+  id: 'fixture-refraction-right',
+  eye: 'right',
+});
 
 export const fixtureRefractionSession = baseSession.trials.reduce(
   (session, trial) =>
@@ -17,4 +20,6 @@ export const fixtureRefractionSession = baseSession.trials.reduce(
   baseSession,
 );
 
-export const fixtureRefractionResult = scoreRefractionSession(fixtureRefractionSession);
+export const fixtureRefractionResult = scoreRefractionSession(
+  fixtureRefractionSession,
+);

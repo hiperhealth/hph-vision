@@ -5,5 +5,6 @@ export type SensorReadiness = {
 
 export const getSensorReadiness = (): SensorReadiness => ({
   available: false,
-  message: 'Tilt and ambient-light checks are represented as manual checklist items for now.',
+  message:
+    'Tilt and ambient-light checks are represented as manual checklist items for now.',
 });

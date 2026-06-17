@@ -1,12 +1,23 @@
 import type {PhoneGeometry} from '../device-profile';
-import {combineValidationResults, invalid, valid, type ValidationResult} from '../validation';
+import {
+  combineValidationResults,
+  invalid,
+  valid,
+  type ValidationResult,
+} from '../validation';
 import {createTemplatePage} from './layout';
-import type {AssemblyInstruction, TemplateDocument, TemplateOptions} from './types';
+import type {
+  AssemblyInstruction,
+  TemplateDocument,
+  TemplateOptions,
+} from './types';
 import {validatePhoneGeometry, validateTemplateOptions} from './validation';
 
 export const TEMPLATE_VERSION = 'template-v0.1';
 
-const createInstructions = (includeAssemblyInstructions: boolean): AssemblyInstruction[] => {
+const createInstructions = (
+  includeAssemblyInstructions: boolean,
+): AssemblyInstruction[] => {
   if (!includeAssemblyInstructions) {
     return [];
   }
@@ -22,7 +33,8 @@ const createInstructions = (includeAssemblyInstructions: boolean): AssemblyInstr
       id: 'measure-square',
       step: 2,
       textKey: 'template.instructions.measureSquare',
-      fallbackText: 'Measure the calibration square and confirm it is exactly 50 mm.',
+      fallbackText:
+        'Measure the calibration square and confirm it is exactly 50 mm.',
     },
     {
       id: 'cut-lines',
@@ -40,7 +52,8 @@ const createInstructions = (includeAssemblyInstructions: boolean): AssemblyInstr
       id: 'fit-phone',
       step: 5,
       textKey: 'template.instructions.fitPhone',
-      fallbackText: 'Insert the phone and confirm it fits snugly without tilting.',
+      fallbackText:
+        'Insert the phone and confirm it fits snugly without tilting.',
     },
   ];
 };
@@ -58,7 +71,9 @@ export const generateTemplateDocument = (
   }
 
   const page = createTemplatePage(phone, options);
-  const calibrationElement = page.elements.find(element => element.id === 'scale-check-square-50mm');
+  const calibrationElement = page.elements.find(
+    element => element.id === 'scale-check-square-50mm',
+  );
 
   return valid(
     {

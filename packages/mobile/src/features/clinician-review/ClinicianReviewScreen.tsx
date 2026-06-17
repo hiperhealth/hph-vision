@@ -35,10 +35,17 @@ export const ClinicianReviewScreen = () => {
       </View>
       <InfoCard
         title="Current report"
-        body={state.report ? `${state.report.id} is ready for export stubs.` : 'No report has been built yet.'}
+        body={
+          state.report
+            ? `${state.report.id} is ready for export stubs.`
+            : 'No report has been built yet.'
+        }
         tone={state.report ? 'success' : 'warning'}
       />
-      <PrimaryButton label="Back to report" onPress={() => actions.navigate('reporting')} />
+      <PrimaryButton
+        label="Back to report"
+        onPress={() => actions.navigate('reporting')}
+      />
       <PrimaryButton
         label="Start a new session"
         variant="danger"

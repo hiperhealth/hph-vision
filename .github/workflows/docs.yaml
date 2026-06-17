@@ -5,21 +5,21 @@ on:
   push:
     branches: [main]
     paths:
-      - "docs/**"
-      - "packages/api-core/src/**"
-      - "packages/restapi/src/**"
-      - "scripts/gen_api_docs.py"
+      - 'docs/**'
+      - 'packages/api-core/src/**'
+      - 'packages/restapi/src/**'
+      - 'scripts/gen_api_docs.py'
   pull_request:
     branches: [main]
     paths:
-      - "docs/**"
-      - "packages/api-core/src/**"
-      - "packages/restapi/src/**"
-      - "scripts/gen_api_docs.py"
+      - 'docs/**'
+      - 'packages/api-core/src/**'
+      - 'packages/restapi/src/**'
+      - 'scripts/gen_api_docs.py'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  VIRTUALENV_ACTIVATORS: "bash,python"
+  VIRTUALENV_ACTIVATORS: 'bash,python'
 
 jobs:
   docs:
@@ -41,7 +41,7 @@ jobs:
           activate-environment: hph-vision
           auto-update-conda: true
           conda-solver: libmamba
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install deps
         run: |

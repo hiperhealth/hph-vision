@@ -10,7 +10,8 @@ export const createScreeningReport = (
   options?: {id?: string; createdAt?: string},
 ): ScreeningReport => {
   const fallbackReliability = calculateReliability({
-    completionRate: session.acuityResults.length > 0 || session.refractionResult ? 1 : 0,
+    completionRate:
+      session.acuityResults.length > 0 || session.refractionResult ? 1 : 0,
   });
   const reliability = session.reliability ?? fallbackReliability;
   const warnings = dedupeWarnings([
@@ -22,7 +23,8 @@ export const createScreeningReport = (
     hasRedFlags: (session.triageResult?.redFlags.length ?? 0) > 0,
     reliabilityScore: reliability.score,
     refractionConfidence: session.refractionResult?.confidence,
-    completed: session.acuityResults.length > 0 || Boolean(session.refractionResult),
+    completed:
+      session.acuityResults.length > 0 || Boolean(session.refractionResult),
   });
 
   return {

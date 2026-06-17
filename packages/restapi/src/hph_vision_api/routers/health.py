@@ -1,11 +1,8 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
-from hph_vision_core import (
-    get_core_version,
-    get_health_status,
-    get_supported_protocol_versions,
-)
 
 from hph_vision_api.config import Settings
 from hph_vision_api.dependencies import get_settings
@@ -15,6 +12,11 @@ from hph_vision_api.schemas.health import (
     VersionResponse,
 )
 from hph_vision_api.version import API_VERSION, SERVICE_NAME
+from hph_vision_core import (
+    get_core_version,
+    get_health_status,
+    get_supported_protocol_versions,
+)
 
 router = APIRouter(tags=["health"])
 versioned_router = APIRouter(prefix="/api/v1", tags=["version"])
@@ -26,7 +28,9 @@ def health_check() -> dict[str, str]:
 
 
 @router.get("/ready", response_model=ReadinessResponse)
-def readiness_check(settings: Settings = Depends(get_settings)) -> ReadinessResponse:
+def readiness_check(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> ReadinessResponse:
     dependencies = {
         "database": "disabled" if settings.database_url is None else "configured",
         "object_storage": (
@@ -42,7 +46,9 @@ def readiness_check(settings: Settings = Depends(get_settings)) -> ReadinessResp
 
 
 @versioned_router.get("/version", response_model=VersionResponse)
-def version_info(settings: Settings = Depends(get_settings)) -> VersionResponse:
+def version_info(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> VersionResponse:
     return VersionResponse(
         service=SERVICE_NAME,
         api_version=settings.api_version or API_VERSION,

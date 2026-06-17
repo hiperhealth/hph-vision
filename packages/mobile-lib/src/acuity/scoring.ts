@@ -12,16 +12,25 @@ export const scoreAcuitySession = (session: AcuitySession): AcuityResult => {
     session.responses.map(response => [response.trialId, response]),
   );
   const testTrials = session.trials.filter(trial => !trial.isPractice);
-  const answeredTestTrials = testTrials.filter(trial => responseByTrial.has(trial.id));
+  const answeredTestTrials = testTrials.filter(trial =>
+    responseByTrial.has(trial.id),
+  );
   const correctTrials = answeredTestTrials.filter(trial => {
     const response = responseByTrial.get(trial.id);
-    return response ? isCorrectOptotypeAnswer(trial.orientation, response.answer) : false;
+    return response
+      ? isCorrectOptotypeAnswer(trial.orientation, response.answer)
+      : false;
   });
   const lowVoiceConfidenceCount = session.responses.filter(
-    response => response.inputMethod === 'voice' && (response.confidence ?? 1) < 0.65,
+    response =>
+      response.inputMethod === 'voice' && (response.confidence ?? 1) < 0.65,
   ).length;
-  const completionRate = testTrials.length > 0 ? answeredTestTrials.length / testTrials.length : 0;
-  const correctRate = answeredTestTrials.length > 0 ? correctTrials.length / answeredTestTrials.length : 0;
+  const completionRate =
+    testTrials.length > 0 ? answeredTestTrials.length / testTrials.length : 0;
+  const correctRate =
+    answeredTestTrials.length > 0
+      ? correctTrials.length / answeredTestTrials.length
+      : 0;
   const confidence = clamp(completionRate * (0.4 + correctRate * 0.6), 0, 1);
   const logMarEstimate =
     correctTrials.length > 0
@@ -38,7 +47,9 @@ export const scoreAcuitySession = (session: AcuitySession): AcuityResult => {
     eye: session.eye,
     logMarEstimate,
     snellenEquivalent:
-      typeof logMarEstimate === 'number' ? toSnellenEquivalent(logMarEstimate) : undefined,
+      typeof logMarEstimate === 'number'
+        ? toSnellenEquivalent(logMarEstimate)
+        : undefined,
     completed: session.completed,
     confidence,
     reliabilityWarnings,

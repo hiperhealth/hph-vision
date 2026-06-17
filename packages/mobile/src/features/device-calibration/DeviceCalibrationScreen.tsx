@@ -16,30 +16,38 @@ import {colors, radii, spacing, typography} from '../../theme';
 import {formatMillimeters} from '../../utils/format';
 
 const deviceProfiles = getDeviceProfiles();
-const defaultProfile: DeviceProfile = deviceProfiles[1] ?? deviceProfiles[0] ?? {
-  id: 'manual-fallback-phone',
-  manufacturer: 'Manual',
-  modelName: 'Manual phone',
-  bodyWidthMm: 72,
-  bodyHeightMm: 153,
-  thicknessMm: 8.5,
-  screenWidthPx: 1170,
-  screenHeightPx: 2532,
-  pixelDensity: 3,
-  screenWidthMm: 68,
-  screenHeightMm: 145,
-  templateFamily: 'generic-slab',
-};
+const defaultProfile: DeviceProfile = deviceProfiles[1] ??
+  deviceProfiles[0] ?? {
+    id: 'manual-fallback-phone',
+    manufacturer: 'Manual',
+    modelName: 'Manual phone',
+    bodyWidthMm: 72,
+    bodyHeightMm: 153,
+    thicknessMm: 8.5,
+    screenWidthPx: 1170,
+    screenHeightPx: 2532,
+    pixelDensity: 3,
+    screenWidthMm: 68,
+    screenHeightMm: 145,
+    templateFamily: 'generic-slab',
+  };
 
-const parseDimension = (value: string): number => Number.parseFloat(value.replace(',', '.'));
+const parseDimension = (value: string): number =>
+  Number.parseFloat(value.replace(',', '.'));
 
 export const DeviceCalibrationScreen = () => {
   const {state, actions} = useHphVisionApp();
   const initialProfile = state.deviceProfile ?? defaultProfile;
   const [modelName, setModelName] = useState(initialProfile.modelName);
-  const [bodyWidthMm, setBodyWidthMm] = useState(String(initialProfile.bodyWidthMm));
-  const [bodyHeightMm, setBodyHeightMm] = useState(String(initialProfile.bodyHeightMm));
-  const [thicknessMm, setThicknessMm] = useState(String(initialProfile.thicknessMm));
+  const [bodyWidthMm, setBodyWidthMm] = useState(
+    String(initialProfile.bodyWidthMm),
+  );
+  const [bodyHeightMm, setBodyHeightMm] = useState(
+    String(initialProfile.bodyHeightMm),
+  );
+  const [thicknessMm, setThicknessMm] = useState(
+    String(initialProfile.thicknessMm),
+  );
   const detectionInput = useMemo(() => getDeviceDetectionInput(), []);
 
   const profile = useMemo<DeviceProfile>(
@@ -72,7 +80,11 @@ export const DeviceCalibrationScreen = () => {
       subtitle="Use a known generic profile or manually enter the phone body dimensions in millimeters.">
       <InfoCard
         title="Detected screen signal"
-        body={`OS: ${detectionInput.os ?? 'unknown'}, screen: ${detectionInput.screenWidthPx ?? 'n/a'} × ${detectionInput.screenHeightPx ?? 'n/a'} px, density: ${detectionInput.pixelDensity ?? 'n/a'}. Model matching will be added after device-info integration is selected.`}
+        body={`OS: ${detectionInput.os ?? 'unknown'}, screen: ${
+          detectionInput.screenWidthPx ?? 'n/a'
+        } × ${detectionInput.screenHeightPx ?? 'n/a'} px, density: ${
+          detectionInput.pixelDensity ?? 'n/a'
+        }. Model matching will be added after device-info integration is selected.`}
       />
       <FieldLabel>Phone model label</FieldLabel>
       <TextInput
@@ -111,9 +123,15 @@ export const DeviceCalibrationScreen = () => {
       />
       <View style={styles.previewCard}>
         <Text style={styles.previewTitle}>Geometry preview</Text>
-        <Text style={styles.previewLine}>Width: {formatMillimeters(profile.bodyWidthMm)}</Text>
-        <Text style={styles.previewLine}>Height: {formatMillimeters(profile.bodyHeightMm)}</Text>
-        <Text style={styles.previewLine}>Thickness: {formatMillimeters(profile.thicknessMm)}</Text>
+        <Text style={styles.previewLine}>
+          Width: {formatMillimeters(profile.bodyWidthMm)}
+        </Text>
+        <Text style={styles.previewLine}>
+          Height: {formatMillimeters(profile.bodyHeightMm)}
+        </Text>
+        <Text style={styles.previewLine}>
+          Thickness: {formatMillimeters(profile.thicknessMm)}
+        </Text>
       </View>
       {!validation.ok ? (
         <InfoCard

@@ -11,21 +11,32 @@ type InfoCardProps = {
   children?: React.ReactNode;
 };
 
-const toneStyles: Record<InfoCardTone, {backgroundColor: string; borderColor: string}> = {
+const toneStyles: Record<
+  InfoCardTone,
+  {backgroundColor: string; borderColor: string}
+> = {
   default: {backgroundColor: colors.surface, borderColor: colors.border},
   success: {backgroundColor: colors.successSoft, borderColor: colors.success},
   warning: {backgroundColor: colors.warningSoft, borderColor: colors.warning},
   danger: {backgroundColor: colors.dangerSoft, borderColor: colors.danger},
 };
 
-export const InfoCard = ({title, body, tone = 'default', children}: InfoCardProps) => {
+export const InfoCard = ({
+  title,
+  body,
+  tone = 'default',
+  children,
+}: InfoCardProps) => {
   const palette = toneStyles[tone];
 
   return (
     <View
       style={[
         styles.card,
-        {backgroundColor: palette.backgroundColor, borderColor: palette.borderColor},
+        {
+          backgroundColor: palette.backgroundColor,
+          borderColor: palette.borderColor,
+        },
       ]}>
       {title ? <Text style={styles.title}>{title}</Text> : null}
       <Text style={styles.body}>{body}</Text>

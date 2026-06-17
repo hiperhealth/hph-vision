@@ -15,31 +15,44 @@ groups:
           find . -name '*~' -exec rm -f {} +
           rm -f .coverage
 
+  setup:
+    tasks:
+      js-deps:
+        help: install JavaScript workspace dependencies when needed
+        run: bash scripts/setup-js-deps.sh
+
   all:
     tasks:
       lint:
         help: run all configured lint and pre-commit checks
+        hooks: &js_deps_hook
+          pre-run:
+            - task: setup.js-deps
         run: |
           pre-commit install
           pre-commit run --all-files
 
       test:
         help: run all Python and JavaScript tests
+        hooks: *js_deps_hook
         run: |
           yarn test
 
       typecheck:
         help: run all TypeScript type checks and Python mypy checks
+        hooks: *js_deps_hook
         run: |
           yarn typecheck
           poetry run mypy packages/api-core/src packages/restapi/src
 
       build:
         help: build all releasable packages
+        hooks: *js_deps_hook
         run: ./scripts/build.sh
 
       ci:
         help: run CI checks locally
+        hooks: *js_deps_hook
         run: |
           makim all.lint
           makim all.test
@@ -50,18 +63,22 @@ groups:
     tasks:
       lint:
         help: lint the React Native app package
+        hooks: *js_deps_hook
         run: yarn mobile:lint
 
       test:
         help: test the React Native app package
+        hooks: *js_deps_hook
         run: yarn mobile:test
 
       typecheck:
         help: typecheck the React Native app package
+        hooks: *js_deps_hook
         run: yarn mobile:typecheck
 
       ci:
         help: run mobile app CI checks
+        hooks: *js_deps_hook
         run: |
           makim mobile.lint
           makim mobile.test
@@ -71,18 +88,22 @@ groups:
     tasks:
       lint:
         help: lint @hiperhealth/hphvision-lib
+        hooks: *js_deps_hook
         run: yarn mobile-lib:lint
 
       test:
         help: test @hiperhealth/hphvision-lib
+        hooks: *js_deps_hook
         run: yarn mobile-lib:test
 
       typecheck:
         help: typecheck @hiperhealth/hphvision-lib
+        hooks: *js_deps_hook
         run: yarn mobile-lib:typecheck
 
       pack:
         help: create an npm package tarball for @hiperhealth/hphvision-lib
+        hooks: *js_deps_hook
         run: |
           rm -rf packages/mobile-lib/dist
           mkdir -p packages/mobile-lib/dist
@@ -90,6 +111,7 @@ groups:
 
       ci:
         help: run mobile library CI checks
+        hooks: *js_deps_hook
         run: |
           makim mobile-lib.lint
           makim mobile-lib.test
@@ -173,11 +195,11 @@ groups:
     tasks:
       lint:
         help: lint all Python API packages
-        run: yarn api:lint
+        run: poetry run ruff check packages/api-core packages/restapi
 
       test:
         help: test all Python API packages
-        run: yarn api:test
+        run: poetry run pytest packages/api-core/tests packages/restapi/tests
 
       typecheck:
         help: typecheck all Python API packages
