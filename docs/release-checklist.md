@@ -3,6 +3,7 @@
 This document details the checks required before tagging and publishing the first MVP release of `hphvision` (`@hiperhealth/hphvision-lib` and `@hiperhealth/hphvision-mobile`).
 
 ## 1. Repository & CI Checks
+
 - [ ] Run typechecks and ensure clean compilation:
   ```bash
   yarn typecheck
@@ -22,6 +23,7 @@ This document details the checks required before tagging and publishing the firs
 - [ ] Verify that the conda development environment definition `conda/dev.yaml` matches current dependencies.
 
 ## 2. Package Build Checks
+
 - [ ] Build the shared clinical library package:
   ```bash
   yarn workspace @hiperhealth/hphvision-lib build
@@ -30,12 +32,14 @@ This document details the checks required before tagging and publishing the firs
 - [ ] Verify package dependencies are correctly defined in `packages/mobile/package.json` pointing to the newly built library.
 
 ## 3. Safety-Critical Flow Checks
+
 - [ ] **Disclaimer Consent:** Verify the app does not allow proceeding past `DisclaimerScreen` without accepting consent (`consentAccepted: true`).
 - [ ] **Triage Red Flags:** Verify that answering "Yes" to any safety red flag in `TriageScreen` correctly halts progression and shows the safety blocking layout instead of navigating to calibration or testing.
 - [ ] **Accessibility (Acuity Screen):** Verify that the tumbling E optotype uses the dynamic screen-reader labels:
   - Accessibility label is active and reads the orientation direction (e.g., "Tumbling E pointing left").
 
 ## 4. Mobile App Smoke Tests
+
 - [ ] **Launch Test:** Boot Metro and run the Android emulator:
   ```bash
   yarn mobile:start
@@ -46,6 +50,7 @@ This document details the checks required before tagging and publishing the firs
 - [ ] **Calibration Check:** Verify physical calibration cards scale correctly according to manual millimeter offsets.
 
 ## 5. Document & PDF Verification Checks
+
 - [ ] **Template PDF Verification:** Generate a cardboard visor template PDF and verify:
   - The document builds without errors.
   - The PDF outputs physical dimensions matching the calibrated device profile.
@@ -57,11 +62,13 @@ This document details the checks required before tagging and publishing the firs
   - The safety triage responses are highlighted.
 
 ## 6. Known MVP Limitations (Verification)
+
 - [ ] Verify prototype warnings are clearly visible on:
   - `AcuityTestScreen` (acknowledging it only tests the right eye for now).
   - `RefractionTestScreen` (acknowledging it uses touch fallback inputs and does not support voice triggers).
 
 ## 7. Release & Publishing Steps
+
 1. Bump package version in the root `package.json` and package subdirectories.
 2. Publish the shared library package first:
    ```bash
@@ -75,6 +82,8 @@ This document details the checks required before tagging and publishing the firs
    ```
 
 ## 8. Rollback Plan
+
 In case of failure post-release:
+
 - Revert the tag locally and on GitHub.
 - Publish a patch version containing the hotfix or revert.
