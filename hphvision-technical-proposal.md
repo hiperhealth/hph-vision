@@ -2,10 +2,10 @@
 
 ## Smartphone-Based Vision Screening and Prescription Estimation Platform
 
-**Project name:** `hphvision`  
-**Meaning:** `hph` stands for **hiperhealth**  
-**Primary platform:** React Native  
-**Architecture:** TypeScript monorepo  
+**Project name:** `hphvision`
+**Meaning:** `hph` stands for **hiperhealth**
+**Primary platform:** React Native
+**Architecture:** TypeScript monorepo
 **Published npm packages:**
 
 ```text

@@ -22,10 +22,10 @@ export const calculateReliability = (
     score >= 0.8
       ? 'high'
       : score >= 0.6
-        ? 'medium'
-        : score >= 0.35
-          ? 'low'
-          : 'invalid';
+      ? 'medium'
+      : score >= 0.35
+      ? 'low'
+      : 'invalid';
 
   return {
     score,

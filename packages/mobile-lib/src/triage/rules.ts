@@ -25,8 +25,8 @@ export const evaluateTriage = (answers: TriageAnswer[]): TriageResult => {
   const recommendation = canContinueSelfTest
     ? 'continue'
     : urgentQuestions.length > 0
-      ? 'urgentCare'
-      : 'seekProfessionalCare';
+    ? 'urgentCare'
+    : 'seekProfessionalCare';
 
   return {
     canContinueSelfTest,
