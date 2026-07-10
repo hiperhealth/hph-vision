@@ -1,9 +1,8 @@
 import {clamp} from '../validation';
 import type {ReliabilitySignals} from './types';
 
-const bounded = (value: number | undefined, fallback = 1): number =>
+const bounded = (value: number | undefined, fallback = 0): number =>
   clamp(value ?? fallback, 0, 1);
-
 export const normalizeReliabilitySignals = (
   signals: ReliabilitySignals,
 ): Required<Omit<ReliabilitySignals, 'medianResponseTimeMs'>> & {medianResponseTimeMs: number} => ({
