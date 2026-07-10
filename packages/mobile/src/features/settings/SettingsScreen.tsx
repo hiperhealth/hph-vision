@@ -34,13 +34,21 @@ const readinessItems: ReadinessItem[] = [
     available: cameraReadiness.available,
     message: cameraReadiness.message,
   },
-  {label: 'Sensors', available: sensorReadiness.available, message: sensorReadiness.message},
+  {
+    label: 'Sensors',
+    available: sensorReadiness.available,
+    message: sensorReadiness.message,
+  },
   {
     label: 'Speech recognition',
     available: speechReadiness.available,
     message: speechReadiness.message,
   },
-  {label: 'Text-to-speech', available: ttsReadiness.available, message: ttsReadiness.message},
+  {
+    label: 'Text-to-speech',
+    available: ttsReadiness.available,
+    message: ttsReadiness.message,
+  },
 ];
 
 export const SettingsScreen = () => {
@@ -50,7 +58,9 @@ export const SettingsScreen = () => {
     : 'disclaimer';
 
   return (
-    <Screen route="settings" subtitle="Expose app-shell settings and native integration readiness.">
+    <Screen
+      route="settings"
+      subtitle="Expose app-shell settings and native integration readiness.">
       <InfoCard
         title="Initial build"
         body="Native capability choices are intentionally deferred. The app shell can launch and run the minimal flow without requesting permissions."
@@ -58,21 +68,33 @@ export const SettingsScreen = () => {
       <View style={styles.card}>
         <Text style={styles.title}>Session</Text>
         <Text style={styles.line}>ID: {state.sessionId}</Text>
-        <Text style={styles.line}>Consent accepted: {state.consentAccepted ? 'yes' : 'no'}</Text>
+        <Text style={styles.line}>
+          Consent accepted: {state.consentAccepted ? 'yes' : 'no'}
+        </Text>
         <Text style={styles.line}>Current route: {state.route}</Text>
       </View>
       {readinessItems.map(item => (
         <View key={item.label} style={styles.card}>
           <Text style={styles.title}>{item.label}</Text>
-          <Text style={styles.line}>Available: {item.available ? 'yes' : 'no'}</Text>
+          <Text style={styles.line}>
+            Available: {item.available ? 'yes' : 'no'}
+          </Text>
           <Text style={styles.line}>{item.message}</Text>
         </View>
       ))}
       <PrimaryButton
-        label={state.consentAccepted ? 'Return to current flow' : 'Return to disclaimer'}
+        label={
+          state.consentAccepted
+            ? 'Return to current flow'
+            : 'Return to disclaimer'
+        }
         onPress={() => actions.navigate(returnRoute)}
       />
-      <PrimaryButton label="Reset session" variant="danger" onPress={actions.resetSession} />
+      <PrimaryButton
+        label="Reset session"
+        variant="danger"
+        onPress={actions.resetSession}
+      />
     </Screen>
   );
 };

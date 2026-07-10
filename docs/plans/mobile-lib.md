@@ -482,8 +482,12 @@ type DeviceProfileMatch = {
 ### 8.4 Public Functions
 
 ```ts
-export function validateDeviceProfile(profile: DeviceProfile): ValidationResult<DeviceProfile>;
-export function matchDeviceProfile(input: DeviceDetectionInput): DeviceProfileMatch;
+export function validateDeviceProfile(
+  profile: DeviceProfile,
+): ValidationResult<DeviceProfile>;
+export function matchDeviceProfile(
+  input: DeviceDetectionInput,
+): DeviceProfileMatch;
 export function toPhoneGeometry(profile: DeviceProfile): PhoneGeometry;
 ```
 
@@ -705,8 +709,12 @@ The module should support:
 ### 10.6 Public Functions
 
 ```ts
-export function createAcuitySession(options: AcuitySessionOptions): AcuitySession;
-export function nextAcuityTrial(session: AcuitySession): AcuityTrial | undefined;
+export function createAcuitySession(
+  options: AcuitySessionOptions,
+): AcuitySession;
+export function nextAcuityTrial(
+  session: AcuitySession,
+): AcuityTrial | undefined;
 export function recordAcuityResponse(
   session: AcuitySession,
   response: AcuityResponse,
@@ -975,9 +983,7 @@ This result is a screening and estimation output. It is not a complete eye healt
 ### 14.4 Public Functions
 
 ```ts
-export function createScreeningReport(
-  session: TestSession,
-): ScreeningReport;
+export function createScreeningReport(session: TestSession): ScreeningReport;
 
 export function determineRecommendation(
   input: RecommendationInput,
@@ -1009,7 +1015,11 @@ type SessionEvent =
   | {type: 'DEVICE_PROFILE_SELECTED'; at: string; profile: DeviceProfile}
   | {type: 'TEMPLATE_GENERATED'; at: string; metadata: TemplateMetadata}
   | {type: 'ACUITY_RESPONSE_RECORDED'; at: string; response: AcuityResponse}
-  | {type: 'REFRACTION_RESPONSE_RECORDED'; at: string; response: RefractionResponse}
+  | {
+      type: 'REFRACTION_RESPONSE_RECORDED';
+      at: string;
+      response: RefractionResponse;
+    }
   | {type: 'REPORT_CREATED'; at: string; reportId: string};
 ```
 
@@ -1300,16 +1310,16 @@ At minimum, `packages/mobile-lib/README.md` should explain:
 
 ## 19. Risks and Mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Library becomes app-specific | Keep native/app integrations out; enforce dependency rules |
-| Algorithms change without traceability | Version protocols and scoring functions |
-| Geometry errors produce bad templates | Unit tests, dimension snapshots, calibration square, validation rules |
-| Duplicate React Native dependency | Keep React and React Native as peer dependencies |
-| Clinical output overclaims accuracy | Recommendation rules and disclaimers built into report model |
-| Randomized protocols are hard to reproduce | Seeded randomization and stored trial data |
-| Incomplete sessions crash scoring | Explicit incomplete states and validation results |
-| App imports deep internals | Export stable public API from `src/index.ts` |
+| Risk                                       | Mitigation                                                            |
+| ------------------------------------------ | --------------------------------------------------------------------- |
+| Library becomes app-specific               | Keep native/app integrations out; enforce dependency rules            |
+| Algorithms change without traceability     | Version protocols and scoring functions                               |
+| Geometry errors produce bad templates      | Unit tests, dimension snapshots, calibration square, validation rules |
+| Duplicate React Native dependency          | Keep React and React Native as peer dependencies                      |
+| Clinical output overclaims accuracy        | Recommendation rules and disclaimers built into report model          |
+| Randomized protocols are hard to reproduce | Seeded randomization and stored trial data                            |
+| Incomplete sessions crash scoring          | Explicit incomplete states and validation results                     |
+| App imports deep internals                 | Export stable public API from `src/index.ts`                          |
 
 ---
 

@@ -1,9 +1,4 @@
-import {
-  invalid,
-  valid,
-  validationIssue,
-  type ValidationResult,
-} from './result';
+import {invalid, valid, validationIssue, type ValidationResult} from './result';
 
 export const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
@@ -14,13 +9,21 @@ export const validatePositiveNumber = (
 ): ValidationResult<number> => {
   if (!isFiniteNumber(value)) {
     return invalid([
-      validationIssue('not_a_number', `${field} must be a finite number.`, field),
+      validationIssue(
+        'not_a_number',
+        `${field} must be a finite number.`,
+        field,
+      ),
     ]);
   }
 
   if (value <= 0) {
     return invalid([
-      validationIssue('not_positive', `${field} must be greater than zero.`, field),
+      validationIssue(
+        'not_positive',
+        `${field} must be greater than zero.`,
+        field,
+      ),
     ]);
   }
 

@@ -5,7 +5,9 @@ const bounded = (value: number | undefined, fallback = 0): number =>
   clamp(value ?? fallback, 0, 1);
 export const normalizeReliabilitySignals = (
   signals: ReliabilitySignals,
-): Required<Omit<ReliabilitySignals, 'medianResponseTimeMs'>> & {medianResponseTimeMs: number} => ({
+): Required<Omit<ReliabilitySignals, 'medianResponseTimeMs'>> & {
+  medianResponseTimeMs: number;
+} => ({
   repeatedAnswerConsistency: bounded(signals.repeatedAnswerConsistency),
   medianResponseTimeMs: signals.medianResponseTimeMs ?? 0,
   voiceConfidence: bounded(signals.voiceConfidence),

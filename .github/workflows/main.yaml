@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  VIRTUALENV_ACTIVATORS: "bash,python"
+  VIRTUALENV_ACTIVATORS: 'bash,python'
 
 jobs:
   check-branch:
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ["3.11", "3.12", "3.13", "3.14"]
+        python_version: ['3.11', '3.12', '3.13', '3.14']
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     concurrency:
@@ -91,7 +91,7 @@ jobs:
           activate-environment: hph-vision
           auto-update-conda: true
           conda-solver: libmamba
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install Node dependencies
         run: yarn install --immutable
@@ -128,7 +128,7 @@ jobs:
           activate-environment: hph-vision
           auto-update-conda: true
           conda-solver: libmamba
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |

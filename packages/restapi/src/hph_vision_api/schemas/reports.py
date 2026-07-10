@@ -58,8 +58,7 @@ class ReportResponse(ApiModel):
                 score=report.reliability.score,
                 level=report.reliability.level,
                 warnings=[
-                    warning_core_to_schema(item)
-                    for item in report.reliability.warnings
+                    warning_core_to_schema(item) for item in report.reliability.warnings
                 ],
             ),
             warnings=[warning_core_to_schema(item) for item in report.warnings],

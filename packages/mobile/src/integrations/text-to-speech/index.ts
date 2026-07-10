@@ -5,5 +5,6 @@ export type TextToSpeechReadiness = {
 
 export const getTextToSpeechReadiness = (): TextToSpeechReadiness => ({
   available: false,
-  message: 'Text-to-speech prompts are planned for the accessibility milestone.',
+  message:
+    'Text-to-speech prompts are planned for the accessibility milestone.',
 });

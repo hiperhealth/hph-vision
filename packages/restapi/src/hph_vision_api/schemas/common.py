@@ -56,8 +56,10 @@ class MessageResponse(ApiModel):
 def model_to_json_dict(model: BaseModel) -> dict[str, Any]:
     dump = getattr(model, "model_dump", None)
     if callable(dump):
-        return dump(by_alias=True)
-    return model.dict(by_alias=True)
+        result: dict[str, Any] = dump(by_alias=True)
+        return result
+    result_dict: dict[str, Any] = model.dict(by_alias=True)
+    return result_dict
 
 
 def datetime_to_iso(value: datetime) -> str:

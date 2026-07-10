@@ -90,7 +90,9 @@ export const AcuityTestScreen = () => {
 
   if (!currentTrial) {
     return (
-      <Screen route="acuityTest" subtitle="All acuity trials have touch responses.">
+      <Screen
+        route="acuityTest"
+        subtitle="All acuity trials have touch responses.">
         <InfoCard
           title="Acuity sequence complete"
           body={`${answeredCount} of ${totalCount} trials captured. Score the shared-library session to continue.`}
@@ -99,10 +101,15 @@ export const AcuityTestScreen = () => {
         {state.acuityResult ? (
           <InfoCard
             title="Acuity result"
-            body={`Estimate: ${state.acuityResult.snellenEquivalent ?? 'n/a'}, confidence ${formatPercent(state.acuityResult.confidence)}.`}
+            body={`Estimate: ${
+              state.acuityResult.snellenEquivalent ?? 'n/a'
+            }, confidence ${formatPercent(state.acuityResult.confidence)}.`}
           />
         ) : null}
-        <PrimaryButton label="Score acuity and continue" onPress={scoreAndContinue} />
+        <PrimaryButton
+          label="Score acuity and continue"
+          onPress={scoreAndContinue}
+        />
       </Screen>
     );
   }
@@ -113,14 +120,20 @@ export const AcuityTestScreen = () => {
       subtitle="Ask which direction the E points. Responses are recorded through hphvision-lib.">
       <InfoCard
         title={currentTrial.isPractice ? 'Practice trial' : 'Test trial'}
-        body={`Trial ${answeredCount + 1} of ${totalCount}. Size logMAR ${currentTrial.sizeLogMar.toFixed(1)}.`}
+        body={`Trial ${
+          answeredCount + 1
+        } of ${totalCount}. Size logMAR ${currentTrial.sizeLogMar.toFixed(1)}.`}
       />
       <View style={styles.optotypeStage}>
         <Text
           accessibilityLabel={`Tumbling E pointing ${currentTrial.orientation}`}
           style={[
             styles.optotype,
-            {transform: [{rotate: rotationByOrientation[currentTrial.orientation]}]},
+            {
+              transform: [
+                {rotate: rotationByOrientation[currentTrial.orientation]},
+              ],
+            },
           ]}>
           E
         </Text>

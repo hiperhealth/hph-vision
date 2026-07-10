@@ -14,7 +14,6 @@ from hph_vision_core.validation.protocols import validate_protocol_versions
 from hph_vision_core.validation.result import (
     ValidationResult,
     combine_validation_results,
-    valid,
     validation_error,
     validation_warning,
 )

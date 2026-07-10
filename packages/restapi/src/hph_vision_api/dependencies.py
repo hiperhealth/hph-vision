@@ -10,15 +10,18 @@ from hph_vision_api.errors import ApiError
 
 
 def get_settings(request: Request) -> Settings:
-    return request.app.state.settings
+    settings: Settings = request.app.state.settings
+    return settings
 
 
 def get_repository(request: Request) -> InMemoryRepository:
-    return request.app.state.repository
+    repository: InMemoryRepository = request.app.state.repository
+    return repository
 
 
 def get_object_storage(request: Request) -> FakeObjectStorageAdapter:
-    return request.app.state.object_storage
+    storage: FakeObjectStorageAdapter = request.app.state.object_storage
+    return storage
 
 
 def get_current_actor(request: Request) -> Actor:

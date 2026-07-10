@@ -7,10 +7,13 @@ export type PersistedSessionDraft = {
 
 let inMemoryDraft: PersistedSessionDraft | undefined;
 
-export const loadSessionDraft = async (): Promise<PersistedSessionDraft | undefined> =>
-  inMemoryDraft;
+export const loadSessionDraft = async (): Promise<
+  PersistedSessionDraft | undefined
+> => inMemoryDraft;
 
-export const saveSessionDraft = async (state: HphVisionAppState): Promise<void> => {
+export const saveSessionDraft = async (
+  state: HphVisionAppState,
+): Promise<void> => {
   inMemoryDraft = {
     savedAt: new Date().toISOString(),
     state,

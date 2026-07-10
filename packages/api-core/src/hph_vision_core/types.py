@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, fields, is_dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any, Literal, TypeAlias, cast
 
 WarningSeverity: TypeAlias = Literal["info", "warning", "critical"]
@@ -31,7 +31,7 @@ def serialize_value(value: Any) -> Any:
     if isinstance(value, datetime):
         normalized = value
         if normalized.tzinfo is None:
-            normalized = normalized.replace(tzinfo=timezone.utc)
+            normalized = normalized.replace(tzinfo=UTC)
         return normalized.isoformat()
 
     if is_dataclass(value) and not isinstance(value, type):

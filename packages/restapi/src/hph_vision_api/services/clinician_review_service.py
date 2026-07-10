@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 from fastapi import status
-from hph_vision_core.clinician_review import (
-    determine_clinician_review_eligibility,
-    validate_review_status_transition,
-)
 
 from hph_vision_api.adapters.notifications import NoopNotificationAdapter
 from hph_vision_api.adapters.persistence import (
@@ -13,6 +9,10 @@ from hph_vision_api.adapters.persistence import (
 )
 from hph_vision_api.errors import ApiError, validation_errors_to_details
 from hph_vision_api.schemas.common import ErrorDetail
+from hph_vision_core.clinician_review import (
+    determine_clinician_review_eligibility,
+    validate_review_status_transition,
+)
 
 
 class ClinicianReviewService:

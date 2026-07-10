@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from hph_vision_core.device_profiles.models import DeviceProfile
 from hph_vision_core.fixtures.device_profiles import make_valid_device_profile
@@ -23,7 +23,7 @@ from hph_vision_core.version import (
     SCREENING_CONSENT_TEXT_VERSION,
 )
 
-FIXED_CREATED_AT = datetime(2026, 5, 12, 0, 0, 0, tzinfo=timezone.utc)
+FIXED_CREATED_AT = datetime(2026, 5, 12, 0, 0, 0, tzinfo=UTC)
 
 
 def make_screening_consent() -> ConsentRecord:
@@ -68,8 +68,7 @@ def make_red_flag_triage_result(urgent: bool = False) -> TriageResult:
     warning = DomainWarning(
         code="triage.eye_pain",
         message=(
-            "A safety triage answer indicates professional evaluation is "
-            "recommended."
+            "A safety triage answer indicates professional evaluation is recommended."
         ),
         severity="critical" if urgent else "warning",
         source="triage",

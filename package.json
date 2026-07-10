@@ -19,6 +19,11 @@
     "mobile:dev": "turbo run dev --filter=hphvision-mobile",
     "mobile:lint": "turbo run lint --filter=hphvision-mobile"
   },
+  "devDependencies": {
+    "@react-native/eslint-config": "0.75.3",
+    "eslint": "^8.19.0",
+    "typescript": "5.0.4"
+  },
   "engines": {
     "node": ">=18"
   },

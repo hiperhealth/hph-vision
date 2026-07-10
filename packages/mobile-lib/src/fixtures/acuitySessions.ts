@@ -1,4 +1,8 @@
-import {createAcuitySession, recordAcuityResponse, scoreAcuitySession} from '../acuity';
+import {
+  createAcuitySession,
+  recordAcuityResponse,
+  scoreAcuitySession,
+} from '../acuity';
 
 const baseSession = createAcuitySession({
   id: 'fixture-acuity-right',
