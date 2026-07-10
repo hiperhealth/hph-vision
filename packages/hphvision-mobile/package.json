@@ -1,0 +1,13 @@
+{
+  "name": "@hiperhealth/hphvision-mobile",
+  "version": "0.1.0",
+  "dependencies": {
+    "@hiperhealth/hphvision-core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "echo lint-mobile",
+    "typecheck": "tsc --noEmit",
+    "test": "echo test-mobile"
+  }
+}
