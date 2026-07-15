@@ -71,22 +71,23 @@ groups:
     tasks:
       lint:
         help: lint @hiperhealth/hphvision-lib
-        run: yarn mobile-lib:lint
+        run: pnpm --filter @hiperhealth/hphvision-lib lint
 
       test:
         help: test @hiperhealth/hphvision-lib
-        run: yarn mobile-lib:test
+        run: pnpm --filter @hiperhealth/hphvision-lib test
 
       typecheck:
         help: typecheck @hiperhealth/hphvision-lib
-        run: yarn mobile-lib:typecheck
+        run: pnpm --filter @hiperhealth/hphvision-lib typecheck
 
       pack:
         help: create an npm package tarball for @hiperhealth/hphvision-lib
         run: |
           rm -rf packages/mobile-lib/dist
           mkdir -p packages/mobile-lib/dist
-          yarn workspace @hiperhealth/hphvision-lib npm pack --out dist/hphvision-lib.tgz
+          cd packages/mobile-lib
+          pnpm pack --pack-destination dist
 
       ci:
         help: run mobile library CI checks
@@ -173,11 +174,17 @@ groups:
     tasks:
       lint:
         help: lint all Python API packages
+
         run: poetry run ruff check packages/api-core packages/restapi
 
       test:
         help: test all Python API packages
         run: poetry run pytest packages/api-core/tests packages/restapi/tests
+
+        
+
+      test:
+        help: test all Python API packages
 
       typecheck:
         help: typecheck all Python API packages
