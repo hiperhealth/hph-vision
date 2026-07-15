@@ -16,8 +16,8 @@
     "api:lint": "poetry run ruff check packages/api-core packages/restapi",
     "api:format": "poetry run ruff format packages/api-core packages/restapi",
     "api:test": "poetry run pytest packages/api-core/tests packages/restapi/tests",
-    "mobile:dev": "turbo run dev --filter=hphvision-mobile",
-    "mobile:lint": "turbo run lint --filter=hphvision-mobile"
+    "mobile:dev": "turbo run dev --filter=hphvision",
+    "mobile:lint": "turbo run lint --filter=hphvision"
   },
   "devDependencies": {
     "@react-native/eslint-config": "0.75.3",

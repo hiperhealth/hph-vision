@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-          yarn install --immutable
+          pnpm install --frozen-lockfile
 
       - name: Run semantic release dry-run
         if: ${{ github.event_name != 'workflow_dispatch' }}

@@ -26,12 +26,12 @@ groups:
       test:
         help: run all Python and JavaScript tests
         run: |
-          yarn test
+           pnpm test
 
       typecheck:
         help: run all TypeScript type checks and Python mypy checks
         run: |
-          yarn typecheck
+          pnpm typecheck
           poetry run mypy packages/api-core/src packages/restapi/src
 
       build:
@@ -50,15 +50,15 @@ groups:
     tasks:
       lint:
         help: lint the React Native app package
-        run: yarn mobile:lint
+        run: pnpm mobile:lint
 
       test:
         help: test the React Native app package
-        run: yarn mobile:test
+        run: pnpm --filter @hiperhealth/hphvision test
 
       typecheck:
         help: typecheck the React Native app package
-        run: yarn mobile:typecheck
+        run:  pnpm --filter @hiperhealth/hphvision typecheck
 
       ci:
         help: run mobile app CI checks
