@@ -1,6 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {SCREENING_DISCLAIMER, mobileLibraryName} from '@hiperhealth/hphvision-lib';
+import {
+  SCREENING_DISCLAIMER,
+  mobileLibraryName,
+} from '@hiperhealth/hphvision-lib';
 import {runStartupChecks} from '../../app/startup';
 import {InfoCard} from '../../components/feedback/InfoCard';
 import {PrimaryButton} from '../../components/forms/PrimaryButton';
@@ -21,7 +24,11 @@ export const DisclaimerScreen = () => {
     <Screen
       route="disclaimer"
       subtitle="HPH Vision is an internal prototype for guided smartphone-based vision screening.">
-      <InfoCard title="Important safety note" body={SCREENING_DISCLAIMER} tone="warning" />
+      <InfoCard
+        title="Important safety note"
+        body={SCREENING_DISCLAIMER}
+        tone="warning"
+      />
       <InfoCard
         title="What this build validates"
         body="This initial app shell validates the monorepo React Native app, shared hphvision-lib imports, and the first internal screening flow before native PDF, camera, sensor, and voice modules are selected."
@@ -35,8 +42,13 @@ export const DisclaimerScreen = () => {
           </View>
         ))}
       </View>
-      <Text style={styles.libraryText}>Using {mobileLibraryName} for reusable domain logic.</Text>
-      <PrimaryButton label="I understand — start onboarding" onPress={continueToOnboarding} />
+      <Text style={styles.libraryText}>
+        Using {mobileLibraryName} for reusable domain logic.
+      </Text>
+      <PrimaryButton
+        label="I understand — start onboarding"
+        onPress={continueToOnboarding}
+      />
       <PrimaryButton
         label="Open settings"
         variant="secondary"

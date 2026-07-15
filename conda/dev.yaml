@@ -7,9 +7,9 @@ dependencies:
   - nodejs
   - yarn
   - openjdk 17.*
-  - bash
   - poetry
   - pip
   - pip:
+      - click
       - pre-commit
       - makim

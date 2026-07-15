@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from hph_vision_core.device_profiles import normalize_device_model_name
-from hph_vision_core.fixtures import make_valid_device_profile
 
 from hph_vision_api.adapters.auth import Actor
 from hph_vision_api.dependencies import get_current_actor
@@ -12,6 +10,8 @@ from hph_vision_api.schemas.device_profiles import (
     DeviceProfileSearchResponse,
 )
 from hph_vision_api.schemas.sessions import DeviceProfileSchema
+from hph_vision_core.device_profiles import normalize_device_model_name
+from hph_vision_core.fixtures import make_valid_device_profile
 
 router = APIRouter(prefix="/api/v1/device-profiles", tags=["device-profiles"])
 

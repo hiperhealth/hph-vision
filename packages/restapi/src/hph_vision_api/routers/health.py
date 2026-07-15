@@ -1,11 +1,6 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from hph_vision_core import (
-    get_core_version,
-    get_health_status,
-    get_supported_protocol_versions,
-)
 
 from hph_vision_api.config import Settings
 from hph_vision_api.dependencies import get_settings
@@ -15,6 +10,11 @@ from hph_vision_api.schemas.health import (
     VersionResponse,
 )
 from hph_vision_api.version import API_VERSION, SERVICE_NAME
+from hph_vision_core import (
+    get_core_version,
+    get_health_status,
+    get_supported_protocol_versions,
+)
 
 router = APIRouter(tags=["health"])
 versioned_router = APIRouter(prefix="/api/v1", tags=["version"])

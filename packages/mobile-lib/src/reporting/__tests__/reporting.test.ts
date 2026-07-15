@@ -14,6 +14,8 @@ describe('createScreeningReport', () => {
       reliability: calculateReliability({completionRate: 1}),
     };
 
-    expect(createScreeningReport(session).disclaimer).toBe(SCREENING_DISCLAIMER);
+    expect(createScreeningReport(session).disclaimer).toBe(
+      SCREENING_DISCLAIMER,
+    );
   });
 });

@@ -1,5 +1,11 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, type StyleProp, type ViewStyle} from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import {colors, radii, spacing, typography} from '../../theme';
 
 type PrimaryButtonVariant = 'primary' | 'secondary' | 'danger';
@@ -43,12 +49,16 @@ export const PrimaryButton = ({
         styles.button,
         {
           backgroundColor: backgroundColorByVariant[variant],
-          borderColor: isSecondary ? colors.border : backgroundColorByVariant[variant],
+          borderColor: isSecondary
+            ? colors.border
+            : backgroundColorByVariant[variant],
           opacity: disabled ? 0.5 : pressed ? 0.82 : 1,
         },
         style,
       ]}>
-      <Text style={[styles.label, {color: textColorByVariant[variant]}]}>{label}</Text>
+      <Text style={[styles.label, {color: textColorByVariant[variant]}]}>
+        {label}
+      </Text>
     </Pressable>
   );
 };

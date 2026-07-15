@@ -1,4 +1,10 @@
-import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import type {
   AcuityResult,
   AcuitySession,
@@ -52,13 +58,19 @@ export type HphVisionAppActions = {
   acceptConsent: () => void;
   saveOnboarding: (answers: OnboardingAnswers) => void;
   saveTriage: (answers: TriageAnswer[], result: TriageResult) => void;
-  saveDeviceCalibration: (profile: DeviceProfile, phoneGeometry: PhoneGeometry) => void;
+  saveDeviceCalibration: (
+    profile: DeviceProfile,
+    phoneGeometry: PhoneGeometry,
+  ) => void;
   saveTemplateDocument: (document: TemplateDocument) => void;
   saveAcuitySession: (session: AcuitySession) => void;
   saveAcuityResult: (result: AcuityResult) => void;
   saveRefractionSession: (session: RefractionSession) => void;
   saveRefractionResult: (result: RefractionResult) => void;
-  saveResults: (reliability: ReliabilityResult, report: ScreeningReport) => void;
+  saveResults: (
+    reliability: ReliabilityResult,
+    report: ScreeningReport,
+  ) => void;
 };
 
 type HphVisionAppContextValue = {
@@ -77,10 +89,18 @@ export const createInitialAppState = (): HphVisionAppState => ({
   triageAnswers: [],
 });
 
-const HphVisionAppContext = createContext<HphVisionAppContextValue | undefined>(undefined);
+const HphVisionAppContext = createContext<HphVisionAppContextValue | undefined>(
+  undefined,
+);
 
-export const HphVisionAppProvider = ({children}: {children: React.ReactNode}) => {
-  const [state, setState] = useState<HphVisionAppState>(() => createInitialAppState());
+export const HphVisionAppProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [state, setState] = useState<HphVisionAppState>(() =>
+    createInitialAppState(),
+  );
 
   const navigate = useCallback((route: AppRoute) => {
     setState(previous => {
@@ -103,7 +123,9 @@ export const HphVisionAppProvider = ({children}: {children: React.ReactNode}) =>
       }
 
       const routeHistory = previous.routeHistory.slice(0, -1);
-      const route = previous.routeHistory[previous.routeHistory.length - 1] ?? previous.route;
+      const route =
+        previous.routeHistory[previous.routeHistory.length - 1] ??
+        previous.route;
       return {...previous, route, routeHistory};
     });
   }, []);
@@ -120,13 +142,24 @@ export const HphVisionAppProvider = ({children}: {children: React.ReactNode}) =>
     setState(previous => ({...previous, onboarding: answers}));
   }, []);
 
-  const saveTriage = useCallback((answers: TriageAnswer[], result: TriageResult) => {
-    setState(previous => ({...previous, triageAnswers: answers, triageResult: result}));
-  }, []);
+  const saveTriage = useCallback(
+    (answers: TriageAnswer[], result: TriageResult) => {
+      setState(previous => ({
+        ...previous,
+        triageAnswers: answers,
+        triageResult: result,
+      }));
+    },
+    [],
+  );
 
   const saveDeviceCalibration = useCallback(
     (profile: DeviceProfile, phoneGeometry: PhoneGeometry) => {
-      setState(previous => ({...previous, deviceProfile: profile, phoneGeometry}));
+      setState(previous => ({
+        ...previous,
+        deviceProfile: profile,
+        phoneGeometry,
+      }));
     },
     [],
   );
@@ -151,9 +184,12 @@ export const HphVisionAppProvider = ({children}: {children: React.ReactNode}) =>
     setState(previous => ({...previous, refractionResult: result}));
   }, []);
 
-  const saveResults = useCallback((reliability: ReliabilityResult, report: ScreeningReport) => {
-    setState(previous => ({...previous, reliability, report}));
-  }, []);
+  const saveResults = useCallback(
+    (reliability: ReliabilityResult, report: ScreeningReport) => {
+      setState(previous => ({...previous, reliability, report}));
+    },
+    [],
+  );
 
   const actions = useMemo<HphVisionAppActions>(
     () => ({
@@ -190,7 +226,11 @@ export const HphVisionAppProvider = ({children}: {children: React.ReactNode}) =>
 
   const value = useMemo(() => ({state, actions}), [actions, state]);
 
-  return <HphVisionAppContext.Provider value={value}>{children}</HphVisionAppContext.Provider>;
+  return (
+    <HphVisionAppContext.Provider value={value}>
+      {children}
+    </HphVisionAppContext.Provider>
+  );
 };
 
 export const useHphVisionApp = (): HphVisionAppContextValue => {

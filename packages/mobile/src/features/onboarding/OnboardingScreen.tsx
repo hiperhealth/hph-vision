@@ -4,7 +4,10 @@ import {InfoCard} from '../../components/feedback/InfoCard';
 import {FieldLabel} from '../../components/forms/FieldLabel';
 import {PrimaryButton} from '../../components/forms/PrimaryButton';
 import {Screen} from '../../components/layout/Screen';
-import {type OnboardingAnswers, useHphVisionApp} from '../../state/sessionStore';
+import {
+  type OnboardingAnswers,
+  useHphVisionApp,
+} from '../../state/sessionStore';
 import {colors, radii, spacing, typography} from '../../theme';
 
 const ageRanges = ['Under 18', '18–39', '40–64', '65+'];
@@ -30,12 +33,16 @@ const ToggleRow = ({label, value, onChange}: ToggleRowProps) => (
           onPress={() => onChange(option.value)}
           style={[
             styles.choice,
-            value === option.value ? styles.choiceSelected : styles.choiceUnselected,
+            value === option.value
+              ? styles.choiceSelected
+              : styles.choiceUnselected,
           ]}>
           <Text
             style={[
               styles.choiceText,
-              value === option.value ? styles.choiceTextSelected : styles.choiceTextUnselected,
+              value === option.value
+                ? styles.choiceTextSelected
+                : styles.choiceTextUnselected,
             ]}>
             {option.label}
           </Text>
@@ -55,14 +62,18 @@ export const OnboardingScreen = () => {
   const [contactLensUse, setContactLensUse] = useState<boolean | undefined>(
     existing?.contactLensUse,
   );
-  const [hasPreviousPrescription, setHasPreviousPrescription] = useState<boolean | undefined>(
-    existing?.hasPreviousPrescription,
+  const [hasPreviousPrescription, setHasPreviousPrescription] = useState<
+    boolean | undefined
+  >(existing?.hasPreviousPrescription);
+  const [testingReason, setTestingReason] = useState(
+    existing?.testingReason ?? '',
   );
-  const [testingReason, setTestingReason] = useState(existing?.testingReason ?? '');
   const [preferredLanguage, setPreferredLanguage] = useState(
     existing?.preferredLanguage ?? 'en-US',
   );
-  const [voiceEnabled, setVoiceEnabled] = useState(existing?.voiceEnabled ?? false);
+  const [voiceEnabled, setVoiceEnabled] = useState(
+    existing?.voiceEnabled ?? false,
+  );
   const [wantsClinicianReview, setWantsClinicianReview] = useState(
     existing?.wantsClinicianReview ?? true,
   );
@@ -104,12 +115,16 @@ export const OnboardingScreen = () => {
             onPress={() => setAgeRange(option)}
             style={[
               styles.choice,
-              ageRange === option ? styles.choiceSelected : styles.choiceUnselected,
+              ageRange === option
+                ? styles.choiceSelected
+                : styles.choiceUnselected,
             ]}>
             <Text
               style={[
                 styles.choiceText,
-                ageRange === option ? styles.choiceTextSelected : styles.choiceTextUnselected,
+                ageRange === option
+                  ? styles.choiceTextSelected
+                  : styles.choiceTextUnselected,
               ]}>
               {option}
             </Text>
@@ -159,7 +174,11 @@ export const OnboardingScreen = () => {
         style={[styles.input, styles.multiline]}
         value={testingReason}
       />
-      <PrimaryButton label="Continue to safety triage" disabled={!canContinue} onPress={saveAndContinue} />
+      <PrimaryButton
+        label="Continue to safety triage"
+        disabled={!canContinue}
+        onPress={saveAndContinue}
+      />
     </Screen>
   );
 };

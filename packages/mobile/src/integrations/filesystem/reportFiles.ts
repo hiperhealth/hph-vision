@@ -1,4 +1,7 @@
-import type {ScreeningReport, TemplateDocument} from '@hiperhealth/hphvision-lib';
+import type {
+  ScreeningReport,
+  TemplateDocument,
+} from '@hiperhealth/hphvision-lib';
 
 export type GeneratedFile = {
   fileName: string;

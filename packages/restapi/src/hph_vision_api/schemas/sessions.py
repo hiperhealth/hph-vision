@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Literal
 
 from pydantic import Field
@@ -8,6 +8,7 @@ from pydantic import Field
 from hph_vision_api.schemas.common import (
     ApiModel,
     DomainWarningSchema,
+    ValidationIssueSchema,
     ValidationResultSchema,
 )
 from hph_vision_core import (
@@ -28,7 +29,7 @@ from hph_vision_core.sessions.models import EnvironmentContext, PatientContext
 
 
 def _now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class ProtocolVersionsSchema(ApiModel):
@@ -380,6 +381,22 @@ def warning_core_to_schema(warning: DomainWarning) -> DomainWarningSchema:
 def validation_to_schema(evaluation: SessionEvaluation) -> ValidationResultSchema:
     return ValidationResultSchema(
         ok=evaluation.validation.ok,
-        errors=[item.to_dict() for item in evaluation.validation.errors],
-        warnings=[item.to_dict() for item in evaluation.validation.warnings],
+        errors=[
+            ValidationIssueSchema(
+                code=item.code,
+                message=item.message,
+                field=item.field,
+                severity=item.severity,
+            )
+            for item in evaluation.validation.errors
+        ],
+        warnings=[
+            ValidationIssueSchema(
+                code=item.code,
+                message=item.message,
+                field=item.field,
+                severity=item.severity,
+            )
+            for item in evaluation.validation.warnings
+        ],
     )

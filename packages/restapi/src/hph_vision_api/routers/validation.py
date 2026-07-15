@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from hph_vision_core import evaluate_session_submission
 
 from hph_vision_api.adapters.auth import Actor
 from hph_vision_api.dependencies import get_current_actor
@@ -11,6 +10,7 @@ from hph_vision_api.schemas.sessions import (
     warning_core_to_schema,
 )
 from hph_vision_api.schemas.validation import SessionValidationResponse
+from hph_vision_core import evaluate_session_submission
 
 router = APIRouter(prefix="/api/v1/validation", tags=["validation"])
 

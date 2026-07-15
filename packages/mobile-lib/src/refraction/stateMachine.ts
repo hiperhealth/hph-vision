@@ -1,5 +1,10 @@
 import {REFRACTION_PROTOCOL_VERSION} from './protocol';
-import type {RefractionResponse, RefractionSession, RefractionSessionOptions, RefractionTrial} from './types';
+import type {
+  RefractionResponse,
+  RefractionSession,
+  RefractionSessionOptions,
+  RefractionTrial,
+} from './types';
 
 const createTrial = (
   id: string,
@@ -13,8 +18,16 @@ const createTrial = (
       eye,
       kind: 'sphericalComparison',
       promptKey: 'refraction.prompt.betterWorseSame',
-      optionA: {id: 'sphere-a', sphereDelta: delta, labelKey: 'refraction.option.one'},
-      optionB: {id: 'sphere-b', sphereDelta: -delta, labelKey: 'refraction.option.two'},
+      optionA: {
+        id: 'sphere-a',
+        sphereDelta: delta,
+        labelKey: 'refraction.option.one',
+      },
+      optionB: {
+        id: 'sphere-b',
+        sphereDelta: -delta,
+        labelKey: 'refraction.option.two',
+      },
     };
   }
 
@@ -25,8 +38,16 @@ const createTrial = (
       eye,
       kind: 'cylinderComparison',
       promptKey: 'refraction.prompt.oneOrTwo',
-      optionA: {id: 'cylinder-a', cylinderDelta: delta, labelKey: 'refraction.option.one'},
-      optionB: {id: 'cylinder-b', cylinderDelta: 0, labelKey: 'refraction.option.two'},
+      optionA: {
+        id: 'cylinder-a',
+        cylinderDelta: delta,
+        labelKey: 'refraction.option.one',
+      },
+      optionB: {
+        id: 'cylinder-b',
+        cylinderDelta: 0,
+        labelKey: 'refraction.option.two',
+      },
     };
   }
 
@@ -37,7 +58,11 @@ const createTrial = (
     kind: 'axisComparison',
     promptKey: 'refraction.prompt.oneOrTwo',
     optionA: {id: 'axis-a', axisDelta, labelKey: 'refraction.option.one'},
-    optionB: {id: 'axis-b', axisDelta: -axisDelta, labelKey: 'refraction.option.two'},
+    optionB: {
+      id: 'axis-b',
+      axisDelta: -axisDelta,
+      labelKey: 'refraction.option.two',
+    },
   };
 };
 
@@ -52,7 +77,9 @@ export const createRefractionSession = (
     protocolVersion: REFRACTION_PROTOCOL_VERSION,
     eye: options.eye,
     initialSphere: options.initialSphere ?? 0,
-    trials: Array.from({length: maxTrials}, (_, index) => createTrial(id, options.eye, index)),
+    trials: Array.from({length: maxTrials}, (_, index) =>
+      createTrial(id, options.eye, index),
+    ),
     responses: [],
     completed: false,
   };
@@ -70,7 +97,9 @@ export const recordRefractionResponse = (
   response: RefractionResponse,
 ): RefractionSession => {
   const responses = [
-    ...session.responses.filter(existing => existing.trialId !== response.trialId),
+    ...session.responses.filter(
+      existing => existing.trialId !== response.trialId,
+    ),
     response,
   ];
   const answered = new Set(responses.map(item => item.trialId));

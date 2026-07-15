@@ -15,7 +15,10 @@ export const createTemplatePage = (
   const centerX = widthMm / 2;
   const slotOriginX = centerX - slotWidthMm / 2;
   const slotOriginY = 42;
-  const visorWidthMm = Math.min(widthMm - marginMm * 2, Math.max(slotWidthMm + 48, 130));
+  const visorWidthMm = Math.min(
+    widthMm - marginMm * 2,
+    Math.max(slotWidthMm + 48, 130),
+  );
   const visorHeightMm = Math.min(heightMm - marginMm * 2, slotHeightMm + 92);
   const visorOriginX = centerX - visorWidthMm / 2;
   const visorOriginY = 28;
@@ -36,9 +39,27 @@ export const createTemplatePage = (
         `hphvision cardboard template for ${phone.modelName}`,
         4,
       ),
-      rect('visor-outer-cut', point(visorOriginX, visorOriginY), visorWidthMm, visorHeightMm, 'cut'),
-      rect('phone-fit-outline', point(slotOriginX, slotOriginY), slotWidthMm, slotHeightMm, 'guide'),
-      rect('phone-holder-slot', point(slotOriginX + 4, slotOriginY + 4), slotWidthMm - 8, slotHeightMm - 8, 'slot'),
+      rect(
+        'visor-outer-cut',
+        point(visorOriginX, visorOriginY),
+        visorWidthMm,
+        visorHeightMm,
+        'cut',
+      ),
+      rect(
+        'phone-fit-outline',
+        point(slotOriginX, slotOriginY),
+        slotWidthMm,
+        slotHeightMm,
+        'guide',
+      ),
+      rect(
+        'phone-holder-slot',
+        point(slotOriginX + 4, slotOriginY + 4),
+        slotWidthMm - 8,
+        slotHeightMm - 8,
+        'slot',
+      ),
       rect(
         'eye-window-cut',
         point(centerX - eyeWindowWidthMm / 2, eyeWindowOriginY),
@@ -60,8 +81,20 @@ export const createTemplatePage = (
         eyeWindowHeightMm,
         'cut',
       ),
-      rect('left-glue-tab', point(visorOriginX - 8, visorOriginY + 18), 8, 52, 'glue'),
-      rect('right-glue-tab', point(visorOriginX + visorWidthMm, visorOriginY + 18), 8, 52, 'glue'),
+      rect(
+        'left-glue-tab',
+        point(visorOriginX - 8, visorOriginY + 18),
+        8,
+        52,
+        'glue',
+      ),
+      rect(
+        'right-glue-tab',
+        point(visorOriginX + visorWidthMm, visorOriginY + 18),
+        8,
+        52,
+        'glue',
+      ),
       line(
         'top-fold-line',
         point(visorOriginX, visorOriginY + 18),
@@ -80,8 +113,19 @@ export const createTemplatePage = (
         point(centerX, visorOriginY + visorHeightMm),
         'guide',
       ),
-      rect('scale-check-square-50mm', point(marginMm, heightMm - 68), 50, 50, 'calibration'),
-      line('calibration-ruler', point(marginMm + 65, heightMm - 18), point(marginMm + 115, heightMm - 18), 'calibration'),
+      rect(
+        'scale-check-square-50mm',
+        point(marginMm, heightMm - 68),
+        50,
+        50,
+        'calibration',
+      ),
+      line(
+        'calibration-ruler',
+        point(marginMm + 65, heightMm - 18),
+        point(marginMm + 115, heightMm - 18),
+        'calibration',
+      ),
       text(
         'scale-check-label',
         point(marginMm, heightMm - 72),

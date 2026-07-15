@@ -42,5 +42,7 @@ export const combineValidationResults = (
   const errors = results.flatMap(result => (result.ok ? [] : result.errors));
   const warnings = results.flatMap(result => result.warnings);
 
-  return errors.length > 0 ? invalid(errors, warnings) : valid(undefined, warnings);
+  return errors.length > 0
+    ? invalid(errors, warnings)
+    : valid(undefined, warnings);
 };

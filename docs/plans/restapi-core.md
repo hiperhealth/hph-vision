@@ -1082,16 +1082,16 @@ Acceptance criteria:
 
 ## 21. Risks and Mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Core becomes coupled to FastAPI | Keep no-FastAPI dependency rule and test/lint for imports |
-| Mobile/API contracts drift | Maintain JSON fixtures and contract tests |
-| Clinical recommendations overclaim | Central disclaimer and cautious recommendation policy |
-| Unsupported protocol versions accepted silently | Explicit protocol validation and errors |
-| Report builder omits warnings | Warning aggregation tests and required fields |
-| Status transitions become inconsistent | Central transition validation |
-| Persistence details leak into core | Use pure domain models and repository code only in API/adapters |
-| Duplicate logic diverges from TypeScript library | Shared fixtures and documented expected outputs |
+| Risk                                             | Mitigation                                                      |
+| ------------------------------------------------ | --------------------------------------------------------------- |
+| Core becomes coupled to FastAPI                  | Keep no-FastAPI dependency rule and test/lint for imports       |
+| Mobile/API contracts drift                       | Maintain JSON fixtures and contract tests                       |
+| Clinical recommendations overclaim               | Central disclaimer and cautious recommendation policy           |
+| Unsupported protocol versions accepted silently  | Explicit protocol validation and errors                         |
+| Report builder omits warnings                    | Warning aggregation tests and required fields                   |
+| Status transitions become inconsistent           | Central transition validation                                   |
+| Persistence details leak into core               | Use pure domain models and repository code only in API/adapters |
+| Duplicate logic diverges from TypeScript library | Shared fixtures and documented expected outputs                 |
 
 ---
 

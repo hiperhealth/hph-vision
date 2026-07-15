@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from fastapi import status
-from hph_vision_core import build_screening_report
 
 from hph_vision_api.adapters.object_storage import (
     FakeObjectStorageAdapter,
@@ -13,6 +12,7 @@ from hph_vision_api.adapters.persistence import (
     utc_now,
 )
 from hph_vision_api.errors import ApiError
+from hph_vision_core import build_screening_report
 
 
 class ReportService:

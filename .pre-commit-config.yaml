@@ -1,5 +1,6 @@
 default_stages:
   - pre-commit
+exclude: ^\.yarn/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
@@ -16,7 +17,7 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.2"
+    rev: 'v3.0.2'
     hooks:
       - id: prettier
         files: ^(packages/(mobile|mobile-lib)/|.*\.(json|md|ya?ml)$)

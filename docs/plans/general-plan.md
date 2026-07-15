@@ -65,19 +65,19 @@ The app should be positioned as:
 
 ### 3.1 Smartphone Visual Acuity Testing
 
-Smartphone-based visual acuity testing has already been validated in research contexts. The Peek Acuity study in *JAMA Ophthalmology* showed that a smartphone visual-acuity test could provide accurate and repeatable acuity measurements consistent with accepted test-retest variability for logMAR-style charts.
+Smartphone-based visual acuity testing has already been validated in research contexts. The Peek Acuity study in _JAMA Ophthalmology_ showed that a smartphone visual-acuity test could provide accurate and repeatable acuity measurements consistent with accepted test-retest variability for logMAR-style charts.
 
 The same study compared Peek Acuity with ETDRS and Snellen-style testing, reporting strong correlations and small mean differences in controlled settings.
 
 ### 3.2 Mobile Apps for Visual-Function Assessment
 
-A 2024 review in *Eye* reported that many scientifically evaluated mobile apps can mimic traditional paper-based visual-function tests, while also noting that clinicians must verify app validity before clinical adoption because incorrect visual-function recording can have serious consequences.
+A 2024 review in _Eye_ reported that many scientifically evaluated mobile apps can mimic traditional paper-based visual-function tests, while also noting that clinicians must verify app validity before clinical adoption because incorrect visual-function recording can have serious consequences.
 
-A 2022 systematic review and meta-analysis in *JMIR mHealth and uHealth* concluded that mobile visual-acuity apps can play an important role in identifying visual impairment by professionals and nonprofessionals, including self-testing contexts, while also recommending further research with larger samples and longer follow-up.
+A 2022 systematic review and meta-analysis in _JMIR mHealth and uHealth_ concluded that mobile visual-acuity apps can play an important role in identifying visual impairment by professionals and nonprofessionals, including self-testing contexts, while also recommending further research with larger samples and longer follow-up.
 
 ### 3.3 Smartphone-Based Refraction
 
-Recent work has explored smartphone-based refraction. A 2024 *Journal of Optometry* article proposed using smartphone blue-light stimuli to detect changes in visual acuity and spherical refraction, reporting a small mean difference between smartphone-based spherical over-refraction and clinical measurement in the tested setting.
+Recent work has explored smartphone-based refraction. A 2024 _Journal of Optometry_ article proposed using smartphone blue-light stimuli to detect changes in visual acuity and spherical refraction, reporting a small mean difference between smartphone-based spherical over-refraction and clinical measurement in the tested setting.
 
 A 2024 rural screening pilot also reported the use of smartphone apps for visual acuity, refractive error, and ocular alignment screening by nonprofessional personnel. The authors concluded that smartphone apps have potential for mass vision screening and low-cost vision care in geographically remote or resource-constrained areas.
 
@@ -276,7 +276,7 @@ type PhoneGeometry = {
 };
 
 type TemplateOptions = {
-  pageSize: "A4" | "LETTER";
+  pageSize: 'A4' | 'LETTER';
   cardboardThicknessMm: number;
   eyeToScreenDistanceMm: number;
   includeAssemblyInstructions: boolean;
@@ -744,10 +744,7 @@ Root `package.json` should act as the main command surface:
   "name": "hph-vision",
   "private": true,
   "packageManager": "yarn@3.6.4",
-  "workspaces": [
-    "packages/mobile",
-    "packages/mobile-lib"
-  ],
+  "workspaces": ["packages/mobile", "packages/mobile-lib"],
   "scripts": {
     "mobile:start": "yarn workspace @hiperhealth/hphvision start",
     "mobile:android": "yarn workspace @hiperhealth/hphvision android",
@@ -862,7 +859,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install Poetry
         run: pipx install poetry
