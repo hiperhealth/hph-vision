@@ -21,9 +21,7 @@ import type {
 import {scoreAcuitySession} from './scoring';
 
 // Helper to extract deterministic ISO date and millisecond timestamp from event
-const getEventTime = (
-  event: any,
-): {iso: ISODateString; ms: number} => {
+const getEventTime = (event: any): {iso: ISODateString; ms: number} => {
   if (event.createdAt) {
     return {
       iso: event.createdAt,
@@ -218,7 +216,7 @@ export const transitionAcuityFlow = (
       if (event.type === 'SELECT_EYE') {
         const currentEye = event.eye ?? context.eyes[context.currentEyeIndex];
         const updatedEyeIndex = context.eyes.indexOf(currentEye);
-        
+
         // Validation: do not transition or create session if the selected eye is invalid/not configured
         if (updatedEyeIndex === -1) {
           return flow;
@@ -351,7 +349,9 @@ export const transitionAcuityFlow = (
         if (!session) {
           return flow;
         }
-        const trial = session.trials.find(t => t.id === pendingResponse.trialId);
+        const trial = session.trials.find(
+          t => t.id === pendingResponse.trialId,
+        );
         if (!trial) {
           return flow;
         }
@@ -363,7 +363,10 @@ export const transitionAcuityFlow = (
         };
 
         const isPractice = trial.isPractice;
-        const isCorrect = isCorrectOptotypeAnswer(trial.orientation, pendingResponse.answer);
+        const isCorrect = isCorrectOptotypeAnswer(
+          trial.orientation,
+          pendingResponse.answer,
+        );
         const isSkipped = pendingResponse.answer === 'skipped';
 
         const metrics = {...context.metrics};

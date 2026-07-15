@@ -292,7 +292,9 @@ describe('acuity flow state machine', () => {
       timestamp: startTimestamp,
     });
     expect(flow.state).toBe('intro');
-    expect(flow.context.metrics.startTime).toBe(new Date(startTimestamp).toISOString());
+    expect(flow.context.metrics.startTime).toBe(
+      new Date(startTimestamp).toISOString(),
+    );
 
     // ACK_INTRO -> practice
     flow = transitionAcuityFlow(flow, {type: 'ACK_INTRO'});
@@ -352,14 +354,16 @@ describe('acuity flow state machine', () => {
 
   it('should support aborting from any state', () => {
     let flow = createInitialAcuityFlow();
-    
+
     // Abort from intro
     flow = transitionAcuityFlow(flow, {
       type: 'ABORT',
       timestamp: 1773918000000,
     });
     expect(flow.state).toBe('aborted');
-    expect(flow.context.metrics.endTime).toBe(new Date(1773918000000).toISOString());
+    expect(flow.context.metrics.endTime).toBe(
+      new Date(1773918000000).toISOString(),
+    );
 
     // Reset and Abort from select_eye
     flow = createInitialAcuityFlow();
@@ -377,13 +381,15 @@ describe('acuity flow state machine', () => {
       timestamp: 1773918001000,
     });
     expect(flow.state).toBe('aborted');
-    expect(flow.context.metrics.endTime).toBe(new Date(1773918001000).toISOString());
+    expect(flow.context.metrics.endTime).toBe(
+      new Date(1773918001000).toISOString(),
+    );
   });
 
   it('should successfully switch eyes and run Left Eye flow', () => {
     let flow = createInitialAcuityFlow();
     const startTimestamp = 1773918000000;
-    
+
     flow = transitionAcuityFlow(flow, {
       type: 'START',
       eyes: ['right', 'left'],
@@ -396,8 +402,14 @@ describe('acuity flow state machine', () => {
     flow = transitionAcuityFlow(flow, {type: 'ACK_INTRO'});
     flow = transitionAcuityFlow(flow, {type: 'ACK_PRACTICE'});
     flow = transitionAcuityFlow(flow, {type: 'SELECT_EYE', eye: 'right'});
-    flow = transitionAcuityFlow(flow, {type: 'ACK_OCCLUSION', timestamp: startTimestamp + 1000});
-    flow = transitionAcuityFlow(flow, {type: 'STIMULUS_DISPLAYED', timestamp: startTimestamp + 2000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ACK_OCCLUSION',
+      timestamp: startTimestamp + 1000,
+    });
+    flow = transitionAcuityFlow(flow, {
+      type: 'STIMULUS_DISPLAYED',
+      timestamp: startTimestamp + 2000,
+    });
     flow = transitionAcuityFlow(flow, {
       type: 'RECORD_ANSWER',
       answer: 'up',
@@ -406,9 +418,12 @@ describe('acuity flow state machine', () => {
     });
     flow = transitionAcuityFlow(flow, {type: 'CONFIRM_ANSWER'});
     flow = transitionAcuityFlow(flow, {type: 'SCORE_TRIAL'});
-    
+
     // ADVANCE_LEVEL -> transitions to switch_eye
-    flow = transitionAcuityFlow(flow, {type: 'ADVANCE_LEVEL', timestamp: startTimestamp + 4000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ADVANCE_LEVEL',
+      timestamp: startTimestamp + 4000,
+    });
     expect(flow.state).toBe('switch_eye');
     expect(flow.context.currentEyeIndex).toBe(1);
 
@@ -418,8 +433,14 @@ describe('acuity flow state machine', () => {
     expect(flow.context.sessions.left).toBeDefined();
 
     // Complete Left Eye sequence
-    flow = transitionAcuityFlow(flow, {type: 'ACK_OCCLUSION', timestamp: startTimestamp + 5000});
-    flow = transitionAcuityFlow(flow, {type: 'STIMULUS_DISPLAYED', timestamp: startTimestamp + 6000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ACK_OCCLUSION',
+      timestamp: startTimestamp + 5000,
+    });
+    flow = transitionAcuityFlow(flow, {
+      type: 'STIMULUS_DISPLAYED',
+      timestamp: startTimestamp + 6000,
+    });
     flow = transitionAcuityFlow(flow, {
       type: 'RECORD_ANSWER',
       answer: 'up',
@@ -430,7 +451,10 @@ describe('acuity flow state machine', () => {
     flow = transitionAcuityFlow(flow, {type: 'SCORE_TRIAL'});
 
     // ADVANCE_LEVEL -> complete (all eyes finished)
-    flow = transitionAcuityFlow(flow, {type: 'ADVANCE_LEVEL', timestamp: startTimestamp + 10000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ADVANCE_LEVEL',
+      timestamp: startTimestamp + 10000,
+    });
     expect(flow.state).toBe('complete');
     expect(flow.context.results.right).toBeDefined();
     expect(flow.context.results.left).toBeDefined();
@@ -452,7 +476,7 @@ describe('acuity flow state machine', () => {
     });
     flow = transitionAcuityFlow(flow, {type: 'ACK_INTRO'});
     flow = transitionAcuityFlow(flow, {type: 'ACK_PRACTICE'});
-    
+
     // SELECT_EYE with invalid eye (not in context.eyes)
     // Should be ignored and return current flow unmodified
     const flowInvalid = transitionAcuityFlow(flow, {
@@ -466,8 +490,14 @@ describe('acuity flow state machine', () => {
     flow = transitionAcuityFlow(flow, {type: 'SELECT_EYE', eye: 'right'});
     expect(flow.state).toBe('prepare_eye_occlusion');
 
-    flow = transitionAcuityFlow(flow, {type: 'ACK_OCCLUSION', timestamp: startTimestamp + 1000});
-    flow = transitionAcuityFlow(flow, {type: 'STIMULUS_DISPLAYED', timestamp: startTimestamp + 2000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ACK_OCCLUSION',
+      timestamp: startTimestamp + 1000,
+    });
+    flow = transitionAcuityFlow(flow, {
+      type: 'STIMULUS_DISPLAYED',
+      timestamp: startTimestamp + 2000,
+    });
 
     // RECORD_ANSWER (attemptsCount = 1)
     flow = transitionAcuityFlow(flow, {
@@ -503,7 +533,10 @@ describe('acuity flow state machine', () => {
     expect(flow.context.metrics.correctAnswers).toBe(0);
 
     // ADVANCE_LEVEL -> complete
-    flow = transitionAcuityFlow(flow, {type: 'ADVANCE_LEVEL', timestamp: startTimestamp + 5000});
+    flow = transitionAcuityFlow(flow, {
+      type: 'ADVANCE_LEVEL',
+      timestamp: startTimestamp + 5000,
+    });
     expect(flow.state).toBe('complete');
   });
 
@@ -529,6 +562,8 @@ describe('acuity flow state machine', () => {
     expect(restored.state).toBe('prepare_eye_occlusion');
     expect(restored.context.eyes).toEqual(['right']);
     expect(restored.context.sessions.right).toBeDefined();
-    expect(restored.context.metrics.startTime).toBe(new Date(1773918000000).toISOString());
+    expect(restored.context.metrics.startTime).toBe(
+      new Date(1773918000000).toISOString(),
+    );
   });
 });
