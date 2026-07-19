@@ -34,9 +34,12 @@ const getEventTime = (event: any): {iso: ISODateString; ms: number} => {
       ms: event.timestamp,
     };
   }
+
+  const now = new Date();
+
   return {
-    iso: '1970-01-01T00:00:00.000Z',
-    ms: 0,
+    iso: now.toISOString(),
+    ms: now.getTime(),
   };
 };
 
