@@ -1,6 +1,6 @@
 # Regulatory and Safety Notes
 
-This document outlines the regulatory boundary, clinical intent, safety design, and data privacy framework for the `hphvision` smartphone-based vision screening and prescription estimation platform.
+This document outlines the regulatory boundary, clinical intent, safety design, and data privacy framework for the `hphvision` smartphone-based vision screening and subjective refraction support platform.
 
 ---
 
@@ -45,9 +45,9 @@ The following disclaimers must be prominently displayed during onboarding (`Disc
 
 ## 4. Exclusion of Autonomous Diagnosis
 
-To comply with international medical device regulatory standards (such as FDA Class II/Software as a Medical Device (SaMD) and EU MDR Class IIa/IIb classification rules for diagnostics):
+To align with software-as-a-medical-device (SaMD) principles, where final regulatory classification requires a jurisdiction-specific assessment based on the intended purpose and target risk profile:
 
-1. **Physical Limitation of Sensors:** A smartphone front/rear camera and screen cannot perform tonometry (eye pressure), ophthalmoscopy (retina/fundus imaging), or slit-lamp biomicroscopy (anterior segment analysis).
+1. **Physical Limitation of Sensors:** This application and its supported hardware do not provide tonometry (eye pressure), ophthalmoscopy (retina/fundus imaging), or slit-lamp biomicroscopy (anterior segment analysis) examinations.
 2. **Clinical Risk Mitigation:** Autonomous diagnostic claims carry high clinical risk if a pathology is missed (false negative). Therefore, the platform strictly positions itself as an **information-gathering and screening tool** that feeds data directly into a clinician-in-the-loop review pipeline.
 
 ---
@@ -87,9 +87,9 @@ Users must be informed of the following limitations that can degrade the accurac
 
 ## 7. Data Privacy and Security Considerations
 
-To ensure compliance with health privacy regulations (such as HIPAA in the US and GDPR in the EU), the platform adheres to the following privacy-by-design requirements:
+The platform adheres to the following technical application safeguards:
 
-- **No Direct Patient Identifiers (PII):** The mobile application generates client-side unique session identifiers (`sessionId`) based on epoch timestamps. The app does not save or transmit names, social security numbers, or addresses.
+- **No Direct Patient Identifiers (PII):** The mobile application generates client-side unique session identifiers (`sessionId`) based on epoch timestamps. While this acts as a pseudonymous technical identifier (avoiding direct identifiers such as names, social security numbers, or addresses), the associated session and health data may still constitute personal data under applicable regulations.
 - **Short-Lived Signed URLs:** PDF documents generated for clinical review must be stored securely. Access must be managed via short-lived download links to prevent unauthorized data exposure.
 - **Local Onboarding Storage:** Onboarding responses are kept locally in the client state context (`packages/mobile/src/state/sessionStore.tsx`) and are only packaged into the report schema upon patient consent.
 - **Encryption in Transit:** All telemetry, calibration data, and session JSON files sent to the API must run exclusively over HTTPS.
