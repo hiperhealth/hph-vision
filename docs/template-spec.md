@@ -1,6 +1,6 @@
 # Cardboard Template Specification
 
-This document defines the mathematical, geometrical, and structural requirements for the `hphvision` dynamic cardboard template generator. The generator outputs layout schemas used to print cardboard supports/visors adapted to a patient's smartphone dimensions to guarantee the standardized near-testing refraction distance.
+This document defines the mathematical, geometrical, and structural requirements for the `hphvision` dynamic cardboard template generator. The generator outputs layout schemas used to print cardboard supports/visors adapted to a patient's smartphone dimensions to support the target near-testing distance.
 
 ---
 
@@ -9,7 +9,7 @@ This document defines the mathematical, geometrical, and structural requirements
 To ensure cross-platform compatibility and physical rendering precision:
 
 - **Primary Units:** All coordinates, widths, heights, and margins must be defined in **millimeters (mm)**.
-- **Coordinate System:** Standard 2D Cartesian plane where the origin `(0, 0)` is located at the **top-left corner** of the page boundary.
+- **Coordinate System:** 2D page coordinate system where the origin `(0, 0)` is located at the **top-left corner** of the page boundary.
   - $+x$ axes extend horizontally to the right.
   - $+y$ axes extend vertically downwards.
 - **Precision:** Coordinates must be represented as float values to support precise component alignments.
@@ -35,12 +35,23 @@ The generator expects two primary inputs (`TemplateInput`):
 
 ### 3.1 Phone Geometry (`PhoneGeometry`)
 
-Extracted from the device database or calibrated manually by the user:
+Physical dimensions extracted from the internal device database or manually calibrated by the user:
 
 - `modelName`: Human-readable identifier (string).
-- `bodyWidthMm`: Physical width of the phone chassis.
-- `bodyHeightMm`: Physical height of the phone chassis.
-- `thicknessMm`: Physical thickness of the phone chassis.
+- `bodyWidthMm`: Physical width of the phone chassis (number).
+- `bodyHeightMm`: Physical height of the phone chassis (number).
+- `thicknessMm`: Physical thickness of the phone chassis (number).
+
+**Example `PhoneGeometry` Input:**
+
+```json
+{
+  "modelName": "iPhone 15",
+  "bodyWidthMm": 71.6,
+  "bodyHeightMm": 147.6,
+  "thicknessMm": 7.8
+}
+```
 
 ### 3.2 Template Options (`TemplateOptions`)
 
