@@ -5,8 +5,30 @@ import type {
   ResultRecommendation,
 } from '../types';
 
+export type CanonicalRefractionVocab =
+  | 'better'
+  | 'worse'
+  | 'same'
+  | 'one'
+  | 'two'
+  | 'unknown';
+
+export type RefractionAnswerToken = CanonicalRefractionVocab;
+
 export type BetterWorseSame = 'better' | 'worse' | 'same' | 'unknown';
 export type OneTwoChoice = 'one' | 'two' | 'same' | 'unknown';
+
+export type RefractionChoice = {
+  id: string;
+  labelKey: string;
+  value: RefractionAnswerToken;
+};
+
+export type RefractionPrompt = {
+  key: string;
+  textKey: string;
+  choices: RefractionChoice[];
+};
 
 export type RefractionStimulus = {
   id: string;
@@ -16,18 +38,27 @@ export type RefractionStimulus = {
   labelKey: string;
 };
 
+export type RefractionTrialKind =
+  | 'sphericalComparison'
+  | 'cylinderComparison'
+  | 'axisComparison';
+
 export type RefractionTrial = {
   id: string;
   eye: Eye;
-  kind: 'sphericalComparison' | 'cylinderComparison' | 'axisComparison';
+  kind: RefractionTrialKind;
   promptKey: string;
   optionA?: RefractionStimulus;
   optionB?: RefractionStimulus;
 };
 
+/** Alias for RefractionTrial representing a discrete step in the refraction protocol */
+export type RefractionStep = RefractionTrial;
+
 export type RefractionResponse = {
   trialId: string;
-  answer: BetterWorseSame | OneTwoChoice;
+  answer: RefractionAnswerToken;
+  rawInput?: string;
   responseTimeMs?: number;
   inputMethod: InputMethod;
   confidence?: number;
@@ -51,19 +82,20 @@ export type RefractionSession = {
   completed: boolean;
 };
 
+export type RefractionRange = [number, number];
+
 export type EyeRefractionEstimate = {
   sphere?: number;
   cylinder?: number;
   axis?: number;
   sphericalEquivalent?: number;
-  // direct range fields — [min, max] bounds for each component
-  sphereRange?: [number, number];
-  cylinderRange?: [number, number];
-  axisRange?: [number, number];
+  sphereRange?: RefractionRange;
+  cylinderRange?: RefractionRange;
+  axisRange?: RefractionRange;
   confidenceInterval?: {
-    sphere?: [number, number];
-    cylinder?: [number, number];
-    axis?: [number, number];
+    sphere?: RefractionRange;
+    cylinder?: RefractionRange;
+    axis?: RefractionRange;
   };
 };
 
