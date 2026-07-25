@@ -99,6 +99,12 @@ export type EyeRefractionEstimate = {
   };
 };
 
+/**
+ * Result of a guided subjective refraction screening session.
+ *
+ * NOTE: The estimates provided here are for screening and prescription-estimation purposes only.
+ * They do not constitute a final clinical prescription and require review by a qualified clinician.
+ */
 export type RefractionResult = {
   rightEye?: EyeRefractionEstimate;
   leftEye?: EyeRefractionEstimate;
