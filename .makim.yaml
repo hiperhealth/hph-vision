@@ -174,19 +174,11 @@ groups:
     tasks:
       lint:
         help: lint all Python API packages
-<<<<<<< HEAD
-        run: pnpm api:lint
-
-      test:
-        help: test all Python API packages
-        run: pnpm api:test
-=======
         run: poetry run ruff check packages/api-core packages/restapi
 
       test:
         help: test all Python API packages
         run: poetry run pytest packages/api-core/tests packages/restapi/tests
->>>>>>> c0e18247f953206b624eef0b8171f7628554926c
 
       typecheck:
         help: typecheck all Python API packages
