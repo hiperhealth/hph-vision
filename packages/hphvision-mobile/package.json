@@ -5,7 +5,7 @@
     "@hiperhealth/hphvision-core": "workspace:*"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "lint": "echo lint-mobile",
     "typecheck": "tsc --noEmit",
     "test": "echo test-mobile"
