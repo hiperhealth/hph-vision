@@ -16,36 +16,35 @@ groups:
           rm -f .coverage
 
   all:
-    tasks:
-      lint:
-        help: run all configured lint and pre-commit checks
-        run: |
-          pre-commit install
-          pre-commit run --all-files
+  tasks:
+    lint:
+      help: run all configured lint and pre-commit checks
+      run: |
+        pre-commit install
+        pre-commit run --all-files
 
-      test:
-        help: run all Python and JavaScript tests
-        run: |
-           pnpm test
+    test:
+      help: run all Python and JavaScript tests
+      run: |
+        pnpm test
 
-      typecheck:
-        help: run all TypeScript type checks and Python mypy checks
-        run: |
-          pnpm typecheck
-          poetry run mypy packages/api-core/src packages/restapi/src
+    typecheck:
+      help: run all TypeScript type checks and Python mypy checks
+      run: |
+        pnpm typecheck
+        poetry run mypy packages/api-core/src packages/restapi/src
 
-      build:
-        help: build all releasable packages
-        run: ./scripts/build.sh
+    build:
+      help: build all releasable packages
+      run: ./scripts/build.sh
 
-      ci:
-        help: run CI checks locally
-        run: |
-          makim all.lint
-          makim all.test
-          makim all.typecheck
-          makim all.build
-
+    ci:
+      help: run CI checks locally
+      run: |
+        makim all.lint
+        makim all.test
+        makim all.typecheck
+        makim all.build
   mobile:
     tasks:
       lint:
@@ -180,12 +179,6 @@ groups:
       test:
         help: test all Python API packages
         run: poetry run pytest packages/api-core/tests packages/restapi/tests
-
-        
-
-      test:
-        help: test all Python API packages
-
       typecheck:
         help: typecheck all Python API packages
         run: poetry run mypy packages/api-core/src packages/restapi/src

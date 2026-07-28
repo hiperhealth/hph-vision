@@ -4,18 +4,13 @@ import {
   ACUITY_PROTOCOL_VERSION,
 } from './protocol';
 import {OPTOTYPE_ORIENTATIONS, isCorrectOptotypeAnswer} from './optotypes';
-import type {Eye, InputMethod, ISODateString} from '../types';
+import type { ISODateString} from '../types';
 import type {
   AcuityResponse,
   AcuitySession,
   AcuitySessionOptions,
   AcuityTrial,
-  OptotypeOrientation,
-  AcuityResult,
-  FlowState,
   FlowEvent,
-  FlowMetrics,
-  FlowContext,
   AcuityFlow,
 } from './types';
 import {scoreAcuitySession} from './scoring';

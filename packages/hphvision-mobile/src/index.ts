@@ -1,8 +1,4 @@
-
-
-// Removed self-import to avoid module resolution errors
-
-declare const CORE_VERSION: string;
+import { VERSION as CORE_VERSION } from '@hiperhealth/hphvision-core';
 
 console.log(CORE_VERSION);
-export const VERSION = "1.0.0";
+export const VERSION = '1.0.0';

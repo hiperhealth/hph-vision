@@ -93,8 +93,6 @@ jobs:
           conda-solver: libmamba
           python-version: '3.11'
 
-      "@hiperhealth/hphvision-lib/*": ["packages/mobile-lib/src/*"]
-
       - name: Run mobile library tests and type checks
         run: |
           makim mobile-lib.test
