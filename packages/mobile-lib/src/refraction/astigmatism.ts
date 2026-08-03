@@ -49,6 +49,33 @@ export const normalizeAnswer = (
     answer.jccAxisB !== undefined ? normalizeAxis(answer.jccAxisB) : undefined,
 });
 
+const getCircularAxisDistance = (a: number, b: number): number => {
+  const diff =
+    Math.abs(normalizeAxis(a) - normalizeAxis(b)) % AXIS_WRAP_DEGREES;
+  return Math.min(diff, AXIS_WRAP_DEGREES - diff);
+};
+
+const isAxisInRange = (axis: number, [min, max]: [number, number]): boolean => {
+  const normAxis = normalizeAxis(axis);
+  const normMin = normalizeAxis(min);
+  const normMax = normalizeAxis(max);
+  if (normMin <= normMax) {
+    return normAxis >= normMin && normAxis <= normMax;
+  }
+  return normAxis >= normMin || normAxis <= normMax;
+};
+
+const getCircularAxisMidpoint = ([min, max]: [number, number]): number => {
+  const normMin = normalizeAxis(min);
+  const normMax = normalizeAxis(max);
+  if (normMin <= normMax) {
+    return Math.round((normMin + normMax) / 2);
+  }
+  const span = AXIS_WRAP_DEGREES - normMin + normMax;
+  const halfSpan = Math.round(span / 2);
+  return normalizeAxis(normMin + halfSpan);
+};
+
 export const generateClockDialPrompt = (): number[] => [
   30, 60, 90, 120, 150, 180,
 ];
@@ -59,14 +86,14 @@ export const generateFanChartPrompt = (): number[] =>
 export const generateLineOrientationPrompt = (
   currentAxisRange: [number, number],
 ): number[] => {
-  const mid = Math.round((currentAxisRange[0] + currentAxisRange[1]) / 2);
+  const mid = getCircularAxisMidpoint(currentAxisRange);
   return [normalizeAxis(mid - 10), normalizeAxis(mid), normalizeAxis(mid + 10)];
 };
 
 export const generateJccPrompt = (
   currentAxisRange: [number, number],
 ): [number, number] => {
-  const mid = Math.round((currentAxisRange[0] + currentAxisRange[1]) / 2);
+  const mid = getCircularAxisMidpoint(currentAxisRange);
   return [
     normalizeAxis(mid - JCC_AXIS_SHIFT),
     normalizeAxis(mid + JCC_AXIS_SHIFT),
@@ -78,37 +105,31 @@ export const isContradictoryAnswer = (
   currentAxisRange: [number, number],
 ): boolean => {
   const [min, max] = currentAxisRange;
+  let targetAxis: number | undefined;
 
   if (answer.selectedAxis !== undefined) {
-    if (answer.selectedAxis < min || answer.selectedAxis > max) {
-      const distMin = Math.abs(answer.selectedAxis - min);
-      const distMax = Math.abs(answer.selectedAxis - max);
-      if (
-        distMin > CONTRADICTION_THRESHOLD_AXIS &&
-        distMax > CONTRADICTION_THRESHOLD_AXIS
-      ) {
-        return true;
-      }
-    }
+    targetAxis = answer.selectedAxis;
+  } else if (answer.jccPreference === 'A' && answer.jccAxisA !== undefined) {
+    targetAxis = answer.jccAxisA;
+  } else if (answer.jccPreference === 'B' && answer.jccAxisB !== undefined) {
+    targetAxis = answer.jccAxisB;
   }
 
-  if (answer.jccPreference === 'A' && answer.jccAxisA !== undefined) {
-    if (
-      answer.jccAxisA < min - CONTRADICTION_THRESHOLD_AXIS ||
-      answer.jccAxisA > max + CONTRADICTION_THRESHOLD_AXIS
-    )
-      return true;
+  if (targetAxis === undefined) {
+    return false;
   }
 
-  if (answer.jccPreference === 'B' && answer.jccAxisB !== undefined) {
-    if (
-      answer.jccAxisB < min - CONTRADICTION_THRESHOLD_AXIS ||
-      answer.jccAxisB > max + CONTRADICTION_THRESHOLD_AXIS
-    )
-      return true;
+  if (isAxisInRange(targetAxis, currentAxisRange)) {
+    return false;
   }
 
-  return false;
+  const distMin = getCircularAxisDistance(targetAxis, min);
+  const distMax = getCircularAxisDistance(targetAxis, max);
+
+  return (
+    distMin > CONTRADICTION_THRESHOLD_AXIS &&
+    distMax > CONTRADICTION_THRESHOLD_AXIS
+  );
 };
 
 export const calculateAstigmatismConfidence = (
@@ -136,8 +157,11 @@ export const estimateAxisRange = (
     targetAxis = answer.selectedAxis;
     tolerance = NARROW_AXIS_TOLERANCE_DIAL;
   } else if (answer.pattern === 'jcc') {
-    if (answer.jccPreference === 'A') targetAxis = answer.jccAxisA;
-    if (answer.jccPreference === 'B') targetAxis = answer.jccAxisB;
+    if (answer.jccPreference === 'A') {
+      targetAxis = answer.jccAxisA;
+    } else if (answer.jccPreference === 'B') {
+      targetAxis = answer.jccAxisB;
+    }
     tolerance = NARROW_AXIS_TOLERANCE_JCC;
   }
 
@@ -145,13 +169,22 @@ export const estimateAxisRange = (
     return currentRange;
   }
 
-  const newMin = Math.max(1, targetAxis - tolerance);
-  const newMax = Math.min(180, targetAxis + tolerance);
+  if (isContradictoryAnswer(answer, currentRange)) {
+    return currentRange;
+  }
 
-  const nextMin = Math.max(currentRange[0], newMin);
-  const nextMax = Math.min(currentRange[1], newMax);
+  const newMin = normalizeAxis(targetAxis - tolerance);
+  const newMax = normalizeAxis(targetAxis + tolerance);
 
-  return nextMin <= nextMax ? [nextMin, nextMax] : [newMin, newMax];
+  if (currentRange[0] <= currentRange[1] && newMin <= newMax) {
+    const nextMin = Math.max(currentRange[0], newMin);
+    const nextMax = Math.min(currentRange[1], newMax);
+    if (nextMin <= nextMax) {
+      return [nextMin, nextMax];
+    }
+  }
+
+  return [newMin, newMax];
 };
 
 export const estimateCylinderRange = (
@@ -170,14 +203,13 @@ export const estimateCylinderRange = (
         : [cylMin, cylMin];
     }
   } else if (answer.pattern === 'jcc') {
-    if (answer.jccPreference === 'A' || answer.jccPreference === 'B') {
-      const cylMax = normalizeCylinder(Math.min(currentRange[1], -0.25));
-      return currentRange[0] <= cylMax
-        ? [currentRange[0], cylMax]
-        : [cylMax, cylMax];
+    const mid = normalizeCylinder((currentRange[0] + currentRange[1]) / 2);
+    if (answer.jccPreference === 'A') {
+      return [currentRange[0], mid];
+    } else if (answer.jccPreference === 'B') {
+      return [mid, currentRange[1]];
     } else if (answer.jccPreference === 'equal') {
-      const mid = normalizeCylinder((currentRange[0] + currentRange[1]) / 2);
-      return currentRange[0] <= mid ? [currentRange[0], mid] : [mid, mid];
+      return [mid, mid];
     }
   }
   return currentRange;

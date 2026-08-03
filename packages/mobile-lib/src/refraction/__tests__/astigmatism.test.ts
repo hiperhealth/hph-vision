@@ -60,11 +60,13 @@ describe('Astigmatism Primitives', () => {
     it('generates line orientation prompt with wrap around', () => {
       expect(generateLineOrientationPrompt([90, 100])).toEqual([85, 95, 105]);
       expect(generateLineOrientationPrompt([5, 15])).toEqual([180, 10, 20]);
+      expect(generateLineOrientationPrompt([170, 10])).toEqual([170, 180, 10]);
     });
 
     it('generates JCC prompt with wrap around', () => {
       expect(generateJccPrompt([90, 100])).toEqual([50, 140]);
       expect(generateJccPrompt([5, 15])).toEqual([145, 55]);
+      expect(generateJccPrompt([170, 10])).toEqual([135, 45]);
     });
   });
 
@@ -77,12 +79,12 @@ describe('Astigmatism Primitives', () => {
       expect(estimateAxisRange(answer, DEFAULT_AXIS_RANGE)).toEqual([75, 105]);
     });
 
-    it('estimates axis range for line orientation pattern', () => {
+    it('estimates axis range for line orientation pattern with wrap around', () => {
       const answer: AstigmatismAnswer = {
         pattern: 'lineOrientation',
         selectedAxis: 10,
       };
-      expect(estimateAxisRange(answer, DEFAULT_AXIS_RANGE)).toEqual([1, 25]);
+      expect(estimateAxisRange(answer, DEFAULT_AXIS_RANGE)).toEqual([175, 25]);
     });
 
     it('estimates axis range for JCC pattern', () => {
@@ -94,38 +96,61 @@ describe('Astigmatism Primitives', () => {
       expect(estimateAxisRange(answer, [75, 105])).toEqual([90, 100]);
     });
 
-    it('handles contradictory axis range by taking the most recent range', () => {
+    it('preserves current range when contradictory axis answer is given', () => {
       const answer: AstigmatismAnswer = {
         pattern: 'clockDial',
         selectedAxis: 10,
       };
-      expect(estimateAxisRange(answer, [90, 100])).toEqual([1, 25]);
+      expect(estimateAxisRange(answer, [90, 100])).toEqual([90, 100]);
+    });
+
+    it('handles incomplete JCC axis answers safely', () => {
+      const incompleteAnswer: AstigmatismAnswer = {
+        pattern: 'jcc',
+      };
+      expect(estimateAxisRange(incompleteAnswer, [90, 100])).toEqual([90, 100]);
     });
   });
 
   describe('cylinder estimation', () => {
     it('estimates cylinder range for fan chart pattern', () => {
-      const answer: AstigmatismAnswer = {pattern: 'fanChart', selectedAxis: 90};
+      const answer: AstigmatismAnswer = {
+        pattern: 'fanChart',
+        selectedAxis: 90,
+      };
       expect(estimateCylinderRange(answer, DEFAULT_CYLINDER_RANGE)).toEqual([
         -2.0, 0.0,
       ]);
     });
 
-    it('estimates cylinder range for JCC pattern (preference B)', () => {
-      const answer: AstigmatismAnswer = {
+    it('differentiates JCC cylinder preference A, B, and equal', () => {
+      const prefA: AstigmatismAnswer = {
+        pattern: 'jcc',
+        jccPreference: 'A',
+      };
+      const prefB: AstigmatismAnswer = {
         pattern: 'jcc',
         jccPreference: 'B',
-        jccAxisB: 95,
       };
-      expect(estimateCylinderRange(answer, [-2.0, 0.0])).toEqual([-2.0, -0.25]);
-    });
-
-    it('estimates cylinder range for JCC pattern (equal)', () => {
-      const answer: AstigmatismAnswer = {
+      const prefEqual: AstigmatismAnswer = {
         pattern: 'jcc',
         jccPreference: 'equal',
       };
-      expect(estimateCylinderRange(answer, [-4.0, 0.0])).toEqual([-4.0, -2.0]);
+
+      expect(estimateCylinderRange(prefA, [-4.0, 0.0])).toEqual([-4.0, -2.0]);
+      expect(estimateCylinderRange(prefB, [-4.0, 0.0])).toEqual([-2.0, 0.0]);
+      expect(estimateCylinderRange(prefEqual, [-4.0, 0.0])).toEqual([
+        -2.0, -2.0,
+      ]);
+    });
+
+    it('handles incomplete JCC cylinder answer safely', () => {
+      const incompleteAnswer: AstigmatismAnswer = {
+        pattern: 'jcc',
+      };
+      expect(estimateCylinderRange(incompleteAnswer, [-4.0, 0.0])).toEqual([
+        -4.0, 0.0,
+      ]);
     });
   });
 
@@ -138,12 +163,13 @@ describe('Astigmatism Primitives', () => {
       expect(isContradictoryAnswer(answer, [90, 100])).toBe(true);
     });
 
-    it('detects non-contradictory answers', () => {
+    it('detects non-contradictory answers with circular boundary', () => {
       const answer: AstigmatismAnswer = {
         pattern: 'clockDial',
-        selectedAxis: 95,
+        selectedAxis: 175,
       };
-      expect(isContradictoryAnswer(answer, [90, 100])).toBe(false);
+      expect(isContradictoryAnswer(answer, [5, 15])).toBe(false);
+      expect(isContradictoryAnswer(answer, [170, 10])).toBe(false);
     });
 
     it('detects JCC contradictions', () => {
@@ -155,14 +181,21 @@ describe('Astigmatism Primitives', () => {
       expect(isContradictoryAnswer(answer, [90, 100])).toBe(true);
     });
 
+    it('handles incomplete JCC contradiction check safely', () => {
+      const answer: AstigmatismAnswer = {
+        pattern: 'jcc',
+      };
+      expect(isContradictoryAnswer(answer, [90, 100])).toBe(false);
+    });
+
     it('calculates confidence for contradictory answer', () => {
       expect(calculateAstigmatismConfidence(1.0, true)).toBe(0.7);
-      expect(calculateAstigmatismConfidence(0.2, true)).toBe(0.1); // enforced min 0.1
+      expect(calculateAstigmatismConfidence(0.2, true)).toBe(0.1);
     });
 
     it('calculates confidence for consistent answer', () => {
       expect(calculateAstigmatismConfidence(0.8, false)).toBe(0.9);
-      expect(calculateAstigmatismConfidence(1.0, false)).toBe(1.0); // enforced max 1.0
+      expect(calculateAstigmatismConfidence(1.0, false)).toBe(1.0);
     });
   });
 
