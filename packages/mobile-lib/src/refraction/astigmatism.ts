@@ -176,12 +176,41 @@ export const estimateAxisRange = (
   const newMin = normalizeAxis(targetAxis - tolerance);
   const newMax = normalizeAxis(targetAxis + tolerance);
 
-  if (currentRange[0] <= currentRange[1] && newMin <= newMax) {
-    const nextMin = Math.max(currentRange[0], newMin);
-    const nextMax = Math.min(currentRange[1], newMax);
-    if (nextMin <= nextMax) {
-      return [nextMin, nextMax];
+  const getSubIntervals = ([min, max]: [number, number]): Array<
+    [number, number]
+  > =>
+    min <= max
+      ? [[min, max]]
+      : [
+          [min, AXIS_WRAP_DEGREES],
+          [1, max],
+        ];
+
+  const subCurrent = getSubIntervals(currentRange);
+  const subNew = getSubIntervals([newMin, newMax]);
+  const intersections: Array<[number, number]> = [];
+
+  for (const [cMin, cMax] of subCurrent) {
+    for (const [nMin, nMax] of subNew) {
+      const start = Math.max(cMin, nMin);
+      const end = Math.min(cMax, nMax);
+      if (start <= end) {
+        intersections.push([start, end]);
+      }
     }
+  }
+
+  if (intersections.length === 1) {
+    return intersections[0];
+  }
+
+  if (intersections.length === 2) {
+    intersections.sort((a, b) => a[0] - b[0]);
+    const [lower, upper] = intersections;
+    if (upper[0] > lower[1]) {
+      return [upper[0], lower[1]];
+    }
+    return DEFAULT_AXIS_RANGE;
   }
 
   return [newMin, newMax];

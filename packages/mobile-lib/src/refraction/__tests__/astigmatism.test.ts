@@ -110,6 +110,14 @@ describe('Astigmatism Primitives', () => {
       };
       expect(estimateAxisRange(incompleteAnswer, [90, 100])).toEqual([90, 100]);
     });
+
+    it('intersects new estimate with wrapped current range', () => {
+      const answer: AstigmatismAnswer = {
+        pattern: 'lineOrientation',
+        selectedAxis: 180,
+      };
+      expect(estimateAxisRange(answer, [170, 10])).toEqual([170, 10]);
+    });
   });
 
   describe('cylinder estimation', () => {
