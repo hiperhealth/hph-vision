@@ -5,8 +5,32 @@ import type {
   ResultRecommendation,
 } from '../types';
 
+export type {Eye, InputMethod, ISODateString, ResultRecommendation};
+
+export type CanonicalRefractionVocab =
+  | 'better'
+  | 'worse'
+  | 'same'
+  | 'one'
+  | 'two'
+  | 'unknown';
+
+export type RefractionAnswerToken = CanonicalRefractionVocab;
+
 export type BetterWorseSame = 'better' | 'worse' | 'same' | 'unknown';
 export type OneTwoChoice = 'one' | 'two' | 'same' | 'unknown';
+
+export type RefractionChoice = {
+  id: string;
+  labelKey: string;
+  value: RefractionAnswerToken;
+};
+
+export type RefractionPrompt = {
+  key: string;
+  textKey: string;
+  choices: RefractionChoice[];
+};
 
 export type RefractionStimulus = {
   id: string;
@@ -16,18 +40,27 @@ export type RefractionStimulus = {
   labelKey: string;
 };
 
+export type RefractionTrialKind =
+  | 'sphericalComparison'
+  | 'cylinderComparison'
+  | 'axisComparison';
+
 export type RefractionTrial = {
   id: string;
   eye: Eye;
-  kind: 'sphericalComparison' | 'cylinderComparison' | 'axisComparison';
+  kind: RefractionTrialKind;
   promptKey: string;
   optionA?: RefractionStimulus;
   optionB?: RefractionStimulus;
 };
 
+/** Alias for RefractionTrial representing a discrete step in the refraction protocol */
+export type RefractionStep = RefractionTrial;
+
 export type RefractionResponse = {
   trialId: string;
-  answer: BetterWorseSame | OneTwoChoice;
+  answer: RefractionAnswerToken;
+  rawInput?: string;
   responseTimeMs?: number;
   inputMethod: InputMethod;
   confidence?: number;
@@ -51,18 +84,29 @@ export type RefractionSession = {
   completed: boolean;
 };
 
+export type RefractionRange = [number, number];
+
 export type EyeRefractionEstimate = {
   sphere?: number;
   cylinder?: number;
   axis?: number;
   sphericalEquivalent?: number;
+  sphereRange?: RefractionRange;
+  cylinderRange?: RefractionRange;
+  axisRange?: RefractionRange;
   confidenceInterval?: {
-    sphere?: [number, number];
-    cylinder?: [number, number];
-    axis?: [number, number];
+    sphere?: RefractionRange;
+    cylinder?: RefractionRange;
+    axis?: RefractionRange;
   };
 };
 
+/**
+ * Result of a guided subjective refraction screening session.
+ *
+ * NOTE: The estimates provided here are for screening and prescription-estimation purposes only.
+ * They do not constitute a final clinical prescription and require review by a qualified clinician.
+ */
 export type RefractionResult = {
   rightEye?: EyeRefractionEstimate;
   leftEye?: EyeRefractionEstimate;
@@ -70,4 +114,67 @@ export type RefractionResult = {
   confidence: number;
   recommendation: ResultRecommendation;
   reliabilityWarnings: string[];
+};
+
+/** Flow states for the guided subjective refraction state machine */
+export type RefractionFlowState =
+  | 'intro'
+  | 'select_eye'
+  | 'baseline_check'
+  | 'show_option_one'
+  | 'show_option_two'
+  | 'ask_better_worse_same'
+  | 'collect_response'
+  | 'update_estimate'
+  | 'check_convergence'
+  | 'switch_eye'
+  | 'complete'
+  | 'aborted';
+
+export type RefractionFlowEvent =
+  | {type: 'START'}
+  | {
+      type: 'SELECT_EYE';
+      payload: {eye: Eye; targetMode?: 'single' | 'both'};
+    }
+  | {type: 'PROCEED'}
+  | {type: 'PRESENT_OPTION_ONE'}
+  | {type: 'PRESENT_OPTION_TWO'}
+  | {type: 'ASK_QUESTION'}
+  | {
+      type: 'SUBMIT_RESPONSE';
+      payload: {
+        answer: RefractionAnswerToken;
+        rawInput?: string;
+        inputMethod: InputMethod;
+        confidence?: number;
+        responseTimeMs?: number;
+      };
+    }
+  | {type: 'CHECK_CONVERGENCE'}
+  | {type: 'SWITCH_EYE'}
+  | {type: 'ABORT'}
+  | {type: 'RESTORE'; payload: {context: RefractionFlowContext}};
+
+export type RefractionFlowContext = {
+  state: RefractionFlowState;
+  selectedEyeMode: 'right' | 'left' | 'both';
+  activeEye: Eye;
+  rightEyeSession?: RefractionSession;
+  leftEyeSession?: RefractionSession;
+  binocularSession?: RefractionSession;
+  currentTrialIndex: number;
+  currentTrial?: RefractionTrial;
+  lastResponse?: RefractionResponse;
+  contradictionCount: number;
+  consecutiveSameCount: number;
+  convergenceReached: boolean;
+  result?: RefractionResult;
+  warnings: string[];
+};
+
+export type SerializedRefractionFlowState = {
+  version: 'refraction-flow-v1';
+  context: RefractionFlowContext;
+  serializedAt: ISODateString;
 };
