@@ -36,7 +36,9 @@ jobs:
       matrix:
         python_version: ['3.11', '3.12', '3.13', '3.14']
         os: [ubuntu]
+
     runs-on: ${{ matrix.os }}-latest
+
     concurrency:
       group: ci-python-api-${{ matrix.os }}-${{ matrix.python_version }}-${{ github.ref }}
       cancel-in-progress: true
@@ -72,6 +74,7 @@ jobs:
   mobile-tests:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+
     concurrency:
       group: ci-mobile-${{ github.ref }}
       cancel-in-progress: true
@@ -101,7 +104,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-        run_install: false
+          run_install: false
 
       - name: Install JS dependencies
         run: pnpm install --frozen-lockfile
@@ -119,6 +122,7 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+
     concurrency:
       group: ci-linter-${{ github.ref }}
       cancel-in-progress: true
@@ -148,7 +152,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '10'
           run_install: false
 
       - name: Install dependencies
@@ -164,5 +167,5 @@ jobs:
           makim all.lint
 
       - name: Setup tmate session
-        if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"
+        if: ${{ failure() && contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging') }}
         uses: mxschmitt/action-tmate@v3

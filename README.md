@@ -1,57 +1,92 @@
-# HPH Vision
+ # HPH Vision
 
-HPH Vision is organized as a monorepo with a React Native mobile app, a shared
-React Native library, a FastAPI service, and a shared Python backend library.
+HPH Vision is organized as a TypeScript monorepo using **pnpm workspaces** and **Turborepo**. The repository contains a React Native mobile application, a shared React Native library, a FastAPI service, and a shared Python backend library.
 
-## Structure
+## Repository Structure
 
 ```text
 packages/
-  mobile/       React Native application package: @hiperhealth/hphvision
-  mobile-lib/   Shared React Native library package: @hiperhealth/hphvision-lib
-  restapi/      FastAPI application package
-  api-core/     Shared backend domain/services package
+├── mobile/          React Native application (@hiperhealth/hphvision)
+├── mobile-lib/      Shared React Native library (@hiperhealth/hphvision-lib)
+├── hphvision-core/  Shared TypeScript core package
+├── restapi/         FastAPI application
+└── api-core/        Shared Python backend library
 ```
 
-## JavaScript / React Native setup
+## Monorepo Tooling
 
-Install JS dependencies from the repository root:
+This repository uses:
+
+- pnpm Workspaces
+- Turborepo
+- TypeScript Project References
+- Poetry (Python dependency management)
+
+---
+
+# JavaScript Setup
+
+Install JavaScript dependencies from the repository root:
 
 ```bash
-yarn install
+pnpm install
 ```
 
-Run Metro:
+Build all workspace packages:
 
 ```bash
-yarn mobile:start
+pnpm build
 ```
 
-Run Android from the CLI:
+Run all tests:
 
 ```bash
-yarn mobile:android
+pnpm test
 ```
 
-Run iOS from the CLI:
+Run lint:
 
 ```bash
-yarn mobile:ios
+pnpm lint
 ```
 
-### Android Studio
+Run TypeScript type checking:
 
-Open this folder in Android Studio:
+```bash
+pnpm typecheck
+```
+
+Run all checks:
+
+```bash
+pnpm check
+```
+
+---
+
+# Mobile Development
+
+Run the development server:
+
+```bash
+pnpm mobile:dev
+```
+
+Run mobile lint:
+
+```bash
+pnpm mobile:lint
+```
+
+Android Studio project:
 
 ```text
 packages/mobile/android
 ```
 
-Do not open the repository root as the Android project. The Gradle project is
-inside `packages/mobile/android`, while JS dependencies are hoisted to root
-`node_modules` by Yarn workspaces.
+Do **not** open the repository root as the Android project.
 
-If Android Studio asks for the SDK path, create this untracked file:
+If Android Studio requests the SDK location, create the untracked file:
 
 ```text
 packages/mobile/android/local.properties
@@ -63,53 +98,133 @@ Example:
 sdk.dir=/home/<user>/Android/Sdk
 ```
 
-## Python / FastAPI setup with Poetry
+---
 
-Install Python dependencies from the repository root:
+# Python / FastAPI
+
+Install Python dependencies:
 
 ```bash
 poetry install
 ```
 
-Run the API in development mode:
+Run the API:
 
 ```bash
-yarn api:dev
+pnpm api:dev
 ```
 
-Equivalent direct Poetry command:
+Equivalent command:
 
 ```bash
 poetry run uvicorn hph_vision_api.main:app --app-dir packages/restapi/src --reload
 ```
 
-Health check endpoint:
+Health endpoint:
 
 ```text
 GET /health
 ```
 
-## Common commands
+---
+
+# Python Commands
+
+Lint:
 
 ```bash
-yarn lint
-yarn test
-yarn typecheck
-yarn format
+pnpm api:lint
 ```
 
-Python-only commands:
+Format:
 
 ```bash
-yarn api:lint
-yarn api:test
-yarn api:format
+pnpm api:format
 ```
 
-Mobile-only commands:
+Tests:
 
 ```bash
-yarn mobile:lint
-yarn mobile:test
-yarn mobile:typecheck
+pnpm api:test
 ```
+
+---
+
+# Workspace Packages
+
+## @hiperhealth/hphvision-core
+
+Shared TypeScript package used across workspace packages.
+
+Location:
+
+```text
+packages/hphvision-core
+```
+
+## @hiperhealth/hphvision
+
+React Native application.
+
+Location:
+
+```text
+packages/mobile
+```
+
+## @hiperhealth/hphvision-lib
+
+Shared React Native library.
+
+Location:
+
+```text
+packages/mobile-lib
+```
+
+---
+
+# Development Workflow
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Run all quality checks:
+
+```bash
+pnpm check
+```
+
+Build all packages:
+
+```bash
+pnpm build
+```
+
+---
+
+# Package Managers
+
+JavaScript
+
+- pnpm
+
+Python
+
+- Poetry
+
+---
+
+# CI
+
+The repository CI validates:
+
+- Build
+- Lint
+- Tests
+- Type checking
+
+using pnpm workspaces, Turborepo, Poetry, and Makim.
