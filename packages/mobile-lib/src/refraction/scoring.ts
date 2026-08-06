@@ -114,7 +114,7 @@ export const scoreRefractionSession = (
   };
 };
 
-/** Combine results from multiple sessions (e.g. right eye and left eye) */
+// combine results from multiple sessions (e.g. right eye and left eye)
 export const combineRefractionResults = (
   results: RefractionResult[],
 ): RefractionResult => {
@@ -125,9 +125,15 @@ export const combineRefractionResults = (
   const warningsSet = new Set<string>();
 
   for (const res of results) {
-    if (res.rightEye) rightEye = res.rightEye;
-    if (res.leftEye) leftEye = res.leftEye;
-    if (res.binocular) binocular = res.binocular;
+    if (res.rightEye) {
+      rightEye = res.rightEye;
+    }
+    if (res.leftEye) {
+      leftEye = res.leftEye;
+    }
+    if (res.binocular) {
+      binocular = res.binocular;
+    }
     totalConfidence += res.confidence;
     res.reliabilityWarnings.forEach(w => warningsSet.add(w));
   }
