@@ -4,7 +4,7 @@
 
 > ### REGULATORY & CLINICAL SAFETY DISCLAIMER
 >
-> The `hphvision` mobile application and its associated physical visor/cardboard alignment tools are designed strictly as an informational vision screening and prescription estimation helper.
+> The `hphvision` mobile application and its associated physical visor/cardboard alignment tools are designed strictly as an informational vision screening and subjective refraction support platform.
 >
 > This platform **does not** perform medical diagnostic decisions, does not replace objective refraction devices (e.g., auto-refractors, lensmeters), and does not replace a comprehensive, in-person ocular health examination by a licensed ophthalmologist or optometrist.
 >
@@ -20,18 +20,18 @@ This section details the verification strategies, metrics, and automated/manual 
 
 To ensure the printed cardboard visor maintains the correct optical test distance (vertex distance and overall target distance), the PDF generator must be validated against printer scaling distortions.
 
-- **Verification Metric:** The printed template must contain a calibration 50mm x 50mm square guide. The physical printout must measure exactly $50.0 \text{ mm} \pm 0.5 \text{ mm}$ along both axes under manual caliper measurement.
-- **Test Protocol:**
-  1. Generate PDF templates under varying virtual DPI configs and print using standard layouts (e.g., "Fit to Page", "Actual Size", and "Scale 100%").
-  2. Measure the calibration margins. Verify that scaling validation software flags templates printed outside the $\pm 0.5\text{ mm}$ boundary, blocking calibration on the device screen.
+- **Proposed Validation Target:** The printed template is proposed to contain a calibration 50mm x 50mm square guide, with physical printout target dimensions of exactly $50.0 \text{ mm} \pm 0.5 \text{ mm}$ along both axes under manual caliper measurement (proposed engineering tolerance target).
+- **Planned Test Protocol:**
+  1. Generate PDF templates under varying virtual DPI configurations and print using standard layouts (e.g., "Fit to Page", "Actual Size", and "Scale 100%").
+  2. Measure the calibration margins. Verify that scaling validation software flags templates printed outside the proposed $\pm 0.5\text{ mm}$ boundary, blocking calibration on the device screen.
 - **Affected Core Files:** `packages/mobile-lib/src/template-generator/` and `packages/mobile/src/features/template-generation/TemplateGenerationScreen.tsx`.
 
 ### 1.2 Phone Fit & Mechanical Stability
 
 The physical chassis must lock the smartphone into position to prevent vertex distance drift during testing.
 
-- **Verification Metric:** Phone displacement within the visor slot must be $\le 2.0\text{ mm}$ along the optical axis under standard rotational and tilt movements.
-- **Test Protocol:**
+- **Proposed Validation Target:** Phone displacement within the visor slot is proposed to target $\le 2.0\text{ mm}$ along the optical axis under standard rotational and tilt movements.
+- **Planned Test Protocol:**
   1. Secure different phone models (e.g., varying weights and chassis materials) into the cardboard visor.
   2. Tilt the visor $\pm 30^\circ$ and measure mechanical slip.
   3. Verify that the visor template slot dimensions adapt to the calibrated phone profiles retrieved from `packages/mobile-lib/src/device-profile/`.
@@ -40,16 +40,19 @@ The physical chassis must lock the smartphone into position to prevent vertex di
 
 Contrast sensitivity calculations depend on constant, predictable optotype luminance.
 
-- **Verification Metric:** Display luminance of the Tumbling E optotype on [AcuityTestScreen.tsx](packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx) must be maintained at a minimum of $85 \text{ cd/m}^2$ (standard visual testing luminance) with ambient light contrast levels $\ge 90\%$.
-- **Test Protocol:**
-  1. Use the front-facing camera/ambient light sensor in `packages/mobile/src/integrations/camera/` to measure background lux levels before test initialization.
-  2. Programmatically lock screen brightness to 100% or query the operating system brightness level.
-  3. If ambient light lux levels are outside the range of 100–500 lux (excessive glare or dark room), display a UI warning on `AcuityTestScreen.tsx` to stop the session.
+- **Current Implementation Status:** The codebase currently relies on manual instruction screens (e.g., [VisorAssemblyScreen.tsx](packages/mobile/src/features/visor-assembly/VisorAssemblyScreen.tsx)) prompting the user to clean their screen and maximize brightness manually. Dynamic hardware camera or lux sensor measurement and programmatically locked system brightness controls are planned features; camera integrations are currently stubs (see [camera/index.ts](packages/mobile/src/integrations/camera/index.ts)).
+- **Planned Validation Protocol (Proposed Targets):**
+  - **Proposed Luminance Target:** Display luminance of the Tumbling E optotype on the screening interface is proposed to meet a target minimum of $85 \text{ cd/m}^2$ (standard clinical visual testing luminance, ISO 8596 / ANSI Z80.21) with ambient light contrast levels $\ge 90\%$.
+  - **Proposed Ambient Lux Target:** Ambient illumination is proposed to target a range of 100–500 lux (to avoid glare or extreme darkness).
+  - **Planned Test Protocol:**
+    1. Query the camera/light sensor in `packages/mobile/src/integrations/camera/` to measure background lux levels before test initialization.
+    2. Programmatically lock system brightness to 100% or query the OS brightness level.
+    3. Assert that if ambient light levels fall outside the proposed 100–500 lux target range, a UI warning is shown on the acuity test screen to halt the session.
 
 ### 1.4 Voice Recognition vs. Environmental Noise
 
-- **Verification Metric:** The word error rate (WER) for orientation vocal inputs ("Up", "Down", "Left", "Right") must be $\le 5\%$ in noise environments up to 55 dBA.
-- **Test Protocol:**
+- **Proposed Validation Target:** The word error rate (WER) for orientation vocal inputs ("Up", "Down", "Left", "Right") is proposed to target $\le 5\%$ under ambient noise levels up to 55 dBA.
+- **Planned Test Protocol:**
   1. Play white noise at 45 dBA, 55 dBA, and 65 dBA while injecting synthetic speech commands into `packages/mobile/src/integrations/speech-recognition/`.
   2. Verify that if word recognition fails 3 consecutive times, the system triggers a 10-second warning timeout and offers manual touch selection overrides.
 
@@ -69,12 +72,14 @@ The state transitions of the clinical testing pipeline must be closed and unbypa
 
 ### 1.6 Offline Data Integrity
 
-- **Verification Metric:** 100% of testing data points must persist locally when the user has no network connection, with automatic syncing upon reconnect.
-- **Test Protocol:**
-  1. Enable airplane mode on the test device.
-  2. Complete the visual acuity and refraction test flows.
-  3. Verify via `packages/mobile/src/state/persistence.ts` that local state payload matches the final `ScreeningReport` format.
-  4. Restore network connectivity and assert HTTP `POST` success to the FastAPI `restapi` endpoint.
+- **Current Implementation Status:** The mobile application's session persistence is currently limited to in-memory draft storage in `packages/mobile/src/state/persistence.ts`, which does not persist across application restarts or support offline-queue synchronization. True offline local storage (AsyncStorage/SQLite) and automatic background synchronization are planned features.
+- **Planned Validation Protocol (Proposed Targets):**
+  - **Proposed Target:** 100% of completed screening data points are targeted to persist locally when the user has no network connection, with automatic synchronization upon network reconnection.
+  - **Planned Test Protocol:**
+    1. Simulate offline conditions by disconnecting network adapters or enabling airplane mode.
+    2. Complete the visual acuity and refraction test flows.
+    3. Verify that the local state payload matches the final `ScreeningReport` format.
+    4. Restore network connectivity and verify that background synchronization triggers an HTTP `POST` success to the FastAPI `restapi` endpoint.
 
 ---
 
@@ -84,28 +89,28 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 ### 2.1 Visor Assembly Repeatability
 
-- **Verification Metric:** At least 90% of recruited non-technical participants must successfully print, cut out, and assemble the cardboard visor within 15 minutes using only the printed visual guidelines.
+- **Proposed Validation Target:** At least 90% of recruited non-technical participants are proposed to successfully print, cut out, and assemble the cardboard visor within 15 minutes using only the printed visual guidelines.
 - **Evaluation Criteria:**
   - Participant is provided a standard A4/Letter print of the template.
-  - Success is defined as: stable assembly, slots aligned, and the measured phone-to-eye distance is within $10\text{ mm}$ of the target vertex distance.
+  - Success is defined as: stable assembly, slots aligned, and the measured phone-to-eye distance is within a target of $10\text{ mm}$ of the target vertex distance.
 
 ### 2.2 Instructional Comprehension & Cognitive Load
 
-- **Verification Metric:** System Usability Scale (SUS) score of $\ge 80$ (indicating "Excellent" usability) across a diverse cohort of testers.
+- **Proposed Validation Target:** A System Usability Scale (SUS) score target of $\ge 80$ (Brooke, 1996) across a diverse cohort of testers.
 - **Evaluation Criteria:**
   - Post-test evaluation questionnaires measuring self-guided setup comprehension, voice navigation ease, and touch layout comfort.
 
 ### 2.3 Demographic & Elderly Accessibility UX
 
-- **Verification Metric:** 95% completion rate of screening tasks by users aged 60 and older.
+- **Proposed Validation Target:** A task completion rate target of 95% for users aged 60 and older.
 - **Evaluation Criteria:**
-  - **Dynamic Text Scaling:** Ensure instructions and buttons on `OnboardingScreen` and `TriageScreen` support font scaling up to 200% without breaking layouts.
+  - **Dynamic Text Scaling:** Ensure instructions and buttons on `OnboardingScreen` and `TriageScreen` support font scaling up to 200% (WCAG 2.1 accessibility guidelines) without breaking layouts.
   - **TTS Integration:** Text-to-speech fallback must run in parallel for instruction blocks.
-  - **Simplified Input Interfaces:** Pressable target zones on answer keys must be $\ge 48 \text{ dp}$ in size.
+  - **Simplified Input Interfaces:** Pressable target zones on answer keys must target $\ge 48 \text{ dp}$ in size.
 
 ### 2.4 Voice-to-Touch Fallback Sufficiency
 
-- **Verification Metric:** Seamless transition from voice input mode to touch input mode with zero trial resets.
+- **Proposed Validation Target:** Transitions from voice input mode to touch input fallback are proposed to occur within $500\text{ ms}$ with zero trial resets.
 - **Test Cases:**
   1. During active trial #3 on `AcuityTestScreen.tsx`, mock a voice assistant failure (timeout).
   2. The system must render touch controls within $500\text{ ms}$.
@@ -113,7 +118,7 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 ### 2.5 Total Session Timeout Metrics
 
-- **Verification Metric:** Complete screening session (consent, onboarding, triage, acuity, and refraction) must take $\le 12$ minutes to complete to prevent visual and cognitive fatigue.
+- **Proposed Validation Target:** A complete screening session (consent, onboarding, triage, acuity, and refraction) is proposed to target $\le 12$ minutes to prevent visual and cognitive fatigue (ISO 9241-11).
 - **Evaluation Criteria:**
   - Log timestamps for trial intervals to identify bottleneck questions or lagging voice recognition states.
 
@@ -121,7 +126,10 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 ## 3. Future Clinical Validation Framework
 
-This framework outlines the methodology for a future clinical pilot study to validate the diagnostic accuracy of the `hphvision` platform against gold-standard ophthalmic exams. This protocol is structured for submission to an **Institutional Review Board (IRB)**.
+This framework outlines a proposed methodology for a future clinical pilot study to validate the diagnostic accuracy of the `hphvision` platform against gold-standard ophthalmic exams.
+
+> [!IMPORTANT]
+> This framework is a proposed draft only. Any future clinical study, protocol, or pilot study remains subject to full ethical, clinical, statistical, regulatory, and jurisdiction-specific reviews and approvals by an Institutional Review Board (IRB) or relevant regulatory body prior to initiation.
 
 ### 3.1 Study Objectives
 
@@ -129,9 +137,9 @@ To evaluate the clinical sensitivity, specificity, and agreement limits of the `
 
 ### 3.2 Visual Acuity Benchmarking
 
-- **Clinical Gold Standard:** Calibrated digital ETDRS logMAR chart or a physical, illuminated Snellen eye chart administered at a distance of 6 meters (20 feet) by a certified optometrist.
+- **Clinical Gold Standard:** Calibrated digital ETDRS logMAR chart or a physical, illuminated Snellen eye chart administered at a distance of 6 meters (20 feet) by a certified optometrist (complying with ISO 8596 standard guidelines).
 - **App Protocol:** Automated monocular visual acuity screening using the Tumbling E optotype on [AcuityTestScreen.tsx](packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx).
-- **Statistical Metric:** Mean difference in visual acuity scores between the app and the gold standard must be $\le 0.1 \text{ logMAR}$ (equivalent to 1 line on a standard eye chart).
+- **Proposed Validation Target:** The mean difference in visual acuity scores between the app and the gold standard is proposed to target $\le 0.1 \text{ logMAR}$ (equivalent to 1 line on a standard eye chart, which is the standard threshold for clinical equivalence).
 
 ### 3.3 Subjective Refraction Benchmarking
 
@@ -145,8 +153,8 @@ To evaluate the clinical sensitivity, specificity, and agreement limits of the `
 
 ### 3.4 Statistical Boundaries & Agreement Limits
 
-To validate the platform for clinical screening safety, the study must establish the following limits of agreement using **Bland-Altman analysis**:
+To validate the platform for clinical screening safety, the study proposes to establish the following target limits of agreement using **Bland-Altman analysis** (Bland & Altman, 1986):
 
-- **Sphere & Cylinder Power:** $\ge 85\%$ of estimations must fall within $\pm 0.50 \text{ Diopters (D)}$ of the phoropter gold-standard measurement.
-- **Cylinder Axis:** For cylinder powers $\ge 0.75\text{ D}$, the cylinder axis estimate must be within $\pm 15^\circ$ of the gold-standard axis.
-- **Primary Endpoint Criteria:** The platform meets pilot validation criteria if the SE limit of agreement is within $\pm 0.50\text{ D}$ and visual acuity is within $\pm 0.1 \text{ logMAR}$ with zero false-negative triage red flags.
+- **Sphere & Cylinder Power:** A target of $\ge 85\%$ of estimations falling within $\pm 0.50 \text{ Diopters (D)}$ of the phoropter gold-standard measurement (based on clinical screening benchmarks, e.g., ANSI Z80.28 / ISO 24157).
+- **Cylinder Axis:** For cylinder powers $\ge 0.75\text{ D}$, the cylinder axis estimate target is proposed to be within $\pm 15^\circ$ of the gold-standard axis.
+- **Proposed Pilot Validation Target:** The platform is proposed to meet pilot validation criteria if the SE limit of agreement is within $\pm 0.50\text{ D}$ and visual acuity is within $\pm 0.1 \text{ logMAR}$ with zero false-negative triage red flags.
