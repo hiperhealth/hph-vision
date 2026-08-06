@@ -54,10 +54,8 @@ const SYNONYM_MAP: Record<string, RefractionAnswerToken> = {
   uncertain: 'unknown',
 };
 
-/**
- * Normalizes a raw user input string (from voice recognition, touch, or text)
- * into a canonical RefractionAnswerToken.
- */
+// takes a raw user input string (from voice recognition, touch, or text)
+// and maps it to a canonical answer token
 export const normalizeRefractionAnswer = (
   rawInput: string,
 ): RefractionAnswerToken => {

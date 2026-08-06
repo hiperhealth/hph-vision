@@ -14,16 +14,19 @@ import type {
   SerializedRefractionFlowState,
 } from './types';
 
-/** Initializes a new guided subjective refraction flow context */
 export const createRefractionFlow = (options?: {
   eyeMode?: 'right' | 'left' | 'both';
   initialSphere?: number;
   maxTrials?: number;
+  now?: () => string;
 }): RefractionFlowContext => {
   return {
     state: 'intro',
     selectedEyeMode: options?.eyeMode ?? 'both',
     activeEye: options?.eyeMode === 'left' ? 'left' : 'right',
+    initialSphere: options?.initialSphere ?? 0,
+    maxTrials: options?.maxTrials ?? 8,
+    now: options?.now,
     currentTrialIndex: 0,
     contradictionCount: 0,
     consecutiveSameCount: 0,
@@ -32,11 +35,14 @@ export const createRefractionFlow = (options?: {
   };
 };
 
+// checks if the current answer contradicts the previous one
 const isContradictoryAnswer = (
   prev?: RefractionResponse,
   curr?: RefractionResponse,
 ): boolean => {
-  if (!prev || !curr) return false;
+  if (!prev || !curr) {
+    return false;
+  }
   const isPrevOne = prev.answer === 'better' || prev.answer === 'one';
   const isPrevTwo = prev.answer === 'worse' || prev.answer === 'two';
   const isCurrOne = curr.answer === 'better' || curr.answer === 'one';
@@ -48,8 +54,12 @@ const isContradictoryAnswer = (
 const getActiveSession = (
   context: RefractionFlowContext,
 ): RefractionSession | undefined => {
-  if (context.activeEye === 'right') return context.rightEyeSession;
-  if (context.activeEye === 'left') return context.leftEyeSession;
+  if (context.activeEye === 'right') {
+    return context.rightEyeSession;
+  }
+  if (context.activeEye === 'left') {
+    return context.leftEyeSession;
+  }
   return context.binocularSession;
 };
 
@@ -66,13 +76,20 @@ const updateActiveSession = (
   return {...context, binocularSession: session};
 };
 
+// scores all completed sessions and merges them into one result
 const computeFlowResults = (
   context: RefractionFlowContext,
 ): RefractionResult => {
   const sessions: RefractionSession[] = [];
-  if (context.rightEyeSession) sessions.push(context.rightEyeSession);
-  if (context.leftEyeSession) sessions.push(context.leftEyeSession);
-  if (context.binocularSession) sessions.push(context.binocularSession);
+  if (context.rightEyeSession) {
+    sessions.push(context.rightEyeSession);
+  }
+  if (context.leftEyeSession) {
+    sessions.push(context.leftEyeSession);
+  }
+  if (context.binocularSession) {
+    sessions.push(context.binocularSession);
+  }
 
   const individualResults = sessions.map(scoreRefractionSession);
   const combined = combineRefractionResults(individualResults);
@@ -87,6 +104,7 @@ const computeFlowResults = (
   if (context.state === 'aborted') {
     additionalWarnings.push('aborted_session');
   }
+  // warn if we expected both eyes but only finished one
   if (
     context.selectedEyeMode === 'both' &&
     (!context.rightEyeSession || !context.leftEyeSession)
@@ -108,7 +126,9 @@ const computeFlowResults = (
   };
 };
 
-/** Pure state transition function for the refraction flow state machine */
+// pure state transition function - takes the current context + an event and returns the next context
+// submit_response is accepted from show_option_one, show_option_two, and ask_better_worse_same
+// so the ui can skip presentation steps if it wants to collect a quick answer
 export const transitionRefractionFlow = (
   context: RefractionFlowContext,
   event: RefractionFlowEvent,
@@ -142,7 +162,11 @@ export const transitionRefractionFlow = (
         const mode =
           event.payload.targetMode ??
           (eye === 'binocular' ? 'single' : context.selectedEyeMode);
-        const session = createRefractionSession({eye});
+        const session = createRefractionSession({
+          eye,
+          initialSphere: context.initialSphere,
+          maxTrials: context.maxTrials,
+        });
         const firstTrial = nextRefractionTrial(session);
 
         const updated: RefractionFlowContext = {
@@ -163,7 +187,7 @@ export const transitionRefractionFlow = (
     }
 
     case 'baseline_check': {
-      if (event.type === 'PROCEED') {
+      if (event.type === 'PROCEED' || event.type === 'PRESENT_OPTION_ONE') {
         const session = getActiveSession(context);
         const trial = session ? nextRefractionTrial(session) : undefined;
         return {
@@ -230,7 +254,7 @@ export const transitionRefractionFlow = (
           inputMethod,
           confidence,
           responseTimeMs,
-          createdAt: new Date().toISOString(),
+          createdAt: context.now ? context.now() : new Date().toISOString(),
         };
 
         const updatedSession = recordRefractionResponse(
@@ -300,7 +324,7 @@ export const transitionRefractionFlow = (
             };
           }
 
-          // Complete flow for all eyes
+          // wrapping it up
           const finalContext: RefractionFlowContext = {
             ...context,
             state: 'complete',
@@ -312,8 +336,7 @@ export const transitionRefractionFlow = (
             result: computeFlowResults(finalContext),
           };
         }
-
-        // Continue to next trial
+        // move to next one
         return {
           ...context,
           state: 'show_option_one',
@@ -327,7 +350,11 @@ export const transitionRefractionFlow = (
     case 'switch_eye': {
       if (event.type === 'SWITCH_EYE' || event.type === 'PROCEED') {
         const nextEye: Eye = context.activeEye === 'right' ? 'left' : 'right';
-        const session = createRefractionSession({eye: nextEye});
+        const session = createRefractionSession({
+          eye: nextEye,
+          initialSphere: context.initialSphere,
+          maxTrials: context.maxTrials,
+        });
         const firstTrial = nextRefractionTrial(session);
 
         const updated: RefractionFlowContext = {
@@ -346,14 +373,13 @@ export const transitionRefractionFlow = (
 
     case 'complete':
     case 'aborted':
-      // Terminal states
       return context;
   }
 
   return context;
 };
 
-/** Serializes a RefractionFlowContext into a JSON string */
+// serializes the flow context to a json string for persistence
 export const serializeRefractionFlowState = (
   context: RefractionFlowContext,
 ): string => {
@@ -365,13 +391,17 @@ export const serializeRefractionFlowState = (
   return JSON.stringify(payload);
 };
 
-/** Restores a RefractionFlowContext from a serialized JSON string */
+// restores a flow context from a previously serialized json string
+// throws if the payload is malformed or from an incompatible version
 export const restoreRefractionFlowState = (
   serializedString: string,
 ): RefractionFlowContext => {
   const parsed = JSON.parse(serializedString) as SerializedRefractionFlowState;
   if (!parsed || parsed.version !== 'refraction-flow-v1' || !parsed.context) {
-    throw new Error('Invalid or incompatible refraction flow state payload');
+    throw new Error('invalid or incompatible refraction flow state payload');
+  }
+  if (!parsed.context.state) {
+    throw new Error('malformed context — missing required state field');
   }
   return parsed.context;
 };
