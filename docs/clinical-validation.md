@@ -158,3 +158,17 @@ To validate the platform for clinical screening safety, the study proposes to es
 - **Sphere & Cylinder Power:** A target of $\ge 85\%$ of estimations falling within $\pm 0.50 \text{ Diopters (D)}$ of the phoropter gold-standard measurement (based on clinical screening benchmarks, e.g., ANSI Z80.28 / ISO 24157).
 - **Cylinder Axis:** For cylinder powers $\ge 0.75\text{ D}$, the cylinder axis estimate target is proposed to be within $\pm 15^\circ$ of the gold-standard axis.
 - **Proposed Pilot Validation Target:** The platform is proposed to meet pilot validation criteria if the SE limit of agreement is within $\pm 0.50\text{ D}$ and visual acuity is within $\pm 0.1 \text{ logMAR}$ with zero false-negative triage red flags.
+
+---
+
+## References
+
+1. **ISO 8596:2017** — Ophthalmic optics — Visual acuity testing — Standard and clinical optotypes and their presentation. International Organization for Standardization.
+2. **ANSI Z80.21-2020** — Instruments for the measurement of visual acuity. American National Standards Institute.
+3. **ANSI Z80.28-2017** — Methods for reporting optical aberrations of eyes. American National Standards Institute.
+4. **ISO 24157:2008** — Ophthalmic optics and instruments — Reporting aberrations of the human eye. International Organization for Standardization.
+5. **ISO 9241-11:2018** — Ergonomics of human-system interaction — Part 11: Usability: definitions and concepts. International Organization for Standardization.
+6. **WCAG 2.1 (2018)** — Web Content Accessibility Guidelines 2.1. W3C Recommendation. https://www.w3.org/TR/WCAG21/
+7. **Bland, J.M. & Altman, D.G. (1986)** — Statistical methods for assessing agreement between two methods of clinical measurement. _The Lancet_, 327(8476), 307–310. https://doi.org/10.1016/S0140-6736(86)90837-8
+8. **Brooke, J. (1996)** — SUS: a 'quick and dirty' usability scale. In P.W. Jordan et al. (Eds.), _Usability Evaluation in Industry_, pp. 189–194. Taylor & Francis.
+9. **Refraction accuracy thresholds** — the proposed $\pm 0.50\text{ D}$ sphere/cylinder and $\pm 15°$ axis limits are derived from common clinical screening benchmarks used in mobile refraction validation studies (e.g., Bastawrous et al., 2015; Ciuffreda & Rosenfield, 2007) and are consistent with ANSI Z80.28 / ISO 24157 reporting tolerances.
