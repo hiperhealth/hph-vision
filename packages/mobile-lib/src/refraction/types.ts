@@ -56,6 +56,10 @@ export type EyeRefractionEstimate = {
   cylinder?: number;
   axis?: number;
   sphericalEquivalent?: number;
+  // direct range fields — [min, max] bounds for each component
+  sphereRange?: [number, number];
+  cylinderRange?: [number, number];
+  axisRange?: [number, number];
   confidenceInterval?: {
     sphere?: [number, number];
     cylinder?: [number, number];

@@ -142,6 +142,56 @@ describe('validateEyeRefractionEstimate', () => {
     );
     expect(result.ok).toBe(false);
   });
+
+  it('accepts valid direct sphereRange, cylinderRange, and axisRange fields', () => {
+    const result = validateEyeRefractionEstimate(
+      {
+        sphere: -1.0,
+        sphereRange: [-1.5, -0.5],
+        cylinderRange: [-0.5, 0.0],
+        axisRange: [80, 100],
+      },
+      'rightEye',
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  it('rejects an invalid direct sphereRange where min > max', () => {
+    const result = validateEyeRefractionEstimate(
+      {sphereRange: [0.5, -0.5]},
+      'rightEye',
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0].code).toBe('invalid_refraction_range_order');
+      expect(result.errors[0].field).toBe('rightEye.sphereRange');
+    }
+  });
+
+  it('rejects a non-finite value in a direct cylinderRange', () => {
+    const result = validateEyeRefractionEstimate(
+      {cylinderRange: [-0.5, Infinity]},
+      'leftEye',
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0].code).toBe('invalid_refraction_range');
+    }
+  });
+
+  it('collects errors from both direct ranges and confidenceInterval together', () => {
+    const result = validateEyeRefractionEstimate(
+      {
+        sphereRange: [1.0, -1.0],
+        confidenceInterval: {sphere: [2.0, -2.0]},
+      },
+      'rightEye',
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors.length).toBe(2);
+    }
+  });
 });
 
 // --- validateRefractionResult ---
@@ -160,6 +210,42 @@ describe('validateRefractionResult', () => {
   it('rejects a confidence value outside [0, 1]', () => {
     const result = validateRefractionResult({
       confidence: 1.5,
+      recommendation: 'clinician_review_recommended',
+      reliabilityWarnings: [],
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0].code).toBe('invalid_refraction_confidence');
+    }
+  });
+
+  it('rejects NaN as confidence', () => {
+    const result = validateRefractionResult({
+      confidence: NaN,
+      recommendation: 'clinician_review_recommended',
+      reliabilityWarnings: [],
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0].code).toBe('invalid_refraction_confidence');
+    }
+  });
+
+  it('rejects Infinity as confidence', () => {
+    const result = validateRefractionResult({
+      confidence: Infinity,
+      recommendation: 'clinician_review_recommended',
+      reliabilityWarnings: [],
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errors[0].code).toBe('invalid_refraction_confidence');
+    }
+  });
+
+  it('rejects -Infinity as confidence', () => {
+    const result = validateRefractionResult({
+      confidence: -Infinity,
       recommendation: 'clinician_review_recommended',
       reliabilityWarnings: [],
     });

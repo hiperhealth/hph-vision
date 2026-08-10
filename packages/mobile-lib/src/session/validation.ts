@@ -83,6 +83,27 @@ export const validateEyeRefractionEstimate = (
 ): ValidationResult<EyeRefractionEstimate> => {
   const checks: ValidationResult<unknown>[] = [];
 
+  // top-level direct range fields
+  if (estimate.sphereRange !== undefined) {
+    checks.push(
+      validateRefractionRange(estimate.sphereRange, eyeLabel + '.sphereRange'),
+    );
+  }
+  if (estimate.cylinderRange !== undefined) {
+    checks.push(
+      validateRefractionRange(
+        estimate.cylinderRange,
+        eyeLabel + '.cylinderRange',
+      ),
+    );
+  }
+  if (estimate.axisRange !== undefined) {
+    checks.push(
+      validateRefractionRange(estimate.axisRange, eyeLabel + '.axisRange'),
+    );
+  }
+
+  // nested confidence interval fields
   if (estimate.confidenceInterval?.sphere !== undefined) {
     checks.push(
       validateRefractionRange(
@@ -127,7 +148,22 @@ export const validateRefractionResult = (
   if (result.binocular) {
     checks.push(validateEyeRefractionEstimate(result.binocular, 'binocular'));
   }
-  if (result.confidence < 0 || result.confidence > 1) {
+
+  // check finite before range — NaN and Infinity pass a simple > / < guard
+  if (
+    typeof result.confidence !== 'number' ||
+    !Number.isFinite(result.confidence)
+  ) {
+    checks.push(
+      invalid([
+        validationIssue(
+          'invalid_refraction_confidence',
+          'refractionResult.confidence must be a finite number.',
+          'refractionResult.confidence',
+        ),
+      ]),
+    );
+  } else if (result.confidence < 0 || result.confidence > 1) {
     checks.push(
       invalid([
         validationIssue(
