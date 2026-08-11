@@ -17,7 +17,7 @@
     "api:format": "poetry run ruff format packages/api-core packages/restapi",
     "api:test": "poetry run pytest packages/api-core/tests packages/restapi/tests",
     "mobile:dev": "turbo run dev --filter=hphvision",
-    "mobile:lint": "turbo run lint --filter=hphvision"
+    "mobile:lint": "pnpm --filter @hiperhealth/hphvision lint"
   },
   "engines": {
     "node": ">=18"

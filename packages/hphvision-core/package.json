@@ -4,9 +4,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b tsconfig.json",
-    "lint": "echo lint-core",
+    "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "test": "echo test-core"
+    "test": "jest --passWithNoTests"
   }
 }

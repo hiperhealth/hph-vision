@@ -95,3 +95,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+tsconfig.tsbuildinfo
+/packages/mobile/jest-cache/

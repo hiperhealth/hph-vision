@@ -4,7 +4,7 @@ import {
   ACUITY_PROTOCOL_VERSION,
 } from './protocol';
 import {OPTOTYPE_ORIENTATIONS, isCorrectOptotypeAnswer} from './optotypes';
-import type { ISODateString} from '../types';
+import type {ISODateString} from '../types';
 import type {
   AcuityResponse,
   AcuitySession,

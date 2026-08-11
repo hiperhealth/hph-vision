@@ -10,17 +10,10 @@ module.exports = {
   },
 
   transformIgnorePatterns: [
-  'node_modules/(?!(jest-)?react-native|@react-native|@react-native-community|@react-navigation|.*\\.pnpm)',
-],
-
-  moduleFileExtensions: [
-    'ts',
-    'tsx',
-    'js',
-    'jsx',
-    'json',
-    'node',
+    'node_modules/(?!(jest-)?react-native|@react-native|@react-native-community|@react-navigation|.*\\.pnpm)',
   ],
+
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   moduleNameMapper: {
     '^@hiperhealth/hphvision-lib$': '<rootDir>/../mobile-lib/src',

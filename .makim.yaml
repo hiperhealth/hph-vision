@@ -5,7 +5,7 @@ groups:
         help: remove build artifacts and local caches
         run: |
           rm -fr build/ dist/ coverage/ htmlcov/
-          rm -fr packages/*/dist/
+          rm -fr packages/*/dist/*
           rm -fr .pytest_cache .mypy_cache .ruff_cache
           find . -name '*.egg-info' -exec rm -fr {} +
           find . -name '*.egg' -exec rm -f {} +
@@ -16,40 +16,41 @@ groups:
           rm -f .coverage
 
   all:
-  tasks:
-    lint:
-      help: run all configured lint and pre-commit checks
-      run: |
-        pre-commit install
-        pre-commit run --all-files
+    tasks:
+      lint:
+        help: run all configured lint and pre-commit checks
+        run: |
+          pre-commit install
+          pre-commit run --all-files
 
-    test:
-      help: run all Python and JavaScript tests
-      run: |
-        pnpm test
+      test:
+        help: run all Python and JavaScript tests
+        run: |
+          pnpm test
 
-    typecheck:
-      help: run all TypeScript type checks and Python mypy checks
-      run: |
-        pnpm typecheck
-        poetry run mypy packages/api-core/src packages/restapi/src
+      typecheck:
+        help: run all TypeScript type checks and Python mypy checks
+        run: |
+          pnpm typecheck
+          poetry run mypy packages/api-core/src packages/restapi/src
 
-    build:
-      help: build all releasable packages
-      run: ./scripts/build.sh
+      build:
+        help: build all releasable packages
+        run: ./scripts/build.sh
 
-    ci:
-      help: run CI checks locally
-      run: |
-        makim all.lint
-        makim all.test
-        makim all.typecheck
-        makim all.build
+      ci:
+        help: run CI checks locally
+        run: |
+          makim all.lint
+          makim all.test
+          makim all.typecheck
+          makim all.build
+
   mobile:
     tasks:
       lint:
         help: lint the React Native app package
-        run: pnpm mobile:lint
+        run: pnpm --filter @hiperhealth/hphvision lint
 
       test:
         help: test the React Native app package
@@ -57,7 +58,7 @@ groups:
 
       typecheck:
         help: typecheck the React Native app package
-        run:  pnpm --filter @hiperhealth/hphvision typecheck
+        run: pnpm --filter @hiperhealth/hphvision typecheck
 
       ci:
         help: run mobile app CI checks
@@ -94,7 +95,6 @@ groups:
           makim mobile-lib.lint
           makim mobile-lib.test
           makim mobile-lib.typecheck
-
   api-core:
     tasks:
       check:
@@ -173,12 +173,12 @@ groups:
     tasks:
       lint:
         help: lint all Python API packages
-
         run: poetry run ruff check packages/api-core packages/restapi
 
       test:
         help: test all Python API packages
         run: poetry run pytest packages/api-core/tests packages/restapi/tests
+
       typecheck:
         help: typecheck all Python API packages
         run: poetry run mypy packages/api-core/src packages/restapi/src
@@ -214,19 +214,18 @@ groups:
   release:
     vars:
       app: |
-        npx --yes \
-          -p semantic-release \
-          -p conventional-changelog-conventionalcommits \
-          -p "@semantic-release/commit-analyzer" \
-          -p "@semantic-release/release-notes-generator" \
-          -p "@semantic-release/changelog" \
-          -p "@semantic-release/npm" \
-          -p "@semantic-release/exec" \
-          -p "@semantic-release/github" \
-          -p "@semantic-release/git" \
-          -p "@google/semantic-release-replace-plugin" \
-          semantic-release
-
+        npx --yes
+        -p semantic-release
+        -p conventional-changelog-conventionalcommits
+        -p "@semantic-release/commit-analyzer"
+        -p "@semantic-release/release-notes-generator"
+        -p "@semantic-release/changelog"
+        -p "@semantic-release/npm"
+        -p "@semantic-release/exec"
+        -p "@semantic-release/github"
+        -p "@semantic-release/git"
+        -p "@google/semantic-release-replace-plugin"
+        semantic-release
     tasks:
       ci:
         help: run semantic-release on CI

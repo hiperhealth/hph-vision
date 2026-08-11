@@ -6,8 +6,8 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "lint": "echo lint-mobile",
+    "lint": "eslint src --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "test": "echo test-mobile"
+    "test": "jest --passWithNoTests"
   }
 }

@@ -1,4 +1,4 @@
- # HPH Vision
+# HPH Vision
 
 HPH Vision is organized as a TypeScript monorepo using **pnpm workspaces** and **Turborepo**. The repository contains a React Native mobile application, a shared React Native library, a FastAPI service, and a shared Python backend library.
 
