@@ -1,7 +1,11 @@
 # OSX
 #
 .DS_Store
-
+node_modules
+dist
+.turbo
+coverage
+.env
 # Xcode
 #
 build/
@@ -91,3 +95,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+tsconfig.tsbuildinfo
+/packages/mobile/jest-cache/

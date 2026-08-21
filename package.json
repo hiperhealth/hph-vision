@@ -2,38 +2,38 @@
   "name": "hph-vision",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "yarn@3.6.4",
+  "packageManager": "pnpm@10.0.0",
   "workspaces": [
-    "packages/mobile",
-    "packages/mobile-lib"
+    "packages/*"
   ],
   "scripts": {
-    "mobile:start": "yarn workspace @hiperhealth/hphvision start",
-    "mobile:android": "yarn workspace @hiperhealth/hphvision android",
-    "mobile:ios": "yarn workspace @hiperhealth/hphvision ios",
-    "mobile:lint": "yarn workspace @hiperhealth/hphvision lint",
-    "mobile:format": "yarn workspace @hiperhealth/hphvision format",
-    "mobile:test": "yarn workspace @hiperhealth/hphvision test",
-    "mobile:typecheck": "yarn workspace @hiperhealth/hphvision typecheck",
-    "mobile-lib:lint": "yarn workspace @hiperhealth/hphvision-lib lint",
-    "mobile-lib:test": "yarn workspace @hiperhealth/hphvision-lib test",
-    "mobile-lib:typecheck": "yarn workspace @hiperhealth/hphvision-lib typecheck",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "check": "turbo run lint typecheck test",
     "api:dev": "poetry run uvicorn hph_vision_api.main:app --app-dir packages/restapi/src --reload",
     "api:lint": "poetry run ruff check packages/api-core packages/restapi",
     "api:format": "poetry run ruff format packages/api-core packages/restapi",
     "api:test": "poetry run pytest packages/api-core/tests packages/restapi/tests",
-    "lint": "yarn mobile:lint && yarn mobile-lib:lint && yarn api:lint",
-    "format": "yarn mobile:format && yarn mobile-lib:format && yarn api:format",
-    "test": "yarn mobile:test && yarn mobile-lib:test && yarn api:test",
-    "typecheck": "yarn mobile:typecheck && yarn mobile-lib:typecheck",
-    "mobile-lib:format": "yarn workspace @hiperhealth/hphvision-lib format"
-  },
-  "devDependencies": {
-    "@react-native/eslint-config": "0.75.3",
-    "eslint": "^8.19.0",
-    "typescript": "5.0.4"
+    "mobile:dev": "turbo run dev --filter=hphvision",
+    "mobile:lint": "pnpm --filter @hiperhealth/hphvision lint"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "@jest/globals": "^29.7.0",
+    "@react-native/eslint-config": "0.75.3",
+    "@types/jest": "^30.0.0",
+    "babel-jest": "^29.6.3",
+    "eslint": "^8.19.0",
+    "jest": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
+    "ts-jest": "^29.4.11",
+    "turbo": "^2.9.18",
+    "typescript": "^5.8.0"
   }
 }
