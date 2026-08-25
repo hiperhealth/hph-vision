@@ -1,7 +1,7 @@
 import type {PhoneGeometry} from '../device-profile';
 import type {TemplateOptions, TemplatePage} from './types';
 import {getPageDimensions} from './pages';
-import {line, point, rect, text} from './primitives';
+import {line, point, rect, text, roundedRect} from './primitives';
 
 export const createTemplatePage = (
   phone: PhoneGeometry,
@@ -14,17 +14,17 @@ export const createTemplatePage = (
   const slotHeightMm = phone.bodyHeightMm + clearanceMm;
   const centerX = widthMm / 2;
   const slotOriginX = centerX - slotWidthMm / 2;
-  const slotOriginY = 42;
+  const slotOriginY = 14;
   const visorWidthMm = Math.min(
     widthMm - marginMm * 2,
     Math.max(slotWidthMm + 48, 130),
   );
   const visorHeightMm = Math.min(heightMm - marginMm * 2, slotHeightMm + 92);
   const visorOriginX = centerX - visorWidthMm / 2;
-  const visorOriginY = 28;
+  const visorOriginY = 10;
   const eyeWindowWidthMm = Math.min(42, visorWidthMm - 60);
   const eyeWindowHeightMm = 26;
-  const eyeWindowOriginY = slotOriginY + slotHeightMm + 24;
+  const eyeWindowOriginY = slotOriginY + slotHeightMm + 6;
 
   return {
     id: 'page-1',
@@ -32,6 +32,14 @@ export const createTemplatePage = (
     widthMm,
     heightMm,
     elements: [
+      roundedRect(
+        'forehead-support',
+        point(centerX - 40, visorOriginY + 2),
+        80,
+        14,
+        4,
+        'guide',
+      ),
       text(
         'title',
         point(marginMm, 14),
