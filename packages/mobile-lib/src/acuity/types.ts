@@ -3,14 +3,12 @@ import type {Eye, InputMethod, ISODateString} from '../types';
 export type OptotypeKind = 'tumblingE' | 'landoltC';
 export type OptotypeOrientation = 'up' | 'down' | 'left' | 'right';
 
-export type AcuityLevel = number;
-
 export type AcuityTrial = {
   id: string;
   eye: Eye;
   optotype: OptotypeKind;
   orientation: OptotypeOrientation;
-  sizeLogMar: AcuityLevel;
+  sizeLogMar: number;
   isPractice: boolean;
   startedAt?: ISODateString;
 };
@@ -22,22 +20,6 @@ export type AcuityResponse = {
   inputMethod: InputMethod;
   confidence?: number;
   createdAt: ISODateString;
-};
-
-export type AcuityTrialResponse = AcuityResponse;
-
-export type OptotypeRenderingMetadata = {
-  gridSize: 5;
-  strokeWidthRatio: 0.2;
-  gapSizeRatio: 0.2;
-  rotationDegrees: number;
-};
-
-export type OptotypeStimulus = {
-  optotype: OptotypeKind;
-  orientation: OptotypeOrientation;
-  sizeLogMar: AcuityLevel;
-  rendering: OptotypeRenderingMetadata;
 };
 
 export type AcuitySessionOptions = {

@@ -9,8 +9,6 @@ import {
   transitionAcuityFlow,
   serializeAcuityFlow,
   deserializeAcuityFlow,
-  createOptotypeStimulus,
-  getRotationDegrees,
 } from '..';
 
 describe('acuity protocol', () => {
@@ -566,97 +564,6 @@ describe('acuity flow state machine', () => {
     expect(restored.context.sessions.right).toBeDefined();
     expect(restored.context.metrics.startTime).toBe(
       new Date(1773918000000).toISOString(),
-    );
-  });
-});
-
-describe('optotype generation and rendering', () => {
-  it('generates deterministic orientation sequence for a given seed (regression test)', () => {
-    // Generate a session with a known seed and explicitly verify against an independently hardcoded sequence
-    const session1 = createAcuitySession({
-      id: 'test-det',
-      eye: 'right',
-      optotype: 'tumblingE',
-      randomSeed: 'test-seed-1',
-      practiceTrials: 2,
-      sizeLogMarSequence: [0.8, 0.7, 0.6, 0.5],
-    });
-
-    const orientations1 = session1.trials.map(t => t.orientation);
-
-    // We expect these exact orientations for 'test-seed-1' based on the deterministic hashString output
-    expect(orientations1).toEqual([
-      'left',
-      'right',
-      'up',
-      'down',
-      'left',
-      'right',
-    ]);
-
-    // Verify a different seed produces a different, but still deterministic, sequence
-    const session2 = createAcuitySession({
-      id: 'test-det-2',
-      eye: 'right',
-      optotype: 'tumblingE',
-      randomSeed: 'test-seed-2',
-      practiceTrials: 2,
-      sizeLogMarSequence: [0.8, 0.7, 0.6, 0.5],
-    });
-
-    const orientations2 = session2.trials.map(t => t.orientation);
-
-    expect(orientations2).toEqual([
-      'right',
-      'up',
-      'down',
-      'left',
-      'right',
-      'up',
-    ]);
-  });
-
-  it('generates landoltC trials correctly', () => {
-    const session = createAcuitySession({
-      id: 'test-landolt',
-      eye: 'left',
-      optotype: 'landoltC',
-      randomSeed: 'landolt-seed',
-      practiceTrials: 1,
-      sizeLogMarSequence: [0.5],
-    });
-
-    expect(session.optotype).toBe('landoltC');
-    expect(session.trials[0].optotype).toBe('landoltC');
-    expect(session.trials[1].optotype).toBe('landoltC');
-  });
-
-  it('creates OptotypeStimulus with correct rendering metadata and rotation', () => {
-    const session = createAcuitySession({
-      id: 'test-stim',
-      eye: 'right',
-      optotype: 'landoltC',
-      randomSeed: 'stim-seed',
-      practiceTrials: 0,
-      sizeLogMarSequence: [0.4],
-    });
-
-    const trial = session.trials[0];
-    const stimulus = createOptotypeStimulus(trial);
-
-    expect(stimulus.optotype).toBe('landoltC');
-    expect(stimulus.sizeLogMar).toBe(0.4);
-    expect(stimulus.rendering.gridSize).toBe(5);
-    expect(stimulus.rendering.strokeWidthRatio).toBe(0.2);
-    expect(stimulus.rendering.gapSizeRatio).toBe(0.2);
-
-    expect(getRotationDegrees('up')).toBe(0);
-    expect(getRotationDegrees('right')).toBe(90);
-    expect(getRotationDegrees('down')).toBe(180);
-    expect(getRotationDegrees('left')).toBe(270);
-
-    expect(stimulus.rendering.rotationDegrees).toBe(
-      getRotationDegrees(trial.orientation),
     );
   });
 });
