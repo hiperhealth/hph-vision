@@ -101,7 +101,7 @@ export const generateTemplateDocument = (
       maxX = Math.max(...element.points.map(p => p.xMm));
     }
 
-    if (maxY > page.heightMm || maxY < 0 || maxX > page.widthMm || minX < 0) {
+    if (maxY > page.heightMm || minY < 0 || maxX > page.widthMm || minX < 0) {
       outOfBounds = true;
       break;
     }
