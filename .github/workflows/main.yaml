@@ -136,7 +136,8 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install
-          yarn install --immutable
+          corepack enable
+          pnpm install --frozen-lockfile
 
       - name: Run style checks
         if: success() || failure()
