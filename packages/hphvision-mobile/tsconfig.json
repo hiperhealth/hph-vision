@@ -1,0 +1,11 @@
+﻿{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../..",
+    "paths": {
+      "@hiperhealth/hphvision-core": ["packages/hphvision-core/src"],
+      "@hiperhealth/hphvision-core/*": ["packages/hphvision-core/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
