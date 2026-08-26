@@ -31,7 +31,7 @@ describe('calculateReliability', () => {
     });
 
     expect(result.level).toBe('low');
-    expect(result.score).toBeCloseTo(0.4);
+    expect(result.score).toBeCloseTo(0.48);
   });
 
   it('handles missing optional sensor data using defaults', () => {
@@ -79,5 +79,36 @@ describe('calculateReliability', () => {
 
     expect(result.level).toBe('invalid');
     expect(result.warnings.length).toBeGreaterThan(0);
+  });
+
+  it('warns and reduces score when many trials are skipped', () => {
+    const result = calculateReliability({
+      skippedTrialsRate: 0.8,
+    });
+
+    expect(result.score).toBeLessThan(1);
+    expect(
+      result.warnings.some(w => w.code === 'reliability.skipped_trials'),
+    ).toBe(true);
+  });
+
+  it('warns and reduces score when session is aborted', () => {
+    const result = calculateReliability({
+      abortedFlow: true,
+    });
+
+    expect(result.score).toBeLessThan(1);
+    expect(
+      result.warnings.some(w => w.code === 'reliability.aborted_flow'),
+    ).toBe(true);
+  });
+
+  it('scores ideal response time higher than extreme values', () => {
+    const ideal = calculateReliability({medianResponseTimeMs: 1500});
+    const tooFast = calculateReliability({medianResponseTimeMs: 50});
+    const tooSlow = calculateReliability({medianResponseTimeMs: 12000});
+
+    expect(ideal.score).toBeGreaterThan(tooFast.score);
+    expect(ideal.score).toBeGreaterThan(tooSlow.score);
   });
 });
