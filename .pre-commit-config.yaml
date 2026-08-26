@@ -21,6 +21,7 @@ repos:
     hooks:
       - id: prettier
         files: ^(packages/(mobile|mobile-lib)/|.*\.(json|md|ya?ml)$)
+        exclude: ^\.yarn/
 
   - repo: local
     hooks:

@@ -1,9 +1,0 @@
-node_modules/
-dist/
-build/
-coverage/
-.expo/
-.metro/
-.cache/
-*.log
-pnpm-lock.yaml
