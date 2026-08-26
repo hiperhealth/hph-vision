@@ -27,9 +27,9 @@ export type AcuityResponse = {
 export type AcuityTrialResponse = AcuityResponse;
 
 export type OptotypeRenderingMetadata = {
-  gridSize: 5;
-  strokeWidthRatio: 0.2;
-  gapSizeRatio: 0.2;
+  gridSize: number;
+  strokeWidthRatio: number;
+  gapSizeRatio: number;
   rotationDegrees: number;
 };
 
