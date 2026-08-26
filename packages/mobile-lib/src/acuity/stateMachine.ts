@@ -3,25 +3,20 @@ import {
   DEFAULT_PRACTICE_TRIALS,
   ACUITY_PROTOCOL_VERSION,
 } from './protocol';
-import {OPTOTYPE_ORIENTATIONS, isCorrectOptotypeAnswer} from './optotypes';
-import type {Eye, InputMethod, ISODateString} from '../types';
+import { OPTOTYPE_ORIENTATIONS, isCorrectOptotypeAnswer } from './optotypes';
+import type { ISODateString } from '../types';
 import type {
   AcuityResponse,
   AcuitySession,
   AcuitySessionOptions,
   AcuityTrial,
-  OptotypeOrientation,
-  AcuityResult,
-  FlowState,
   FlowEvent,
-  FlowMetrics,
-  FlowContext,
   AcuityFlow,
 } from './types';
-import {scoreAcuitySession} from './scoring';
+import { scoreAcuitySession } from './scoring';
 
 // Helper to extract deterministic ISO date and millisecond timestamp from event
-const getEventTime = (event: any): {iso: ISODateString; ms: number} => {
+const getEventTime = (event: any): { iso: ISODateString; ms: number } => {
   if (event.createdAt) {
     return {
       iso: event.createdAt,
@@ -66,7 +61,7 @@ export const createAcuitySession = (
   const id = options.id ?? `acuity-${options.eye}-${hashString(seed)}`;
 
   const practice: AcuityTrial[] = Array.from(
-    {length: practiceTrials},
+    { length: practiceTrials },
     (_, index) => ({
       id: `${id}-practice-${index + 1}`,
       eye: options.eye,
@@ -117,7 +112,7 @@ export const recordAcuityResponse = (
   const answered = new Set(responses.map(item => item.trialId));
   const completed = session.trials.every(trial => answered.has(trial.id));
 
-  return {...session, responses, completed};
+  return { ...session, responses, completed };
 };
 
 // --- State Machine Functions ---
@@ -146,11 +141,11 @@ export const transitionAcuityFlow = (
   flow: AcuityFlow,
   event: FlowEvent,
 ): AcuityFlow => {
-  const {state, context} = flow;
+  const { state, context } = flow;
 
   // ABORT transitions to aborted from ANY state
   if (event.type === 'ABORT') {
-    const {iso: endTime} = getEventTime(event);
+    const { iso: endTime } = getEventTime(event);
     return {
       ...flow,
       state: 'aborted',
@@ -173,7 +168,7 @@ export const transitionAcuityFlow = (
       if (event.type === 'START') {
         const eyes = event.eyes ?? ['right', 'left'];
         const options = event.options ?? {};
-        const {iso: startTime} = getEventTime(event);
+        const { iso: startTime } = getEventTime(event);
         return {
           state: 'intro',
           context: {
@@ -247,7 +242,7 @@ export const transitionAcuityFlow = (
 
     case 'prepare_eye_occlusion': {
       if (event.type === 'ACK_OCCLUSION') {
-        const {ms: currentTrialStartTime} = getEventTime(event);
+        const { ms: currentTrialStartTime } = getEventTime(event);
         return {
           state: 'show_stimulus',
           context: {
@@ -262,7 +257,7 @@ export const transitionAcuityFlow = (
 
     case 'show_stimulus': {
       if (event.type === 'STIMULUS_DISPLAYED') {
-        const {ms: currentTrialStartTime} = getEventTime(event);
+        const { ms: currentTrialStartTime } = getEventTime(event);
         return {
           state: 'collect_response',
           context: {
@@ -286,7 +281,7 @@ export const transitionAcuityFlow = (
           return flow;
         }
 
-        const {iso: createdAt, ms: recordTime} = getEventTime(event);
+        const { iso: createdAt, ms: recordTime } = getEventTime(event);
         const calculatedResponseTime = context.currentTrialStartTime
           ? recordTime - context.currentTrialStartTime
           : undefined;
@@ -372,7 +367,7 @@ export const transitionAcuityFlow = (
         );
         const isSkipped = pendingResponse.answer === 'skipped';
 
-        const metrics = {...context.metrics};
+        const metrics = { ...context.metrics };
         if (!isPractice) {
           metrics.totalTrials += 1;
           if (isSkipped) {
@@ -408,7 +403,7 @@ export const transitionAcuityFlow = (
 
         const nextTrial = nextAcuityTrial(session);
         if (nextTrial) {
-          const {ms: currentTrialStartTime} = getEventTime(event);
+          const { ms: currentTrialStartTime } = getEventTime(event);
           return {
             state: 'show_stimulus',
             context: {
@@ -432,7 +427,7 @@ export const transitionAcuityFlow = (
         }
 
         // All eyes finished
-        const {iso: endTime, ms: endMs} = getEventTime(event);
+        const { iso: endTime, ms: endMs } = getEventTime(event);
         let durationMs: number | undefined;
         if (context.metrics.startTime) {
           const startMs = new Date(context.metrics.startTime).getTime();
@@ -440,7 +435,7 @@ export const transitionAcuityFlow = (
         }
 
         // Produce AcuityResult when complete for all tested eyes
-        const results = {...context.results};
+        const results = { ...context.results };
         for (const eye of context.eyes) {
           const eyeSession = context.sessions[eye];
           if (eyeSession) {

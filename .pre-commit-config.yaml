@@ -26,14 +26,14 @@ repos:
     hooks:
       - id: mobile-lint
         name: mobile lint
-        entry: yarn mobile:lint
+        entry: pnpm mobile:lint
         language: system
         pass_filenames: false
         files: ^packages/mobile/.*\.(js|jsx|ts|tsx)$
 
       - id: mobile-lib-typecheck
         name: mobile-lib typecheck
-        entry: yarn mobile-lib:typecheck
+        entry: pnpm mobile-lib:typecheck
         language: system
         pass_filenames: false
         files: ^packages/mobile-lib/.*\.(ts|tsx)$
