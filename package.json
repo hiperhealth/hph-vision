@@ -21,7 +21,7 @@
     "api:test": "poetry run pytest packages/api-core/tests packages/restapi/tests",
     "lint": "pnpm mobile:lint && pnpm mobile-lib:lint && pnpm api:lint",
     "format": "pnpm mobile:format && pnpm mobile-lib:format && pnpm api:format",
-    "format:check": "pnpm exec prettier --check package.json tsconfig.base.json packages/mobile/tsconfig.json .eslintrc.js .prettierrc.js pnpm-workspace.yaml packages/mobile/package.json packages/mobile-lib/package.json",
+    "format:check": "pnpm exec prettier --check package.json tsconfig.base.json packages/mobile/tsconfig.json .eslintrc.js .prettierrc.js packages/mobile/package.json packages/mobile-lib/package.json",
     "test": "pnpm mobile:test && pnpm mobile-lib:test && pnpm api:test",
     "typecheck": "pnpm mobile:typecheck && pnpm mobile-lib:typecheck"
   },
