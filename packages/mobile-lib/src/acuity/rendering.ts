@@ -1,4 +1,9 @@
-import type {AcuityTrial, OptotypeOrientation, OptotypeStimulus} from './types';
+import type {
+  AcuityTrial,
+  OptotypeKind,
+  OptotypeOrientation,
+  OptotypeStimulus,
+} from './types';
 
 export const getRotationDegrees = (
   orientation: OptotypeOrientation,
@@ -15,17 +20,30 @@ export const getRotationDegrees = (
   }
 };
 
+const SNELLEN_GEOMETRY = {
+  gridSize: 5,
+  strokeWidthRatio: 0.2,
+  gapSizeRatio: 0.2,
+} as const;
+
+const getGeometryForOptotype = (optotype: OptotypeKind) => {
+  switch (optotype) {
+    case 'tumblingE':
+    case 'landoltC':
+      return SNELLEN_GEOMETRY;
+  }
+};
+
 export const createOptotypeStimulus = (
   trial: AcuityTrial,
 ): OptotypeStimulus => {
+  const geometry = getGeometryForOptotype(trial.optotype);
   return {
     optotype: trial.optotype,
     orientation: trial.orientation,
     sizeLogMar: trial.sizeLogMar,
     rendering: {
-      gridSize: 5,
-      strokeWidthRatio: 0.2,
-      gapSizeRatio: 0.2,
+      ...geometry,
       rotationDegrees: getRotationDegrees(trial.orientation),
     },
   };
