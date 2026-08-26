@@ -4,6 +4,7 @@ import {
   fixtureTemplateInput,
   fixtureSmallTemplateInput,
   fixtureLargeTemplateInput,
+  fixtureLargeUSLetterTemplateInput,
 } from '../../fixtures';
 import {generateTemplateDocument} from '..';
 
@@ -12,6 +13,7 @@ describe('generateTemplateDocument', () => {
     {name: 'small phone', input: fixtureSmallTemplateInput},
     {name: 'medium phone', input: fixtureTemplateInput},
     {name: 'large phone', input: fixtureLargeTemplateInput},
+    {name: 'large phone US Letter', input: fixtureLargeUSLetterTemplateInput},
   ];
 
   testCases.forEach(({name, input}) => {
@@ -24,7 +26,7 @@ describe('generateTemplateDocument', () => {
       }
 
       const doc = result.value;
-      expect(doc.pages[0].pageSize).toBe('A4');
+      expect(doc.pages[0].pageSize).toBe(input.options.pageSize);
       expect(doc.calibrationMarks[0]).toMatchObject({
         kind: 'square',
         expectedSizeMm: 50,

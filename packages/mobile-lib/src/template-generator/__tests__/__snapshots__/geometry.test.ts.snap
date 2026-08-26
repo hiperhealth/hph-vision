@@ -253,6 +253,259 @@ exports[`generateTemplateDocument creates a valid template document for large ph
 }
 `;
 
+exports[`generateTemplateDocument creates a valid template document for large phone US Letter 1`] = `
+{
+  "calibrationMarks": [
+    {
+      "elementId": "scale-check-square-50mm",
+      "expectedSizeMm": 50,
+      "id": "scale-check-square-50mm",
+      "kind": "square",
+      "pageId": "page-1",
+    },
+  ],
+  "instructions": [
+    {
+      "fallbackText": "Print at 100% scale. Do not fit to page.",
+      "id": "print-scale",
+      "step": 1,
+      "textKey": "template.instructions.printScale",
+    },
+    {
+      "fallbackText": "Measure the calibration square and confirm it is exactly 50 mm.",
+      "id": "measure-square",
+      "step": 2,
+      "textKey": "template.instructions.measureSquare",
+    },
+    {
+      "fallbackText": "Cut only on solid cut lines and keep fold lines intact.",
+      "id": "cut-lines",
+      "step": 3,
+      "textKey": "template.instructions.cutLines",
+    },
+    {
+      "fallbackText": "Fold tabs along fold lines and glue/tape where marked.",
+      "id": "fold-tabs",
+      "step": 4,
+      "textKey": "template.instructions.foldTabs",
+    },
+    {
+      "fallbackText": "Insert the phone and confirm it fits snugly without tilting.",
+      "id": "fit-phone",
+      "step": 5,
+      "textKey": "template.instructions.fitPhone",
+    },
+  ],
+  "metadata": {
+    "cardboardThicknessMm": 1.5,
+    "eyeToScreenDistanceMm": 250,
+    "generatedForModel": "Large phone",
+    "pageSize": "LETTER",
+    "phoneBodyHeightMm": 165,
+    "phoneBodyWidthMm": 78,
+    "phoneThicknessMm": 9,
+    "templateVersion": "template-v0.1",
+  },
+  "pages": [
+    {
+      "elements": [
+        {
+          "cornerRadiusMm": 4,
+          "heightMm": 14,
+          "id": "forehead-support",
+          "kind": "rounded-rect",
+          "origin": {
+            "xMm": 67.95,
+            "yMm": 12,
+          },
+          "role": "guide",
+          "widthMm": 80,
+        },
+        {
+          "fallbackText": "hphvision cardboard template for Large phone",
+          "id": "title",
+          "kind": "text",
+          "origin": {
+            "xMm": 10,
+            "yMm": 14,
+          },
+          "role": "label",
+          "sizeMm": 4,
+          "textKey": "template.title",
+        },
+        {
+          "heightMm": 259,
+          "id": "visor-outer-cut",
+          "kind": "rect",
+          "origin": {
+            "xMm": 42.95,
+            "yMm": 10,
+          },
+          "role": "cut",
+          "widthMm": 130,
+        },
+        {
+          "heightMm": 167,
+          "id": "phone-fit-outline",
+          "kind": "rect",
+          "origin": {
+            "xMm": 67.95,
+            "yMm": 14,
+          },
+          "role": "guide",
+          "widthMm": 80,
+        },
+        {
+          "heightMm": 159,
+          "id": "phone-holder-slot",
+          "kind": "rect",
+          "origin": {
+            "xMm": 71.95,
+            "yMm": 18,
+          },
+          "role": "slot",
+          "widthMm": 72,
+        },
+        {
+          "heightMm": 26,
+          "id": "eye-window-cut",
+          "kind": "rect",
+          "origin": {
+            "xMm": 86.95,
+            "yMm": 187,
+          },
+          "role": "cut",
+          "widthMm": 42,
+        },
+        {
+          "heightMm": 15,
+          "id": "nose-cutout-guide",
+          "kind": "rect",
+          "origin": {
+            "xMm": 94.95,
+            "yMm": 218,
+          },
+          "role": "guide",
+          "widthMm": 26,
+        },
+        {
+          "heightMm": 26,
+          "id": "occlusion-flap-cut",
+          "kind": "rect",
+          "origin": {
+            "xMm": 136.95,
+            "yMm": 187,
+          },
+          "role": "cut",
+          "widthMm": 30,
+        },
+        {
+          "heightMm": 52,
+          "id": "left-glue-tab",
+          "kind": "rect",
+          "origin": {
+            "xMm": 34.95,
+            "yMm": 28,
+          },
+          "role": "glue",
+          "widthMm": 8,
+        },
+        {
+          "heightMm": 52,
+          "id": "right-glue-tab",
+          "kind": "rect",
+          "origin": {
+            "xMm": 172.95,
+            "yMm": 28,
+          },
+          "role": "glue",
+          "widthMm": 8,
+        },
+        {
+          "from": {
+            "xMm": 42.95,
+            "yMm": 28,
+          },
+          "id": "top-fold-line",
+          "kind": "line",
+          "role": "fold",
+          "to": {
+            "xMm": 172.95,
+            "yMm": 28,
+          },
+        },
+        {
+          "from": {
+            "xMm": 42.95,
+            "yMm": 251,
+          },
+          "id": "bottom-fold-line",
+          "kind": "line",
+          "role": "fold",
+          "to": {
+            "xMm": 172.95,
+            "yMm": 251,
+          },
+        },
+        {
+          "from": {
+            "xMm": 107.95,
+            "yMm": 10,
+          },
+          "id": "center-alignment-line",
+          "kind": "line",
+          "role": "guide",
+          "to": {
+            "xMm": 107.95,
+            "yMm": 269,
+          },
+        },
+        {
+          "heightMm": 50,
+          "id": "scale-check-square-50mm",
+          "kind": "rect",
+          "origin": {
+            "xMm": 10,
+            "yMm": 211.39999999999998,
+          },
+          "role": "calibration",
+          "widthMm": 50,
+        },
+        {
+          "from": {
+            "xMm": 75,
+            "yMm": 261.4,
+          },
+          "id": "calibration-ruler",
+          "kind": "line",
+          "role": "calibration",
+          "to": {
+            "xMm": 125,
+            "yMm": 261.4,
+          },
+        },
+        {
+          "fallbackText": "Measure this square: it must be exactly 50 mm.",
+          "id": "scale-check-label",
+          "kind": "text",
+          "origin": {
+            "xMm": 10,
+            "yMm": 207.39999999999998,
+          },
+          "role": "label",
+          "sizeMm": 3,
+          "textKey": "template.scaleCheck",
+        },
+      ],
+      "heightMm": 279.4,
+      "id": "page-1",
+      "pageSize": "LETTER",
+      "widthMm": 215.9,
+    },
+  ],
+}
+`;
+
 exports[`generateTemplateDocument creates a valid template document for medium phone 1`] = `
 {
   "calibrationMarks": [

@@ -75,20 +75,38 @@ export const generateTemplateDocument = (
   let outOfBounds = false;
   for (const element of page.elements) {
     let maxY = 0;
+    let minY = 0;
+    let maxX = 0;
+    let minX = 0;
+
     if (element.kind === 'rect' || element.kind === 'rounded-rect') {
+      minY = element.origin.yMm;
       maxY = element.origin.yMm + element.heightMm;
+      minX = element.origin.xMm;
+      maxX = element.origin.xMm + element.widthMm;
     } else if (element.kind === 'line') {
+      minY = Math.min(element.from.yMm, element.to.yMm);
       maxY = Math.max(element.from.yMm, element.to.yMm);
+      minX = Math.min(element.from.xMm, element.to.xMm);
+      maxX = Math.max(element.from.xMm, element.to.xMm);
     } else if (element.kind === 'text') {
+      minY = element.origin.yMm - element.sizeMm;
       maxY = element.origin.yMm + element.sizeMm;
+      minX = element.origin.xMm;
+      maxX = element.origin.xMm + 150;
     } else if (element.kind === 'general') {
+      minY = Math.min(...element.points.map(p => p.yMm));
       maxY = Math.max(...element.points.map(p => p.yMm));
+      minX = Math.min(...element.points.map(p => p.xMm));
+      maxX = Math.max(...element.points.map(p => p.xMm));
     }
-    if (maxY > page.heightMm || maxY < 0) {
+
+    if (maxY > page.heightMm || maxY < 0 || maxX > page.widthMm || minX < 0) {
       outOfBounds = true;
       break;
     }
   }
+
   if (outOfBounds) {
     return invalid(
       [

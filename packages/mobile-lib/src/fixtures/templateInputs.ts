@@ -35,3 +35,13 @@ export const fixtureLargeTemplateInput: TemplateInput = {
     includeAssemblyInstructions: true,
   },
 };
+
+export const fixtureLargeUSLetterTemplateInput: TemplateInput = {
+  phone: toPhoneGeometry(fixtureLargePhone),
+  options: {
+    pageSize: 'LETTER',
+    cardboardThicknessMm: 1.5,
+    eyeToScreenDistanceMm: 250,
+    includeAssemblyInstructions: true,
+  },
+};
