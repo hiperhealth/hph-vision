@@ -71,4 +71,70 @@ describe('generateTemplateDocument', () => {
       expect(doc).toMatchSnapshot();
     });
   });
+
+  it('returns error when phone is too large for A4 page', () => {
+    const result = generateTemplateDocument(
+      {...fixtureTemplateInput.phone, bodyWidthMm: 190},
+      fixtureTemplateInput.options,
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.errors.some(e => e.code === 'phone_too_large_for_page')).toBe(
+      true,
+    );
+  });
+
+  it('always includes a calibration mark in valid output', () => {
+    const result = generateTemplateDocument(
+      fixtureTemplateInput.phone,
+      fixtureTemplateInput.options,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.calibrationMarks).toHaveLength(1);
+    expect(result.value.calibrationMarks[0].kind).toBe('square');
+    expect(result.value.calibrationMarks[0].expectedSizeMm).toBe(50);
+  });
+
+  it('always has at least one cut element in valid output', () => {
+    const result = generateTemplateDocument(
+      fixtureTemplateInput.phone,
+      fixtureTemplateInput.options,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const elements = result.value.pages[0].elements;
+    expect(elements.some(e => e.role === 'cut')).toBe(true);
+  });
+
+  it('always has at least one fold element in valid output', () => {
+    const result = generateTemplateDocument(
+      fixtureTemplateInput.phone,
+      fixtureTemplateInput.options,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const elements = result.value.pages[0].elements;
+    expect(elements.some(e => e.role === 'fold')).toBe(true);
+  });
+
+  it('returns instructions when includeAssemblyInstructions is true', () => {
+    const result = generateTemplateDocument(fixtureTemplateInput.phone, {
+      ...fixtureTemplateInput.options,
+      includeAssemblyInstructions: true,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.instructions.length).toBeGreaterThan(0);
+  });
+
+  it('returns empty instructions when includeAssemblyInstructions is false', () => {
+    const result = generateTemplateDocument(fixtureTemplateInput.phone, {
+      ...fixtureTemplateInput.options,
+      includeAssemblyInstructions: false,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.instructions).toHaveLength(0);
+  });
 });

@@ -5,6 +5,7 @@ import {
   invalid,
   valid,
   type ValidationResult,
+  type ValidationIssue,
 } from '../validation';
 import {createTemplatePage} from './layout';
 import type {
@@ -12,7 +13,14 @@ import type {
   TemplateDocument,
   TemplateOptions,
 } from './types';
-import {validatePhoneGeometry, validateTemplateOptions} from './validation';
+import {
+  validatePhoneGeometry,
+  validateTemplateOptions,
+  validatePageFit,
+  validateSlotTolerance,
+  validateGlueTabSize,
+  validateAssemblyInstructions,
+} from './validation';
 
 export const TEMPLATE_VERSION = 'template-v0.1';
 
@@ -65,7 +73,18 @@ export const generateTemplateDocument = (
 ): ValidationResult<TemplateDocument> => {
   const phoneValidation = validatePhoneGeometry(phone);
   const optionValidation = validateTemplateOptions(options);
-  const combined = combineValidationResults(phoneValidation, optionValidation);
+  const pageFitValidation = validatePageFit(phone, options);
+
+  const slotValidation = validateSlotTolerance(2.5);
+  const glueTabValidation = validateGlueTabSize(8, 52);
+
+  const combined = combineValidationResults(
+    phoneValidation,
+    optionValidation,
+    slotValidation,
+    glueTabValidation,
+    pageFitValidation,
+  );
 
   if (!combined.ok) {
     return invalid(combined.errors, combined.warnings);
@@ -124,21 +143,58 @@ export const generateTemplateDocument = (
     element => element.id === 'scale-check-square-50mm',
   );
 
+  if (!calibrationElement) {
+    return invalid([
+      {
+        code: 'calibration_square_missing',
+        message:
+          'Generated template is missing the required calibration square.',
+        severity: 'error',
+      },
+    ]);
+  }
+
+  const lineErrors: ValidationIssue[] = [];
+  if (!page.elements.some(e => e.role === 'cut')) {
+    lineErrors.push({
+      code: 'missing_cut_lines',
+      message: 'Template has no cut lines.',
+      severity: 'error',
+    });
+  }
+  if (!page.elements.some(e => e.role === 'fold')) {
+    lineErrors.push({
+      code: 'missing_fold_lines',
+      message: 'Template has no fold lines.',
+      severity: 'error',
+    });
+  }
+  if (lineErrors.length > 0) {
+    return invalid(lineErrors);
+  }
+
+  const instructions = createInstructions(options.includeAssemblyInstructions);
+  const instructionValidation = validateAssemblyInstructions(
+    instructions,
+    options.includeAssemblyInstructions,
+  );
+  if (!instructionValidation.ok) {
+    return invalid(instructionValidation.errors);
+  }
+
   return valid(
     {
       pages: [page],
-      calibrationMarks: calibrationElement
-        ? [
-            {
-              id: 'scale-check-square-50mm',
-              kind: 'square',
-              expectedSizeMm: 50,
-              pageId: page.id,
-              elementId: calibrationElement.id,
-            },
-          ]
-        : [],
-      instructions: createInstructions(options.includeAssemblyInstructions),
+      calibrationMarks: [
+        {
+          id: 'scale-check-square-50mm',
+          kind: 'square',
+          expectedSizeMm: 50,
+          pageId: page.id,
+          elementId: calibrationElement.id,
+        },
+      ],
+      instructions,
       metadata: {
         templateVersion: TEMPLATE_VERSION,
         generatedForModel: phone.modelName,
