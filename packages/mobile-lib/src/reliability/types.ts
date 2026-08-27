@@ -9,6 +9,8 @@ export type ReliabilitySignals = {
   ambientLightScore?: number;
   completionRate?: number;
   contradictionScore?: number;
+  skippedTrialsRate?: number;
+  abortedFlow?: boolean;
 };
 
 export type ReliabilityLevel = 'high' | 'medium' | 'low' | 'invalid';
