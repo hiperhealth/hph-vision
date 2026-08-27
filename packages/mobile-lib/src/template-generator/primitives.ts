@@ -4,6 +4,8 @@ import type {
   RectPath,
   TemplateElementRole,
   TextElement,
+  RoundedRectPath,
+  GeneralPath,
 } from './types';
 
 export const point = (xMm: number, yMm: number): Point => ({xMm, yMm});
@@ -37,4 +39,32 @@ export const text = (
   fallbackText,
   sizeMm,
   role: 'label',
+});
+
+export const roundedRect = (
+  id: string,
+  origin: Point,
+  widthMm: number,
+  heightMm: number,
+  cornerRadiusMm: number,
+  role: TemplateElementRole,
+): RoundedRectPath => ({
+  kind: 'rounded-rect',
+  id,
+  origin,
+  widthMm,
+  heightMm,
+  cornerRadiusMm,
+  role,
+});
+
+export const path = (
+  id: string,
+  points: Point[],
+  role: TemplateElementRole,
+): GeneralPath => ({
+  kind: 'general',
+  id,
+  points,
+  role,
 });

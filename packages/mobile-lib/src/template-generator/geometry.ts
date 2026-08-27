@@ -1,5 +1,6 @@
 import type {PhoneGeometry} from '../device-profile';
 import {
+  validationIssue,
   combineValidationResults,
   invalid,
   valid,
@@ -71,6 +72,54 @@ export const generateTemplateDocument = (
   }
 
   const page = createTemplatePage(phone, options);
+  let outOfBounds = false;
+  for (const element of page.elements) {
+    let maxY = 0;
+    let minY = 0;
+    let maxX = 0;
+    let minX = 0;
+
+    if (element.kind === 'rect' || element.kind === 'rounded-rect') {
+      minY = element.origin.yMm;
+      maxY = element.origin.yMm + element.heightMm;
+      minX = element.origin.xMm;
+      maxX = element.origin.xMm + element.widthMm;
+    } else if (element.kind === 'line') {
+      minY = Math.min(element.from.yMm, element.to.yMm);
+      maxY = Math.max(element.from.yMm, element.to.yMm);
+      minX = Math.min(element.from.xMm, element.to.xMm);
+      maxX = Math.max(element.from.xMm, element.to.xMm);
+    } else if (element.kind === 'text') {
+      minY = element.origin.yMm - element.sizeMm;
+      maxY = element.origin.yMm + element.sizeMm;
+      minX = element.origin.xMm;
+      maxX = element.origin.xMm + 150;
+    } else if (element.kind === 'general') {
+      minY = Math.min(...element.points.map(p => p.yMm));
+      maxY = Math.max(...element.points.map(p => p.yMm));
+      minX = Math.min(...element.points.map(p => p.xMm));
+      maxX = Math.max(...element.points.map(p => p.xMm));
+    }
+
+    if (maxY > page.heightMm || minY < 0 || maxX > page.widthMm || minX < 0) {
+      outOfBounds = true;
+      break;
+    }
+  }
+
+  if (outOfBounds) {
+    return invalid(
+      [
+        validationIssue(
+          'out_of_bounds',
+          'Phone dimensions require a larger page size.',
+          'pageSize',
+        ),
+      ],
+      combined.warnings,
+    );
+  }
+
   const calibrationElement = page.elements.find(
     element => element.id === 'scale-check-square-50mm',
   );

@@ -47,7 +47,29 @@ export type TextElement = {
   role: TemplateElementRole;
 };
 
-export type TemplateElement = LinePath | RectPath | TextElement;
+export type RoundedRectPath = {
+  kind: 'rounded-rect';
+  id: string;
+  origin: Point;
+  widthMm: number;
+  heightMm: number;
+  cornerRadiusMm: number;
+  role: TemplateElementRole;
+};
+
+export type GeneralPath = {
+  kind: 'general';
+  id: string;
+  points: Point[];
+  role: TemplateElementRole;
+};
+
+export type TemplateElement =
+  | LinePath
+  | RectPath
+  | TextElement
+  | RoundedRectPath
+  | GeneralPath;
 
 export type TemplatePage = {
   id: string;
