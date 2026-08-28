@@ -1,5 +1,7 @@
 # Contributing to HPH Vision
 
+Please review our [Code of Conduct](CODE_OF_CONDUCT.md) to understand our community behavior standards.
+
 This project is a monorepo. Run commands from the repository root unless a step
 explicitly says otherwise.
 
