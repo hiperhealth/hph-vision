@@ -116,5 +116,4 @@ yarn mobile:typecheck
 
 ## License
 
-This project is licensed under the BSD Clause 3 License - see the LICENSE file for details.
-[BSD 3-Clause License](lICENSE)
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICENSE) file for details.
