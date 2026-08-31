@@ -4,7 +4,6 @@
 import {describe, expect, it} from '@jest/globals';
 import {
   StateMachineInstance,
-  transition,
   replay,
   InvalidTransitionError,
 } from '../engine';
@@ -92,6 +91,37 @@ describe('state machine engine', () => {
       canContinue: true,
     });
     expect(snapshot.eventLog.length).toBe(3);
+  });
+
+  it('should complete onboarding when triage allows continuation', () => {
+    const machine = new StateMachineInstance(onboardingFlowConfig);
+    machine.send({type: 'START'});
+    machine.send({type: 'ACCEPT_DISCLAIMER'});
+
+    machine.send({type: 'TRIAGE_COMPLETE', canContinue: true});
+
+    expect(machine.state).toBe('complete');
+    expect(machine.context).toEqual({
+      disclaimerAccepted: true,
+      canContinue: true,
+    });
+    expect(machine.eventLog).toHaveLength(3);
+  });
+
+  it('should reject onboarding completion when triage blocks continuation', () => {
+    const machine = new StateMachineInstance(onboardingFlowConfig);
+    machine.send({type: 'START'});
+    machine.send({type: 'ACCEPT_DISCLAIMER'});
+    const contextBeforeRejection = {...machine.context};
+    const eventLogBeforeRejection = [...machine.eventLog];
+
+    expect(() => {
+      machine.send({type: 'TRIAGE_COMPLETE', canContinue: false});
+    }).toThrow(InvalidTransitionError);
+
+    expect(machine.state).toBe('triage');
+    expect(machine.context).toEqual(contextBeforeRejection);
+    expect(machine.eventLog).toEqual(eventLogBeforeRejection);
   });
 });
 

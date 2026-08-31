@@ -45,6 +45,7 @@ export const onboardingFlowConfig: StateMachineConfig<
       on: {
         TRIAGE_COMPLETE: {
           target: 'complete',
+          guard: (_ctx, evt) => evt.canContinue,
           action: (ctx, evt) => ({...ctx, canContinue: evt.canContinue}),
         },
         RESET: 'idle',
