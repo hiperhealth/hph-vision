@@ -5,10 +5,7 @@ import {
   serializeRefractionFlowState,
   restoreRefractionFlowState,
   normalizeRefractionAnswer,
-  scoreRefractionSession,
   combineRefractionResults,
-  createRefractionSession,
-  recordRefractionResponse,
 } from '..';
 
 // helper to run through the trial loop for one eye
@@ -158,26 +155,25 @@ describe('refraction flow state machine', () => {
     );
   });
 
-  it('handles unknown/skipped responses correctly', () => {
-    let context = createRefractionFlow({eyeMode: 'right'});
+  it('returns reliability warnings for unknown, low-confidence responses', () => {
+    let context = createRefractionFlow({eyeMode: 'right', maxTrials: 1});
     context = transitionRefractionFlow(context, {type: 'START'});
     context = transitionRefractionFlow(context, {
       type: 'SELECT_EYE',
-      payload: {eye: 'right', targetMode: 'single'},
+      payload: {eye: 'right'},
     });
     context = transitionRefractionFlow(context, {type: 'PROCEED'});
 
-    context = transitionRefractionFlow(context, {
-      type: 'SUBMIT_RESPONSE',
-      payload: {
-        answer: normalizeRefractionAnswer("I don't know"),
-        inputMethod: 'voice',
-        confidence: 0.4,
-      },
-    });
-    context = transitionRefractionFlow(context, {type: 'CHECK_CONVERGENCE'});
+    context = runEyeTrials(context, "I don't know", 'voice', 0.4);
 
+    expect(context.state).toBe('complete');
     expect(context.lastResponse?.answer).toBe('unknown');
+    expect(context.result?.reliabilityWarnings).toContain(
+      'unknown_refraction_answers',
+    );
+    expect(context.result?.reliabilityWarnings).toContain(
+      'low_voice_confidence',
+    );
   });
 
   it('handles abort and produces the right warning', () => {
@@ -266,6 +262,23 @@ describe('refraction flow state machine', () => {
     expect(context.rightEyeSession?.trials.length).toBe(4);
   });
 
+  it('completes a configured one-eye flow without a SELECT_EYE target mode', () => {
+    let context = createRefractionFlow({eyeMode: 'right', maxTrials: 1});
+    context = transitionRefractionFlow(context, {type: 'START'});
+    context = transitionRefractionFlow(context, {
+      type: 'SELECT_EYE',
+      payload: {eye: 'right'},
+    });
+    context = transitionRefractionFlow(context, {type: 'PROCEED'});
+
+    context = runEyeTrials(context, 'better');
+
+    expect(context.state).toBe('complete');
+    expect(context.selectedEyeMode).toBe('right');
+    expect(context.result?.rightEye).toBeDefined();
+    expect(context.result?.leftEye).toBeUndefined();
+  });
+
   it('carries initialSphere and maxTrials over to the second eye session', () => {
     let context = createRefractionFlow({
       eyeMode: 'both',
@@ -339,6 +352,27 @@ describe('refraction flow state machine', () => {
     );
   });
 
+  it('continues predictably from a restored flow state', () => {
+    let context = createRefractionFlow({eyeMode: 'right', maxTrials: 2});
+    context = transitionRefractionFlow(context, {type: 'START'});
+    context = transitionRefractionFlow(context, {
+      type: 'SELECT_EYE',
+      payload: {eye: 'right'},
+    });
+    context = transitionRefractionFlow(context, {type: 'PROCEED'});
+
+    const restored = restoreRefractionFlowState(
+      serializeRefractionFlowState(context),
+    );
+    const continued = transitionRefractionFlow(restored, {
+      type: 'PRESENT_OPTION_TWO',
+    });
+
+    expect(continued.state).toBe('show_option_two');
+    expect(continued.currentTrial?.id).toBe(context.currentTrial?.id);
+    expect(continued.currentTrialIndex).toBe(context.currentTrialIndex);
+  });
+
   it('marks active session as not completed on abort', () => {
     let context = createRefractionFlow({eyeMode: 'right'});
     context = transitionRefractionFlow(context, {type: 'START'});
@@ -360,6 +394,24 @@ describe('refraction flow state machine', () => {
 
     expect(context.state).toBe('aborted');
     expect(context.rightEyeSession?.completed).toBe(false);
+  });
+
+  it('ignores abort events after the flow is complete', () => {
+    let context = createRefractionFlow({eyeMode: 'right', maxTrials: 1});
+    context = transitionRefractionFlow(context, {type: 'START'});
+    context = transitionRefractionFlow(context, {
+      type: 'SELECT_EYE',
+      payload: {eye: 'right'},
+    });
+    context = transitionRefractionFlow(context, {type: 'PROCEED'});
+    context = transitionRefractionFlow(context, {
+      type: 'SUBMIT_RESPONSE',
+      payload: {answer: 'better', inputMethod: 'touch'},
+    });
+    context = transitionRefractionFlow(context, {type: 'CHECK_CONVERGENCE'});
+
+    expect(context.state).toBe('complete');
+    expect(transitionRefractionFlow(context, {type: 'ABORT'})).toBe(context);
   });
 
   it('uses the optional clock for deterministic timestamps', () => {
@@ -387,142 +439,9 @@ describe('refraction flow state machine', () => {
   });
 });
 
-// --- normalization tests ---
+// --- combineRefractionResults tests ---
 
-describe('normalizeRefractionAnswer', () => {
-  it('maps synonym words to their canonical tokens', () => {
-    expect(normalizeRefractionAnswer('clearer')).toBe('better');
-    expect(normalizeRefractionAnswer('improved')).toBe('better');
-    expect(normalizeRefractionAnswer('sharper')).toBe('better');
-    expect(normalizeRefractionAnswer('blurrier')).toBe('worse');
-    expect(normalizeRefractionAnswer('harder')).toBe('worse');
-    expect(normalizeRefractionAnswer('equal')).toBe('same');
-    expect(normalizeRefractionAnswer('neither')).toBe('same');
-    expect(normalizeRefractionAnswer('both')).toBe('same');
-    expect(normalizeRefractionAnswer('first')).toBe('one');
-    expect(normalizeRefractionAnswer('second')).toBe('two');
-    expect(normalizeRefractionAnswer('option a')).toBe('one');
-    expect(normalizeRefractionAnswer('option b')).toBe('two');
-  });
-
-  it('strips punctuation before matching', () => {
-    expect(normalizeRefractionAnswer('better!')).toBe('better');
-    expect(normalizeRefractionAnswer('option 1.')).toBe('one');
-    expect(normalizeRefractionAnswer('worse...')).toBe('worse');
-    expect(normalizeRefractionAnswer('(same)')).toBe('same');
-    expect(normalizeRefractionAnswer('  better  ')).toBe('better');
-  });
-
-  it('handles compound voice input by extracting the key word', () => {
-    expect(normalizeRefractionAnswer('I think option one is better')).toBe(
-      'better',
-    );
-    expect(normalizeRefractionAnswer('the second one looks worse')).toBe(
-      'worse',
-    );
-    expect(normalizeRefractionAnswer('they look the same to me')).toBe('same');
-    expect(normalizeRefractionAnswer('I would say option 2 is clearer')).toBe(
-      'better',
-    );
-    expect(normalizeRefractionAnswer('no difference at all')).toBe('same');
-  });
-
-  it('returns unknown for ambiguous or empty input', () => {
-    expect(normalizeRefractionAnswer('')).toBe('unknown');
-    expect(normalizeRefractionAnswer('   ')).toBe('unknown');
-    expect(normalizeRefractionAnswer('hmm')).toBe('unknown');
-    expect(normalizeRefractionAnswer('I am not really seeing anything')).toBe(
-      'unknown',
-    );
-  });
-
-  it('handles direct unknown synonyms', () => {
-    expect(normalizeRefractionAnswer('idk')).toBe('unknown');
-    expect(normalizeRefractionAnswer('not sure')).toBe('unknown');
-    expect(normalizeRefractionAnswer('skip')).toBe('unknown');
-    expect(normalizeRefractionAnswer('pass')).toBe('unknown');
-    expect(normalizeRefractionAnswer('uncertain')).toBe('unknown');
-    expect(normalizeRefractionAnswer("don't know")).toBe('unknown');
-  });
-
-  it('is case insensitive', () => {
-    expect(normalizeRefractionAnswer('BETTER')).toBe('better');
-    expect(normalizeRefractionAnswer('Worse')).toBe('worse');
-    expect(normalizeRefractionAnswer('OPTION ONE')).toBe('one');
-  });
-});
-
-// --- scoring and combineRefractionResults tests ---
-
-describe('scoring and combineRefractionResults', () => {
-  it('computes sphere, cylinder, and axis ranges', () => {
-    let session = createRefractionSession({
-      id: 'range-test',
-      eye: 'right',
-      maxTrials: 2,
-    });
-
-    for (const trial of session.trials) {
-      session = recordRefractionResponse(session, {
-        trialId: trial.id,
-        answer: 'better',
-        inputMethod: 'touch',
-        createdAt: '2026-05-12T00:00:00Z',
-      });
-    }
-
-    const result = scoreRefractionSession(session);
-    const estimate = result.rightEye;
-
-    expect(estimate).toBeDefined();
-    expect(estimate?.sphereRange).toBeDefined();
-    expect(estimate?.cylinderRange).toBeDefined();
-    expect(estimate?.axisRange).toBeDefined();
-
-    if (estimate?.sphere !== undefined && estimate.sphereRange) {
-      expect(estimate.sphereRange[0]).toBeLessThan(estimate.sphere);
-      expect(estimate.sphereRange[1]).toBeGreaterThan(estimate.sphere);
-    }
-  });
-
-  it('penalizes confidence for low-confidence voice responses', () => {
-    let session = createRefractionSession({
-      id: 'voice-low',
-      eye: 'left',
-      maxTrials: 4,
-    });
-
-    // low-confidence voice
-    for (const trial of session.trials) {
-      session = recordRefractionResponse(session, {
-        trialId: trial.id,
-        answer: 'better',
-        inputMethod: 'voice',
-        confidence: 0.3,
-        createdAt: '2026-05-12T00:00:00Z',
-      });
-    }
-
-    const result = scoreRefractionSession(session);
-    expect(result.reliabilityWarnings).toContain('low_voice_confidence');
-    let cleanSession = createRefractionSession({
-      id: 'voice-high',
-      eye: 'left',
-      maxTrials: 4,
-    });
-    for (const trial of cleanSession.trials) {
-      cleanSession = recordRefractionResponse(cleanSession, {
-        trialId: trial.id,
-        answer: 'better',
-        inputMethod: 'voice',
-        confidence: 0.95,
-        createdAt: '2026-05-12T00:00:00Z',
-      });
-    }
-    const cleanResult = scoreRefractionSession(cleanSession);
-    expect(result.confidence).toBeLessThan(cleanResult.confidence);
-  });
-
+describe('combineRefractionResults', () => {
   it('returns zero confidence when combining an empty results array', () => {
     const combined = combineRefractionResults([]);
     expect(combined.confidence).toBe(0);

@@ -52,6 +52,7 @@ export type RefractionTrial = {
   optionB?: RefractionStimulus;
 };
 
+/** Alias for RefractionTrial representing a discrete step in the refraction protocol */
 export type RefractionStep = RefractionTrial;
 
 export type RefractionResponse = {
@@ -98,9 +99,12 @@ export type EyeRefractionEstimate = {
   };
 };
 
-// result of a guided subjective refraction screening session
-// the estimates here are for screening only - they don't replace a clinical prescription
-// and should always be reviewed by a qualified clinician
+/**
+ * Result of a guided subjective refraction screening session.
+ *
+ * NOTE: The estimates provided here are for screening and prescription-estimation purposes only.
+ * They do not constitute a final clinical prescription and require review by a qualified clinician.
+ */
 export type RefractionResult = {
   rightEye?: EyeRefractionEstimate;
   leftEye?: EyeRefractionEstimate;

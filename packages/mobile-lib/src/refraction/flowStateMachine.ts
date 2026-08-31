@@ -133,7 +133,11 @@ export const transitionRefractionFlow = (
   context: RefractionFlowContext,
   event: RefractionFlowEvent,
 ): RefractionFlowContext => {
-  if (event.type === 'ABORT') {
+  if (
+    event.type === 'ABORT' &&
+    context.state !== 'complete' &&
+    context.state !== 'aborted'
+  ) {
     const abortedContext: RefractionFlowContext = {
       ...context,
       state: 'aborted',
@@ -159,9 +163,11 @@ export const transitionRefractionFlow = (
     case 'select_eye': {
       if (event.type === 'SELECT_EYE') {
         const eye = event.payload.eye;
-        const mode =
+        const targetMode =
           event.payload.targetMode ??
-          (eye === 'binocular' ? 'single' : context.selectedEyeMode);
+          (eye === 'binocular' || context.selectedEyeMode !== 'both'
+            ? 'single'
+            : 'both');
         const session = createRefractionSession({
           eye,
           initialSphere: context.initialSphere,
@@ -173,7 +179,11 @@ export const transitionRefractionFlow = (
           ...context,
           state: 'baseline_check',
           selectedEyeMode:
-            mode === 'single' ? (eye === 'left' ? 'left' : 'right') : 'both',
+            targetMode === 'single'
+              ? eye === 'left'
+                ? 'left'
+                : 'right'
+              : 'both',
           activeEye: eye,
           currentTrialIndex: 0,
           currentTrial: firstTrial,
