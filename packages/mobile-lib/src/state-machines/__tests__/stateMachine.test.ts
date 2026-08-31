@@ -2,11 +2,7 @@
 // all comments are lowercase to follow workspace guidelines
 
 import {describe, expect, it} from '@jest/globals';
-import {
-  StateMachineInstance,
-  replay,
-  InvalidTransitionError,
-} from '../engine';
+import {StateMachineInstance, replay, InvalidTransitionError} from '../engine';
 import {
   assertTransition,
   assertInvalidTransition,
