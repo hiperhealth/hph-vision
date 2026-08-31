@@ -113,3 +113,7 @@ yarn mobile:lint
 yarn mobile:test
 yarn mobile:typecheck
 ```
+
+## License
+
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](LICENSE) file for details.
