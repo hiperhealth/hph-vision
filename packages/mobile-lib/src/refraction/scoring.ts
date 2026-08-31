@@ -1,6 +1,7 @@
 import {clamp, roundToStep} from '../validation';
 import type {
   EyeRefractionEstimate,
+  RefractionRange,
   RefractionResult,
   RefractionSession,
 } from './types';
@@ -28,6 +29,9 @@ export const scoreRefractionSession = (
     if (!response) {
       continue;
     }
+    if (response.inputMethod === 'voice' && (response.confidence ?? 1) < 0.65) {
+      lowVoiceConfidenceCount += 1;
+    }
     if (response.answer === 'unknown') {
       unknownCount += 1;
       continue;
@@ -35,9 +39,6 @@ export const scoreRefractionSession = (
     if (response.answer === 'same') {
       sameCount += 1;
       continue;
-    }
-    if (response.inputMethod === 'voice' && (response.confidence ?? 1) < 0.65) {
-      lowVoiceConfidenceCount += 1;
     }
 
     const selected =
@@ -49,6 +50,27 @@ export const scoreRefractionSession = (
     axis += selected?.axisDelta ?? 0;
   }
 
+  const roundedSphere = roundToStep(sphere, 0.25);
+  const roundedCylinder = roundToStep(cylinder, 0.25);
+  const normalizedAxis = normalizeAxis(axis);
+  const sphericalEquivalent = roundToStep(
+    roundedSphere + roundedCylinder / 2,
+    0.25,
+  );
+
+  const sphereRange: RefractionRange = [
+    roundToStep(roundedSphere - 0.5, 0.25),
+    roundToStep(roundedSphere + 0.5, 0.25),
+  ];
+  const cylinderRange: RefractionRange = [
+    roundToStep(roundedCylinder - 0.5, 0.25),
+    roundToStep(roundedCylinder + 0.5, 0.25),
+  ];
+  const axisRange: RefractionRange = [
+    normalizeAxis(normalizedAxis - 15),
+    normalizeAxis(normalizedAxis + 15),
+  ];
+
   const completionRate =
     session.trials.length > 0
       ? session.responses.length / session.trials.length
@@ -56,21 +78,19 @@ export const scoreRefractionSession = (
   const uncertaintyPenalty =
     (unknownCount + sameCount * 0.5 + lowVoiceConfidenceCount) * 0.08;
   const confidence = clamp(completionRate - uncertaintyPenalty, 0, 1);
+
   const estimate: EyeRefractionEstimate = {
-    sphere: roundToStep(sphere, 0.25),
-    cylinder: roundToStep(cylinder, 0.25),
-    axis: normalizeAxis(axis),
-    sphericalEquivalent: roundToStep(sphere + cylinder / 2, 0.25),
+    sphere: roundedSphere,
+    cylinder: roundedCylinder,
+    axis: normalizedAxis,
+    sphericalEquivalent,
+    sphereRange,
+    cylinderRange,
+    axisRange,
     confidenceInterval: {
-      sphere: [
-        roundToStep(sphere - 0.5, 0.25),
-        roundToStep(sphere + 0.5, 0.25),
-      ],
-      cylinder: [
-        roundToStep(cylinder - 0.5, 0.25),
-        roundToStep(cylinder + 0.5, 0.25),
-      ],
-      axis: [normalizeAxis(axis - 15), normalizeAxis(axis + 15)],
+      sphere: sphereRange,
+      cylinder: cylinderRange,
+      axis: axisRange,
     },
   };
 
