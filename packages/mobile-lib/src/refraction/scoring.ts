@@ -113,3 +113,41 @@ export const scoreRefractionSession = (
     reliabilityWarnings,
   };
 };
+
+// combine results from multiple sessions (e.g. right eye and left eye)
+export const combineRefractionResults = (
+  results: RefractionResult[],
+): RefractionResult => {
+  let rightEye: EyeRefractionEstimate | undefined;
+  let leftEye: EyeRefractionEstimate | undefined;
+  let binocular: EyeRefractionEstimate | undefined;
+  let totalConfidence = 0;
+  const warningsSet = new Set<string>();
+
+  for (const res of results) {
+    if (res.rightEye) {
+      rightEye = res.rightEye;
+    }
+    if (res.leftEye) {
+      leftEye = res.leftEye;
+    }
+    if (res.binocular) {
+      binocular = res.binocular;
+    }
+    totalConfidence += res.confidence;
+    res.reliabilityWarnings.forEach(w => warningsSet.add(w));
+  }
+
+  const confidence = results.length > 0 ? totalConfidence / results.length : 0;
+  const recommendation =
+    confidence < 0.4 ? 'repeat_test' : 'clinician_review_recommended';
+
+  return {
+    rightEye,
+    leftEye,
+    binocular,
+    confidence,
+    recommendation,
+    reliabilityWarnings: Array.from(warningsSet),
+  };
+};
