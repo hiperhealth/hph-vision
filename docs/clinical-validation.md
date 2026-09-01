@@ -48,7 +48,7 @@ The physical chassis must lock the smartphone into position to prevent vertex di
 
 Contrast sensitivity calculations depend on constant, predictable optotype luminance.
 
-- **Current Implementation Status:** The codebase currently relies on manual instruction screens (e.g., [VisorAssemblyScreen.tsx](packages/mobile/src/features/visor-assembly/VisorAssemblyScreen.tsx)) prompting the user to clean their screen and maximize brightness manually. Dynamic hardware camera or lux sensor measurement and programmatically locked system brightness controls are planned features; camera integrations are currently stubs (see [camera/index.ts](packages/mobile/src/integrations/camera/index.ts)).
+- **Current Implementation Status:** The codebase currently relies on manual instruction screens (e.g., [VisorAssemblyScreen.tsx](../packages/mobile/src/features/visor-assembly/VisorAssemblyScreen.tsx)) prompting the user to clean their screen and maximize brightness manually. Dynamic hardware camera or lux sensor measurement and programmatically locked system brightness controls are planned features; camera integrations are currently stubs (see [camera/index.ts](../packages/mobile/src/integrations/camera/index.ts)).
 - **Planned Validation Protocol (Proposed Targets):**
   - **Proposed Luminance Target:** Display luminance of the Tumbling E optotype on the screening interface is proposed to meet a target minimum of $85 \text{ cd/m}^2$ with ambient light contrast levels $\ge 90\%$. This is a proposed engineering target, not a completed calibration result or a claimed requirement of ISO 8596 or ANSI Z80.21.
   - **Proposed Ambient Lux Target:** Ambient illumination is proposed to target a range of 100–500 lux (to avoid glare or extreme darkness).
@@ -183,7 +183,7 @@ refraction and visual-acuity reference methods.
 ### 3.2 Visual Acuity Benchmarking
 
 - **Clinical Reference Method:** A future protocol must prespecify a clinician-administered, calibrated visual-acuity reference method (for example, a digital ETDRS logMAR chart) and record its optotype, distance, and luminance conditions. ISO 8596 informs optotype presentation but does not by itself establish clinical equivalence.
-- **App Protocol:** The current prototype uses monocular visual-acuity screening with the Tumbling E optotype on [AcuityTestScreen.tsx](packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx). A future clinical protocol must freeze the tested build and its device-specific calibration conditions.
+- **App Protocol:** The current prototype uses monocular visual-acuity screening with the Tumbling E optotype on [AcuityTestScreen.tsx](../packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx). A future clinical protocol must freeze the tested build and its device-specific calibration conditions.
 - **Proposed Validation Target:** The mean difference in visual-acuity scores
   between the app and the clinician reference method is proposed to target
   $\le 0.1 \text{ logMAR}$ (one standard eye-chart line). This is a proposed
