@@ -12,6 +12,14 @@
 
 ---
 
+> **Status convention:** Statements labeled **Current Implementation Status**
+> describe code reviewed at the current base revision. All other metrics,
+> thresholds, and protocols in this document are **proposed validation targets**
+> or future work. Meeting an engineering target does not establish clinical
+> performance, clinical effectiveness, diagnosis, or prescribing suitability.
+
+---
+
 ## 1. Engineering Validation Protocol
 
 This section details the verification strategies, metrics, and automated/manual tests designed to validate the precision and consistency of the software state machines, displays, sensors, and physical assemblies.
@@ -42,7 +50,7 @@ Contrast sensitivity calculations depend on constant, predictable optotype lumin
 
 - **Current Implementation Status:** The codebase currently relies on manual instruction screens (e.g., [VisorAssemblyScreen.tsx](packages/mobile/src/features/visor-assembly/VisorAssemblyScreen.tsx)) prompting the user to clean their screen and maximize brightness manually. Dynamic hardware camera or lux sensor measurement and programmatically locked system brightness controls are planned features; camera integrations are currently stubs (see [camera/index.ts](packages/mobile/src/integrations/camera/index.ts)).
 - **Planned Validation Protocol (Proposed Targets):**
-  - **Proposed Luminance Target:** Display luminance of the Tumbling E optotype on the screening interface is proposed to meet a target minimum of $85 \text{ cd/m}^2$ (standard clinical visual testing luminance, ISO 8596 / ANSI Z80.21) with ambient light contrast levels $\ge 90\%$.
+  - **Proposed Luminance Target:** Display luminance of the Tumbling E optotype on the screening interface is proposed to meet a target minimum of $85 \text{ cd/m}^2$ with ambient light contrast levels $\ge 90\%$. This is a proposed engineering target, not a completed calibration result or a claimed requirement of ISO 8596 or ANSI Z80.21.
   - **Proposed Ambient Lux Target:** Ambient illumination is proposed to target a range of 100–500 lux (to avoid glare or extreme darkness).
   - **Planned Test Protocol:**
     1. Query the camera/light sensor in `packages/mobile/src/integrations/camera/` to measure background lux levels before test initialization.
@@ -58,28 +66,61 @@ Contrast sensitivity calculations depend on constant, predictable optotype lumin
 
 ### 1.5 Test Flow & State Machine Consistency
 
-The state transitions of the clinical testing pipeline must be closed and unbypassed.
+The state transitions of the clinical testing pipeline must eventually be
+closed and unbypassed. The following separates current reusable-library
+behavior from future mobile end-to-end validation.
 
-- **Verification Metric:** 100% of testing sessions must pass disclaimer confirmation and negative triage rules before entering acuity or refraction trials.
-- **Test Matrix:**
+- **Current Implementation Status:**
 
-| Trigger Screen         | Input Condition                | Expected State Transition                             | Target Assertion                 |
-| :--------------------- | :----------------------------- | :---------------------------------------------------- | :------------------------------- |
-| `DisclaimerScreen`     | `consentAccepted = false`      | Blocked navigation.                                   | Cannot route to onboarding       |
-| `TriageScreen`         | `blockingQuestions.length > 0` | Transition to warning; `canContinueSelfTest = false`. | Acuity test blocked              |
-| `AcuityTestScreen`     | Intermediate crash/reload      | Session restores from state checkpoint.               | No data loss, resumes same trial |
-| `RefractionTestScreen` | Completion of right-eye trial  | Transition to left-eye setup or summary.              | Route sequence verification      |
+  - `packages/mobile-lib/src/state-machines/` provides pure, serializable
+    state-machine primitives, including replayable event logs and domain
+    configurations for onboarding, template generation, acuity, refraction,
+    and reporting. Jest tests cover transitions, guards, replay, and snapshot
+    restoration. These configurations are not yet connected to the React
+    Native route state in `packages/mobile/src/state/sessionStore.tsx`.
+  - The shared subjective-refraction model and
+    `packages/mobile-lib/src/refraction/flowStateMachine.ts` support
+    estimation, confidence and reliability warnings, both-eye flow control,
+    abort handling, and JSON flow-state restoration. Their unit tests cover
+    normal, contradictory, aborted, and restored flows.
+    `RefractionTestScreen.tsx` currently uses the earlier
+    `RefractionSession` touch prototype for the right eye only; it does not
+    yet consume the newer refraction flow state machine or implement
+    left-eye routing.
+  - `ResultsScreen.tsx` builds a `TestSession` and `ScreeningReport` from the
+    prototype app state. It uses shared reliability and refraction-confidence
+    calculations, but the current sensor-related inputs are prototype values;
+    they are not measurements from native sensor integrations.
+
+- **Proposed End-to-End Validation Target:** All supported entry paths must
+  enforce consent and non-blocking triage before an acuity or refraction trial
+  can begin. The target requires route-level enforcement and end-to-end tests;
+  it is not established solely by the current library unit tests.
+
+| Area            | Current implementation or unit coverage                                                                                 | Proposed end-to-end assertion                                                                                               |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| Consent         | `DisclaimerScreen` records acceptance before its normal continue action; `sessionStore` has no centralized route guard. | An unaccepted consent state cannot reach onboarding, acuity, or refraction through any supported route.                     |
+| Triage          | `TriageScreen` evaluates red flags and routes a blocking result to the results screen.                                  | A blocking or unanswered triage result cannot enter acuity or refraction, and records the professional-care recommendation. |
+| Acuity recovery | The library supports acuity-flow serialization; the mobile app has no durable recovery wiring.                          | After an interruption and durable restore, the same trial resumes without losing recorded data.                             |
+| Refraction flow | The shared flow tests cover both-eye sequencing and restore; the current mobile screen is right-eye touch-only.         | A mobile integration consumes the shared flow and verifies the configured eye sequence through completion or summary.       |
 
 ### 1.6 Offline Data Integrity
 
-- **Current Implementation Status:** The mobile application's session persistence is currently limited to in-memory draft storage in `packages/mobile/src/state/persistence.ts`, which does not persist across application restarts or support offline-queue synchronization. True offline local storage (AsyncStorage/SQLite) and automatic background synchronization are planned features.
+- **Current Implementation Status:** The shared library has JSON round-trip
+  tests for `TestSession`, acuity flow, generic state-machine snapshots, and
+  refraction flow state. The mobile app does not yet use those serializers for
+  durable session recovery. `packages/mobile/src/state/persistence.ts` keeps
+  an in-memory draft only and is not wired into `sessionStore`; it does not
+  survive an application restart. There is no offline queue, automatic
+  synchronization, or configured screening-report upload in the current app.
+  Durable local storage and synchronization remain planned features.
 - **Planned Validation Protocol (Proposed Targets):**
   - **Proposed Target:** 100% of completed screening data points are targeted to persist locally when the user has no network connection, with automatic synchronization upon network reconnection.
   - **Planned Test Protocol:**
     1. Simulate offline conditions by disconnecting network adapters or enabling airplane mode.
     2. Complete the visual acuity and refraction test flows.
-    3. Verify that the local state payload matches the final `ScreeningReport` format.
-    4. Restore network connectivity and verify that background synchronization triggers an HTTP `POST` success to the FastAPI `restapi` endpoint.
+    3. Verify that the local state payload matches the versioned, future screening-report interchange contract.
+    4. Restore network connectivity and verify that background synchronization uses an authenticated, idempotent upload endpoint defined by that future contract.
 
 ---
 
@@ -104,7 +145,7 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 - **Proposed Validation Target:** A task completion rate target of 95% for users aged 60 and older.
 - **Evaluation Criteria:**
-  - **Dynamic Text Scaling:** Ensure instructions and buttons on `OnboardingScreen` and `TriageScreen` support font scaling up to 200% (WCAG 2.1 accessibility guidelines) without breaking layouts.
+  - **Dynamic Text Scaling:** Test instructions and buttons on `OnboardingScreen` and `TriageScreen` with native font scaling up to 200% without breaking layouts, using WCAG 2.2 as accessibility guidance. This is not a claim of WCAG conformance.
   - **TTS Integration:** Text-to-speech fallback must run in parallel for instruction blocks.
   - **Simplified Input Interfaces:** Pressable target zones on answer keys must target $\ge 48 \text{ dp}$ in size.
 
@@ -118,7 +159,7 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 ### 2.5 Total Session Timeout Metrics
 
-- **Proposed Validation Target:** A complete screening session (consent, onboarding, triage, acuity, and refraction) is proposed to target $\le 12$ minutes to prevent visual and cognitive fatigue (ISO 9241-11).
+- **Proposed Validation Target:** A complete screening session (consent, onboarding, triage, acuity, and refraction) is proposed to target $\le 12$ minutes for evaluation of visual and cognitive fatigue. This is a study-design target, not an ISO 9241-11 requirement.
 - **Evaluation Criteria:**
   - Log timestamps for trial intervals to identify bottleneck questions or lagging voice recognition states.
 
@@ -126,25 +167,33 @@ This protocol measures the ability of lay users to successfully set up, understa
 
 ## 3. Future Clinical Validation Framework
 
-This framework outlines a proposed methodology for a future clinical pilot study to validate the diagnostic accuracy of the `hphvision` platform against gold-standard ophthalmic exams.
+This framework outlines a proposed methodology for a future clinical pilot study
+to assess agreement between `hphvision` screening estimates and clinician
+reference methods. It does not assert present clinical performance.
 
 > [!IMPORTANT]
 > This framework is a proposed draft only. Any future clinical study, protocol, or pilot study remains subject to full ethical, clinical, statistical, regulatory, and jurisdiction-specific reviews and approvals by an Institutional Review Board (IRB) or relevant regulatory body prior to initiation.
 
 ### 3.1 Study Objectives
 
-To evaluate the clinical sensitivity, specificity, and agreement limits of the `hphvision` mobile application compared to standard clinical refraction and visual acuity tests.
+To evaluate future screening sensitivity, specificity, and agreement limits of
+the `hphvision` mobile application compared to clinician-administered
+refraction and visual-acuity reference methods.
 
 ### 3.2 Visual Acuity Benchmarking
 
-- **Clinical Gold Standard:** Calibrated digital ETDRS logMAR chart or a physical, illuminated Snellen eye chart administered at a distance of 6 meters (20 feet) by a certified optometrist (complying with ISO 8596 standard guidelines).
-- **App Protocol:** Automated monocular visual acuity screening using the Tumbling E optotype on [AcuityTestScreen.tsx](packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx).
-- **Proposed Validation Target:** The mean difference in visual acuity scores between the app and the gold standard is proposed to target $\le 0.1 \text{ logMAR}$ (equivalent to 1 line on a standard eye chart, which is the standard threshold for clinical equivalence).
+- **Clinical Reference Method:** A future protocol must prespecify a clinician-administered, calibrated visual-acuity reference method (for example, a digital ETDRS logMAR chart) and record its optotype, distance, and luminance conditions. ISO 8596 informs optotype presentation but does not by itself establish clinical equivalence.
+- **App Protocol:** The current prototype uses monocular visual-acuity screening with the Tumbling E optotype on [AcuityTestScreen.tsx](packages/mobile/src/features/acuity-test/AcuityTestScreen.tsx). A future clinical protocol must freeze the tested build and its device-specific calibration conditions.
+- **Proposed Validation Target:** The mean difference in visual-acuity scores
+  between the app and the clinician reference method is proposed to target
+  $\le 0.1 \text{ logMAR}$ (one standard eye-chart line). This is a proposed
+  pilot threshold, not evidence of clinical equivalence.
 
 ### 3.3 Subjective Refraction Benchmarking
 
-- **Clinical Gold Standard:** Subjective refraction performed by a clinician using a manual phoropter or loose trial lenses in a trial frame.
-- **App Protocol:** Subjective refraction estimation workflow on [RefractionTestScreen.tsx](packages/mobile/src/features/refraction-test/RefractionTestScreen.tsx).
+- **Clinical Reference Method:** Subjective refraction performed by a clinician
+  using a manual phoropter or loose trial lenses in a trial frame.
+- **App Protocol:** The current app screen is a right-eye touch prototype. The shared library also contains an unintegrated both-eye subjective-refraction flow model. A future clinical protocol must identify the exact integrated build under test.
 - **Clinical Target Parameters:**
   - Spherical Equivalent (SE)
   - Sphere power (SPH)
@@ -153,22 +202,24 @@ To evaluate the clinical sensitivity, specificity, and agreement limits of the `
 
 ### 3.4 Statistical Boundaries & Agreement Limits
 
-To validate the platform for clinical screening safety, the study proposes to establish the following target limits of agreement using **Bland-Altman analysis** (Bland & Altman, 1986):
+For a future pilot, the study proposes to prespecify the following exploratory limits of agreement using **Bland-Altman analysis** (Bland & Altman, 1986). They are study-design hypotheses, not standards-based requirements or evidence of clinical accuracy:
 
-- **Sphere & Cylinder Power:** A target of $\ge 85\%$ of estimations falling within $\pm 0.50 \text{ Diopters (D)}$ of the phoropter gold-standard measurement (based on clinical screening benchmarks, e.g., ANSI Z80.28 / ISO 24157).
-- **Cylinder Axis:** For cylinder powers $\ge 0.75\text{ D}$, the cylinder axis estimate target is proposed to be within $\pm 15^\circ$ of the gold-standard axis.
+- **Sphere & Cylinder Power:** A proposed target of $\ge 85\%$ of estimations falling within $\pm 0.50 \text{ Diopters (D)}$ of the clinician reference measurement.
+- **Cylinder Axis:** For cylinder powers $\ge 0.75\text{ D}$, the cylinder axis
+  estimate target is proposed to be within $\pm 15^\circ$ of the clinician
+  reference axis.
 - **Proposed Pilot Validation Target:** The platform is proposed to meet pilot validation criteria if the SE limit of agreement is within $\pm 0.50\text{ D}$ and visual acuity is within $\pm 0.1 \text{ logMAR}$ with zero false-negative triage red flags.
 
 ---
 
 ## References
 
-1. **ISO 8596:2017** — Ophthalmic optics — Visual acuity testing — Standard and clinical optotypes and their presentation. International Organization for Standardization.
-2. **ANSI Z80.21-2020** — Instruments for the measurement of visual acuity. American National Standards Institute.
-3. **ANSI Z80.28-2017** — Methods for reporting optical aberrations of eyes. American National Standards Institute.
-4. **ISO 24157:2008** — Ophthalmic optics and instruments — Reporting aberrations of the human eye. International Organization for Standardization.
-5. **ISO 9241-11:2018** — Ergonomics of human-system interaction — Part 11: Usability: definitions and concepts. International Organization for Standardization.
-6. **WCAG 2.1 (2018)** — Web Content Accessibility Guidelines 2.1. W3C Recommendation. https://www.w3.org/TR/WCAG21/
+1. **ISO 8596:2017, Amendment 1:2019** — _Ophthalmic optics — Visual acuity testing — Standard and clinical optotypes and their presentation_. International Organization for Standardization. [Official catalogue](https://www.iso.org/standard/69042.html)
+2. **ANSI Z80.21-2020 (R2025)** — _Ophthalmics — Instruments — General-Purpose Clinical Visual Acuity Charts_. American National Standards Institute. [Official catalogue](https://webstore.ansi.org/standards/vc%20%28asc%20z80%29/ansiz80212020)
+3. **ANSI Z80.28-2022** — _Ophthalmics — Methods for Reporting Optical Aberrations of Eyes_. American National Standards Institute. [Official catalogue](https://webstore.ansi.org/standards/vc%20%28asc%20z80%29/ansiz80282022)
+4. **ISO 24157:2008, Amendment 1:2020** — _Ophthalmic optics and instruments — Reporting aberrations of the human eye_. International Organization for Standardization. [Official catalogue](https://www.iso.org/standard/42041.html)
+5. **ISO 9241-11:2018** — _Ergonomics of human-system interaction — Part 11: Usability: definitions and concepts_. International Organization for Standardization. [Official catalogue](https://www.iso.org/standard/63500.html)
+6. **Web Content Accessibility Guidelines (WCAG) 2.2 (2024)** — W3C Recommendation. [Official recommendation](https://www.w3.org/TR/WCAG22/)
 7. **Bland, J.M. & Altman, D.G. (1986)** — Statistical methods for assessing agreement between two methods of clinical measurement. _The Lancet_, 327(8476), 307–310. https://doi.org/10.1016/S0140-6736(86)90837-8
 8. **Brooke, J. (1996)** — SUS: a 'quick and dirty' usability scale. In P.W. Jordan et al. (Eds.), _Usability Evaluation in Industry_, pp. 189–194. Taylor & Francis.
-9. **Refraction accuracy thresholds** — the proposed $\pm 0.50\text{ D}$ sphere/cylinder and $\pm 15°$ axis limits are derived from common clinical screening benchmarks used in mobile refraction validation studies (e.g., Bastawrous et al., 2015; Ciuffreda & Rosenfield, 2007) and are consistent with ANSI Z80.28 / ISO 24157 reporting tolerances.
+9. **Study-specific refraction thresholds** — The proposed $\pm 0.50\text{ D}$ sphere/cylinder and $\pm 15°$ axis limits require a prespecified protocol and clinical/statistical review. ANSI Z80.28 and ISO 24157 standardize reporting of optical aberrations; they do not establish these validation acceptance thresholds.
