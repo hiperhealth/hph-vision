@@ -20,20 +20,20 @@ repos:
     rev: 'v3.0.2'
     hooks:
       - id: prettier
-        files: ^(packages/(mobile|mobile-lib)/|.*\.(json|md|ya?ml)$)
-
+        files: ^(\.prettierrc\.js|\.pre-commit-config\.yaml|package\.json|pnpm-workspace\.yaml|tsconfig\.base\.json)$
+        exclude: ^\.yarn/
   - repo: local
     hooks:
       - id: mobile-lint
         name: mobile lint
-        entry: yarn mobile:lint
+        entry: pnpm mobile:lint
         language: system
         pass_filenames: false
         files: ^packages/mobile/.*\.(js|jsx|ts|tsx)$
 
       - id: mobile-lib-typecheck
         name: mobile-lib typecheck
-        entry: yarn mobile-lib:typecheck
+        entry: pnpm mobile-lib:typecheck
         language: system
         pass_filenames: false
         files: ^packages/mobile-lib/.*\.(ts|tsx)$
