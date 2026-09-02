@@ -77,6 +77,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.20.0
         version: 7.29.7
+      '@jest/globals':
+        specifier: 29.6.3
+        version: 29.6.3
       '@react-native/babel-preset':
         specifier: 0.75.3
         version: 0.75.3(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))
@@ -1464,6 +1467,13 @@ packages:
     resolution:
       {
         integrity: sha512-q4DH1Ha4TTFPdxLsqDXK1d3+ioSL7yL5oCMJZgDYm6i+6CygW5E5xVr/D1HdsGxjt1ZWSfUAs9OxSB/BNelWrQ==,
+      }
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+
+  '@jest/globals@29.6.3':
+    resolution:
+      {
+        integrity: sha512-RB+uI+CZMHntzlnOPlll5x/jgRff3LEPl/td/jzMXiIgR0iIhKq9qm1HLU+EC52NuoVy/1swit/sDGjVn4bc6A==,
       }
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
@@ -8951,6 +8961,15 @@ snapshots:
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
+
+  '@jest/globals@29.6.3':
+    dependencies:
+      '@jest/environment': 29.7.0
+      '@jest/expect': 29.7.0
+      '@jest/types': 29.6.3
+      jest-mock: 29.7.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@jest/globals@29.7.0':
     dependencies:
