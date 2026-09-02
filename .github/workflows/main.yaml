@@ -108,13 +108,13 @@ jobs:
 
       - name: Run mobile library tests and type checks
         run: |
-          makim mobile-lib.test
-          makim mobile-lib.typecheck
+          pnpm --filter @hiperhealth/hphvision-lib test
+          pnpm --filter @hiperhealth/hphvision-lib typecheck
 
       - name: Run mobile app tests and type checks
         run: |
-          makim mobile.test
-          makim mobile.typecheck
+          pnpm --filter @hiperhealth/hphvision test
+          pnpm --filter @hiperhealth/hphvision typecheck
 
   linter:
     runs-on: ubuntu-latest
