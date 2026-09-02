@@ -20,9 +20,8 @@ repos:
     rev: 'v3.0.2'
     hooks:
       - id: prettier
-        files: ^(packages/(mobile|mobile-lib)/|.*\.(json|md|ya?ml)$)
+        files: ^(\.prettierrc\.js|\.pre-commit-config\.yaml|package\.json|pnpm-workspace\.yaml|tsconfig\.base\.json)$
         exclude: ^\.yarn/
-
   - repo: local
     hooks:
       - id: mobile-lint
