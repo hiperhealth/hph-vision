@@ -160,6 +160,9 @@ jobs:
           poetry install
           pnpm install --frozen-lockfile
 
+      - name: Build core package
+        run: pnpm --filter @hiperhealth/hphvision-core build
+
       - name: Run style checks
         if: success() || failure()
         run: |
