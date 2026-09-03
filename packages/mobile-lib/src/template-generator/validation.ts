@@ -8,7 +8,13 @@ import {
   validationIssue,
   type ValidationResult,
 } from '../validation';
-import type {TemplateOptions, AssemblyInstruction} from './types';
+import type {
+  TemplateOptions,
+  AssemblyInstruction,
+  TemplatePage,
+  LinePath,
+  RectPath,
+} from './types';
 import {getPageDimensions} from './pages';
 
 export const validateTemplateOptions = (
@@ -152,4 +158,96 @@ export const validateAssemblyInstructions = (
     ]);
   }
   return valid(undefined);
+};
+
+export const validateMinimumMargins = (
+  page: TemplatePage,
+): ValidationResult<undefined> => {
+  const MIN_MARGIN_MM = 10;
+  const errors: ValidationIssue[] = [];
+
+  for (const element of page.elements) {
+    if (element.kind === 'rect') {
+      if (element.origin.xMm < MIN_MARGIN_MM) {
+        errors.push(
+          validationIssue(
+            'margin_violation',
+            `Element "${element.id}" is too close to the left edge.`,
+            element.id,
+          ),
+        );
+      }
+      if (element.origin.yMm < MIN_MARGIN_MM) {
+        errors.push(
+          validationIssue(
+            'margin_violation',
+            `Element "${element.id}" is too close to the top edge.`,
+            element.id,
+          ),
+        );
+      }
+      if (element.origin.xMm + element.widthMm > page.widthMm - MIN_MARGIN_MM) {
+        errors.push(
+          validationIssue(
+            'margin_violation',
+            `Element "${element.id}" exceeds the right margin.`,
+            element.id,
+          ),
+        );
+      }
+      if (
+        element.origin.yMm + element.heightMm >
+        page.heightMm - MIN_MARGIN_MM
+      ) {
+        errors.push(
+          validationIssue(
+            'margin_violation',
+            `Element "${element.id}" exceeds the bottom margin.`,
+            element.id,
+          ),
+        );
+      }
+    }
+  }
+
+  return errors.length > 0 ? invalid(errors) : valid(undefined);
+};
+
+export const validateLineIntersections = (
+  page: TemplatePage,
+): ValidationResult<undefined> => {
+  const criticalRects = page.elements.filter(
+    (e): e is RectPath =>
+      e.kind === 'rect' &&
+      (e.id === 'phone-holder-slot' || e.id === 'eye-window-cut'),
+  );
+
+  const foldCutLines = page.elements.filter(
+    (e): e is LinePath =>
+      e.kind === 'line' && (e.role === 'cut' || e.role === 'fold'),
+  );
+
+  const errors: ValidationIssue[] = [];
+
+  for (const ln of foldCutLines) {
+    for (const rect of criticalRects) {
+      const inside = (x: number, y: number) =>
+        x >= rect.origin.xMm &&
+        x <= rect.origin.xMm + rect.widthMm &&
+        y >= rect.origin.yMm &&
+        y <= rect.origin.yMm + rect.heightMm;
+
+      if (inside(ln.from.xMm, ln.from.yMm) || inside(ln.to.xMm, ln.to.yMm)) {
+        errors.push(
+          validationIssue(
+            'line_intersection',
+            `Line "${ln.id}" intersects critical area "${rect.id}".`,
+            ln.id,
+          ),
+        );
+      }
+    }
+  }
+
+  return errors.length > 0 ? invalid(errors) : valid(undefined);
 };

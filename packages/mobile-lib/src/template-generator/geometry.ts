@@ -7,7 +7,12 @@ import {
   type ValidationResult,
   type ValidationIssue,
 } from '../validation';
-import {createTemplatePage} from './layout';
+import {
+  createTemplatePage,
+  SLOT_CLEARANCE_MM,
+  GLUE_TAB_WIDTH_MM,
+  GLUE_TAB_HEIGHT_MM,
+} from './layout';
 import type {
   AssemblyInstruction,
   TemplateDocument,
@@ -20,6 +25,8 @@ import {
   validateSlotTolerance,
   validateGlueTabSize,
   validateAssemblyInstructions,
+  validateMinimumMargins,
+  validateLineIntersections,
 } from './validation';
 
 export const TEMPLATE_VERSION = 'template-v0.1';
@@ -75,8 +82,11 @@ export const generateTemplateDocument = (
   const optionValidation = validateTemplateOptions(options);
   const pageFitValidation = validatePageFit(phone, options);
 
-  const slotValidation = validateSlotTolerance(2.5);
-  const glueTabValidation = validateGlueTabSize(8, 52);
+  const slotValidation = validateSlotTolerance(SLOT_CLEARANCE_MM);
+  const glueTabValidation = validateGlueTabSize(
+    GLUE_TAB_WIDTH_MM,
+    GLUE_TAB_HEIGHT_MM,
+  );
 
   const combined = combineValidationResults(
     phoneValidation,
@@ -180,6 +190,16 @@ export const generateTemplateDocument = (
   );
   if (!instructionValidation.ok) {
     return invalid(instructionValidation.errors);
+  }
+
+  const marginValidation = validateMinimumMargins(page);
+  if (!marginValidation.ok) {
+    return invalid(marginValidation.errors);
+  }
+
+  const intersectionValidation = validateLineIntersections(page);
+  if (!intersectionValidation.ok) {
+    return invalid(intersectionValidation.errors);
   }
 
   return valid(

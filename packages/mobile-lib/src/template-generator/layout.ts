@@ -3,13 +3,17 @@ import type {TemplateOptions, TemplatePage} from './types';
 import {getPageDimensions} from './pages';
 import {line, point, rect, text, roundedRect} from './primitives';
 
+export const SLOT_CLEARANCE_MM = 2;
+export const GLUE_TAB_WIDTH_MM = 8;
+export const GLUE_TAB_HEIGHT_MM = 52;
+
 export const createTemplatePage = (
   phone: PhoneGeometry,
   options: TemplateOptions,
 ): TemplatePage => {
   const {widthMm, heightMm} = getPageDimensions(options.pageSize);
   const marginMm = 10;
-  const clearanceMm = 2;
+  const clearanceMm = SLOT_CLEARANCE_MM;
   const slotWidthMm = phone.bodyWidthMm + clearanceMm;
   const slotHeightMm = phone.bodyHeightMm + clearanceMm;
   const centerX = widthMm / 2;
@@ -91,16 +95,16 @@ export const createTemplatePage = (
       ),
       rect(
         'left-glue-tab',
-        point(visorOriginX - 8, visorOriginY + 18),
-        8,
-        52,
+        point(visorOriginX - GLUE_TAB_WIDTH_MM, visorOriginY + 18),
+        GLUE_TAB_WIDTH_MM,
+        GLUE_TAB_HEIGHT_MM,
         'glue',
       ),
       rect(
         'right-glue-tab',
         point(visorOriginX + visorWidthMm, visorOriginY + 18),
-        8,
-        52,
+        GLUE_TAB_WIDTH_MM,
+        GLUE_TAB_HEIGHT_MM,
         'glue',
       ),
       line(
