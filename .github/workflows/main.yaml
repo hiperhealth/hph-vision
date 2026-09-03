@@ -27,7 +27,7 @@ jobs:
       - name: Check if the PR branch is updated
         run: |
           git fetch origin main
-          git merge-base --is-ancestor origin/main "${{ github.event.pull_request.head.sha }}"
+          git merge-base --is-ancestor origin/main HEAD
 
   python-api-tests:
     timeout-minutes: 20
