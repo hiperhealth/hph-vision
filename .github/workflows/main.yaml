@@ -1,4 +1,4 @@
-﻿name: main
+name: main
 
 on:
   push:
@@ -25,8 +25,10 @@ jobs:
           fetch-depth: 0
 
       - name: Check if the PR branch is updated
-        run: git fetch origin main
+        run: |
+          git fetch origin main
           git merge-base --is-ancestor origin/main "${{ github.event.pull_request.head.sha }}"
+
   python-api-tests:
     timeout-minutes: 20
     strategy:
