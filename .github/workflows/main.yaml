@@ -1,4 +1,4 @@
-name: main
+﻿name: main
 
 on:
   push:
@@ -21,7 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Check if the PR branch is updated
