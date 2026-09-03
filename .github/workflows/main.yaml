@@ -1,4 +1,4 @@
-name: main
+﻿name: main
 
 on:
   push:
@@ -24,15 +24,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Fetch main branch
-        run: git fetch origin main:refs/remotes/origin/main
-
       - name: Check if the PR branch is updated
-        uses: osl-incubator/gh-check-pr-is-updated@1.0.0
-        with:
-          remote_branch: origin/main
-          pr_sha: ${{ github.event.pull_request.head.sha }}
-
+        run: git fetch origin main
+          git merge-base --is-ancestor origin/main "${{ github.event.pull_request.head.sha }}"
   python-api-tests:
     timeout-minutes: 20
     strategy:
