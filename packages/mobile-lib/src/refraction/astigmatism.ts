@@ -10,10 +10,7 @@ export const JCC_AXIS_SHIFT = 45;
 export const CONTRADICTION_THRESHOLD_AXIS = 20;
 
 export type AstigmatismPattern =
-  | 'clockDial'
-  | 'fanChart'
-  | 'lineOrientation'
-  | 'jcc';
+  'clockDial' | 'fanChart' | 'lineOrientation' | 'jcc';
 
 /**
  * Introduced because existing RefractionResponse cannot encode explicit

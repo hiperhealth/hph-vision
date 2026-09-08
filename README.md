@@ -18,25 +18,25 @@ packages/
 Install JS dependencies from the repository root:
 
 ```bash
-yarn install
+pnpm install
 ```
 
 Run Metro:
 
 ```bash
-yarn mobile:start
+pnpm mobile:start
 ```
 
 Run Android from the CLI:
 
 ```bash
-yarn mobile:android
+pnpm mobile:android
 ```
 
 Run iOS from the CLI:
 
 ```bash
-yarn mobile:ios
+pnpm mobile:ios
 ```
 
 ### Android Studio
@@ -49,7 +49,7 @@ packages/mobile/android
 
 Do not open the repository root as the Android project. The Gradle project is
 inside `packages/mobile/android`, while JS dependencies are hoisted to root
-`node_modules` by Yarn workspaces.
+`node_modules` by pnpm workspaces.
 
 If Android Studio asks for the SDK path, create this untracked file:
 
@@ -74,7 +74,7 @@ poetry install
 Run the API in development mode:
 
 ```bash
-yarn api:dev
+pnpm api:dev
 ```
 
 Equivalent direct Poetry command:
@@ -92,26 +92,26 @@ GET /health
 ## Common commands
 
 ```bash
-yarn lint
-yarn test
-yarn typecheck
-yarn format
+pnpm lint
+pnpm test
+pnpm typecheck
+pnpm format
 ```
 
 Python-only commands:
 
 ```bash
-yarn api:lint
-yarn api:test
-yarn api:format
+pnpm api:lint
+pnpm api:test
+pnpm api:format
 ```
 
 Mobile-only commands:
 
 ```bash
-yarn mobile:lint
-yarn mobile:test
-yarn mobile:typecheck
+pnpm mobile:lint
+pnpm mobile:test
+pnpm mobile:typecheck
 ```
 
 ## License

@@ -10,7 +10,7 @@ react {
     /* Monorepo folders */
     // The React Native app package root: packages/mobile.
     root = file("../..")
-    // JS dependencies are hoisted to the repository root by Yarn workspaces.
+    // JS dependencies are hoisted to the repository root by pnpm workspaces.
     reactNativeDir = file("../../../../node_modules/react-native")
     codegenDir = file("../../../../node_modules/@react-native/codegen")
     cliFile = file("../../../../node_modules/react-native/cli.js")

@@ -9,8 +9,16 @@ export type SessionEvent =
   | {type: 'SESSION_CREATED'; at: ISODateString}
   | {type: 'CONSENT_ACCEPTED'; at: ISODateString}
   | {type: 'TRIAGE_COMPLETED'; at: ISODateString; result: TriageResult}
-  | {type: 'DEVICE_PROFILE_SELECTED'; at: ISODateString; profile: DeviceProfile}
-  | {type: 'TEMPLATE_GENERATED'; at: ISODateString; metadata: TemplateMetadata}
+  | {
+      type: 'DEVICE_PROFILE_SELECTED';
+      at: ISODateString;
+      profile: DeviceProfile;
+    }
+  | {
+      type: 'TEMPLATE_GENERATED';
+      at: ISODateString;
+      metadata: TemplateMetadata;
+    }
   | {
       type: 'ACUITY_RESPONSE_RECORDED';
       at: ISODateString;

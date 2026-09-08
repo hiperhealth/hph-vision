@@ -7,7 +7,7 @@ explicitly says otherwise.
 
 ## Base environment
 
-The provided conda environment includes Node/Yarn, Java 17, Poetry, and common
+The provided conda environment includes Node/pnpm, Java 17, Poetry, and common
 project tooling:
 
 ```bash
@@ -18,7 +18,7 @@ conda activate hph-vision
 Then install project dependencies:
 
 ```bash
-yarn install
+pnpm install
 poetry install
 ```
 
@@ -51,25 +51,25 @@ sdk.dir=/home/<user>/Android/Sdk
 Start Metro:
 
 ```bash
-yarn mobile:start
+pnpm mobile:start
 ```
 
 In another terminal, run Android:
 
 ```bash
-yarn mobile:android
+pnpm mobile:android
 ```
 
 Reset Metro cache if necessary:
 
 ```bash
-yarn workspace @hiperhealth/hphvision start --reset-cache
+pnpm --filter @hiperhealth/hphvision start --reset-cache
 ```
 
 ## Running the API
 
 ```bash
-yarn api:dev
+pnpm api:dev
 ```
 
 The development API exposes:
@@ -81,9 +81,9 @@ GET http://127.0.0.1:8000/health
 ## Checks before submitting changes
 
 ```bash
-yarn lint
-yarn typecheck
-yarn test
+pnpm lint
+pnpm typecheck
+pnpm test
 ```
 
 Install pre-commit hooks with:

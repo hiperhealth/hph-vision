@@ -13,9 +13,9 @@ From the repository root:
 
 ```bash
 poetry install
-yarn api:dev
-yarn api:test
-yarn api:lint
+pnpm api:dev
+pnpm api:test
+pnpm api:lint
 ```
 
 Direct run command:

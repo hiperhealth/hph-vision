@@ -1,5 +1,5 @@
 ---
-name: 🐛 Bug Report
+name: ðŸ› Bug Report
 description: Create a report to help us improve HPH Vision
 labels: ['bug', 'needs-triage']
 
@@ -33,7 +33,7 @@ body:
   - type: textarea
     attributes:
       label: OS / Environment
-      description: Provide OS, Node/Yarn, Python/Poetry, Android/iOS, and device details as applicable.
+      description: Provide OS, Node/pnpm, Python/Poetry, Android/iOS, and device details as applicable.
       render: console
     validations:
       required: true

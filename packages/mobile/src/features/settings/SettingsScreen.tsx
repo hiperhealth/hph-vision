@@ -54,7 +54,7 @@ const readinessItems: ReadinessItem[] = [
 export const SettingsScreen = () => {
   const {state, actions} = useHphVisionApp();
   const returnRoute = state.consentAccepted
-    ? state.routeHistory[state.routeHistory.length - 1] ?? 'onboarding'
+    ? (state.routeHistory[state.routeHistory.length - 1] ?? 'onboarding')
     : 'disclaimer';
 
   return (

@@ -2,6 +2,7 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "../..",
+    "strict": true,
     "paths": {
       "@hiperhealth/hphvision-lib": ["packages/mobile-lib/src"],
       "@hiperhealth/hphvision-lib/*": ["packages/mobile-lib/src/*"]
@@ -12,7 +13,6 @@
     "**/*.jsx",
     "**/*.ts",
     "**/*.tsx",
-    "../../packages/mobile-lib/src/**/*.ts",
     "../../packages/mobile-lib/src/**/*.tsx"
   ]
 }

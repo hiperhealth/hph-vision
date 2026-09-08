@@ -14,12 +14,12 @@ notes](regulatory-notes.md) separately before any release decision.
       package. `hph-vision-core` and `hph-vision-api` are the Python packages. The
       private `@hiperhealth/hphvision` React Native app is versioned for native
       builds, but is not an npm publishing target.
-- [ ] Use the repository package manager: Yarn 3.6.4 (`packageManager` in the
-      root `package.json`), not npm or pnpm. Install the locked JavaScript
+- [ ] Use the repository package manager: pnpm 10.15.0 (`packageManager` in the
+      root `package.json`), not npm or Yarn. Install the locked JavaScript
       dependencies and Python environment:
 
   ```bash
-  yarn install --immutable
+  pnpm install --frozen-lockfile
   poetry check
   poetry install
   ```
@@ -45,13 +45,13 @@ all.test` runs the mobile, shared-library, and Python API suites.
   makim all.test
   ```
 
-- [ ] Lint and pre-commit checks. `yarn lint` is the explicit workspace lint
+- [ ] Lint and pre-commit checks. `pnpm lint` is the explicit workspace lint
       command. Pre-commit also checks Markdown formatting and the configured
       TypeScript/Python hooks; inspect and commit any formatting correction it
       makes before rerunning it.
 
   ```bash
-  yarn lint
+  pnpm lint
   pre-commit run --all-files
   ```
 
@@ -73,7 +73,7 @@ all.test` runs the mobile, shared-library, and Python API suites.
   ```bash
   makim api-core.check
   makim restapi.check
-  yarn workspace @hiperhealth/hphvision-lib pack --out dist/hphvision-lib.tgz
+  pnpm --filter @hiperhealth/hphvision-lib pack --out dist/hphvision-lib.tgz
   ```
 
   Confirm that the resulting `packages/mobile-lib/dist/hphvision-lib.tgz`

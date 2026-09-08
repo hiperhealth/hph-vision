@@ -6,12 +6,7 @@ import type {
 } from '../types';
 
 export type CanonicalRefractionVocab =
-  | 'better'
-  | 'worse'
-  | 'same'
-  | 'one'
-  | 'two'
-  | 'unknown';
+  'better' | 'worse' | 'same' | 'one' | 'two' | 'unknown';
 
 export type RefractionAnswerToken = CanonicalRefractionVocab;
 
@@ -39,9 +34,7 @@ export type RefractionStimulus = {
 };
 
 export type RefractionTrialKind =
-  | 'sphericalComparison'
-  | 'cylinderComparison'
-  | 'axisComparison';
+  'sphericalComparison' | 'cylinderComparison' | 'axisComparison';
 
 export type RefractionTrial = {
   id: string;

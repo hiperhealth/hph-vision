@@ -116,7 +116,9 @@ describe('refraction flow state machine', () => {
           confidence: 0.85,
         },
       });
-      context = transitionRefractionFlow(context, {type: 'CHECK_CONVERGENCE'});
+      context = transitionRefractionFlow(context, {
+        type: 'CHECK_CONVERGENCE',
+      });
     }
 
     expect(context.state).toBe('complete');
@@ -146,7 +148,9 @@ describe('refraction flow state machine', () => {
           inputMethod: 'touch',
         },
       });
-      context = transitionRefractionFlow(context, {type: 'CHECK_CONVERGENCE'});
+      context = transitionRefractionFlow(context, {
+        type: 'CHECK_CONVERGENCE',
+      });
     }
 
     expect(context.contradictionCount).toBeGreaterThanOrEqual(2);

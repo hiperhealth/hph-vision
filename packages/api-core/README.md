@@ -36,8 +36,8 @@ From the repository root:
 
 ```bash
 poetry install
-yarn api:test
-yarn api:lint
+pnpm api:test
+pnpm api:lint
 poetry run mypy packages/api-core/src
 ```
 

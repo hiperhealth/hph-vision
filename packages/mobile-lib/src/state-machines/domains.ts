@@ -62,11 +62,7 @@ export const onboardingFlowConfig: StateMachineConfig<
 // --- templateFlow ---
 
 export type TemplateState =
-  | 'idle'
-  | 'calibrating'
-  | 'generating'
-  | 'ready'
-  | 'error';
+  'idle' | 'calibrating' | 'generating' | 'ready' | 'error';
 
 export interface TemplateContext {
   calibrationScale: number;
@@ -130,10 +126,7 @@ export const templateFlowConfig: StateMachineConfig<
 // --- acuityFlow ---
 
 export type AcuityState =
-  | 'idle'
-  | 'testing_right'
-  | 'testing_left'
-  | 'complete';
+  'idle' | 'testing_right' | 'testing_left' | 'complete';
 
 export interface AcuityContext {
   rightEyeScore: number;

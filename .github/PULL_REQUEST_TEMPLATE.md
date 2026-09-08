@@ -21,8 +21,8 @@ Related issue: <!-- e.g. Closes #123 -->
 - [ ] `makim all.test`
 - [ ] `makim all.typecheck`
 - [ ] `makim all.build`
-- [ ] `yarn mobile:android`
-- [ ] `yarn mobile:ios`
+- [ ] `pnpm mobile:android`
+- [ ] `pnpm mobile:ios`
 - [ ] Manual API/mobile validation described below
 
 Manual validation notes:

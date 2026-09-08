@@ -32,8 +32,7 @@ export type StateTransitions<
   TEvent extends StateMachineEvent,
 > = {
   [E in TEvent['type']]?:
-    | TransitionConfig<TState, TContext, Extract<TEvent, {type: E}>>
-    | TState;
+    TransitionConfig<TState, TContext, Extract<TEvent, {type: E}>> | TState;
 };
 
 export interface StateMachineConfig<

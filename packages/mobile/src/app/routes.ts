@@ -23,7 +23,11 @@ export const ROUTES: RouteDescriptor[] = [
   {id: 'onboarding', title: 'Onboarding', stepLabel: 'Basics'},
   {id: 'triage', title: 'Safety triage', stepLabel: 'Safety'},
   {id: 'deviceCalibration', title: 'Device calibration', stepLabel: 'Device'},
-  {id: 'templateGeneration', title: 'Template preview', stepLabel: 'Template'},
+  {
+    id: 'templateGeneration',
+    title: 'Template preview',
+    stepLabel: 'Template',
+  },
   {id: 'visorAssembly', title: 'Visor assembly', stepLabel: 'Assembly'},
   {id: 'acuityTest', title: 'Acuity prototype', stepLabel: 'Acuity'},
   {
