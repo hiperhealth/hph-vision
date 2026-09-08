@@ -94,17 +94,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install Node dependencies
-        run: yarn install --immutable
-
-      - name: Run mobile library tests and type checks
         run: |
-          makim mobile-lib.test
-          makim mobile-lib.typecheck
+          corepack enable
+          pnpm install --frozen-lockfile
 
-      - name: Run mobile app tests and type checks
+      - name: Run hphvision mobile checks
         run: |
-          makim mobile.test
-          makim mobile.typecheck
+          pnpm --filter @hiperhealth/hphvision-core build
+          pnpm --filter @hiperhealth/hphvision-mobile test
+          pnpm --filter @hiperhealth/hphvision-mobile typecheck
+          pnpm --filter @hiperhealth/hphvision-mobile lint
 
   linter:
     runs-on: ubuntu-latest
@@ -134,7 +133,11 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install
-          yarn install --immutable
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: Build core package
+        run: pnpm --filter @hiperhealth/hphvision-core build
 
       - name: Run style checks
         if: success() || failure()

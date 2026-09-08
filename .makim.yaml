@@ -50,15 +50,15 @@ groups:
     tasks:
       lint:
         help: lint the React Native app package
-        run: yarn mobile:lint
+        run: pnpm --filter @hiperhealth/hphvision lint
 
       test:
         help: test the React Native app package
-        run: yarn mobile:test
+        run: pnpm --filter @hiperhealth/hphvision test
 
       typecheck:
         help: typecheck the React Native app package
-        run: yarn mobile:typecheck
+        run: pnpm --filter @hiperhealth/hphvision typecheck
 
       ci:
         help: run mobile app CI checks
@@ -75,11 +75,11 @@ groups:
 
       test:
         help: test @hiperhealth/hphvision-lib
-        run: yarn mobile-lib:test
+        run: pnpm --filter @hiperhealth/hphvision-lib test
 
       typecheck:
         help: typecheck @hiperhealth/hphvision-lib
-        run: yarn mobile-lib:typecheck
+        run: pnpm --filter @hiperhealth/hphvision-lib typecheck
 
       pack:
         help: create an npm package tarball for @hiperhealth/hphvision-lib
