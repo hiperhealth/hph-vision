@@ -5,7 +5,7 @@ const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
 /**
- * Metro configuration for the React Native app inside the Yarn monorepo.
+ * Metro configuration for the React Native app inside the pnpm monorepo.
  *
  * - projectRoot stays at packages/mobile so app-relative files work normally.
  * - watchFolders includes the repository root so workspace packages are watched.

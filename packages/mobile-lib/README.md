@@ -21,7 +21,7 @@ filesystem writes, FastAPI code, or Python backend logic.
 Run from the repository root:
 
 ```bash
-yarn mobile-lib:lint
-yarn mobile-lib:typecheck
-yarn mobile-lib:test
+pnpm --filter @hiperhealth/hphvision-lib lint
+pnpm --filter @hiperhealth/hphvision-lib typecheck
+pnpm --filter @hiperhealth/hphvision-lib test
 ```

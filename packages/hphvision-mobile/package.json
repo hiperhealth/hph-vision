@@ -1,0 +1,22 @@
+{
+  "name": "@hiperhealth/hphvision-mobile",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@hiperhealth/hphvision-core": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "jest": "29.7.0"
+  }
+}

@@ -2,7 +2,7 @@
 
 - Affected package: <!-- mobile, mobile-lib, api-core, restapi, docs, release -->
 - Package version / commit:
-- Node/Yarn version, if applicable:
+- Node/pnpm version, if applicable:
 - Python/Poetry version, if applicable:
 - Android/iOS device or SDK version, if applicable:
 - Operating system:

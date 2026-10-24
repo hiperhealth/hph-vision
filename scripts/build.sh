@@ -20,5 +20,5 @@ mkdir -p packages/mobile-lib/dist
 # The semantic-release npm plugin is responsible for creating and publishing the
 # @hiperhealth/hphvision-lib npm package. The mobile app is versioned for native
 # builds, but it is not published from this script.
-yarn workspace @hiperhealth/hphvision typecheck
-yarn workspace @hiperhealth/hphvision-lib typecheck
+pnpm --filter @hiperhealth/hphvision typecheck
+pnpm --filter @hiperhealth/hphvision-lib typecheck
